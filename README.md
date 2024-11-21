@@ -7,6 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `micronutrients` is currently an early prototype to compute
@@ -84,7 +85,7 @@ result <- compute_short_format_prevalence(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 59.77%
+#> micronutrients Coverage: 59.15%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -103,6 +104,6 @@ covr::package_coverage()
 #> R/concept-pregnancy-status.R: 81.25%
 #> R/age-groups.R: 83.67%
 #> R/concepts.R: 95.00%
-#> R/prevalence.R: 96.41%
+#> R/prevalence.R: 95.09%
 #> R/classifications.R: 100.00%
 ```
