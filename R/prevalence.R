@@ -171,13 +171,14 @@ compute_prevalence <- function(
     other_region = NULL,
     other_grouping_variable = NULL,
     team = NULL) {
-  classified_data <- classify_data(
+  classified_data <- classify_data_internal(
     sex = sex, age = age, pregnancy_status = pregnancy_status,
     lactating_status = lactating_status, CRP = CRP, AGP = AGP,
     ferritin = ferritin, iodine = iodine, haemoglobin = haemoglobin,
     altitude = altitude, is_smoker = is_smoker, smokes_cigarettes_per_day = smokes_cigarettes_per_day,
     pregnancymonths = pregnancymonths, pregnancyweeks = pregnancyweeks,
-    malaria = malaria
+    malaria = malaria,
+    .format_column_names = FALSE
   )
   concept_list <- concepts_from_args(
     sex = sex,
@@ -203,9 +204,9 @@ compute_prevalence <- function(
     other_grouping_variable = other_grouping_variable,
     team = team
   )
-  input_concepts <- dplyr::bind_cols(concept_list)
+  input_concepts <- do.call(cbind, concept_list)
   stopifnot(nrow(input_concepts) == nrow(classified_data))
-  survey_data <- dplyr::bind_cols(classified_data, input_concepts)
+  survey_data <- cbind(classified_data, input_concepts)
   prevalence_data <- prev_function(survey_data)
   prevalence_data
 }
