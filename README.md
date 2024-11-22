@@ -42,6 +42,13 @@ To compute row-level classifiction you can do the following:
 ``` r
 dataset <- read.csv("some_data_set")
 result <- classify_data(
+  indicators = list(
+    iodine_indicator,
+    ferritin_indicator(ferritin_adjustment_cutoff),
+    ferritin_indicator(no_adjustment),
+    anaemia_indicator,
+    ida_indicator(no_adjustment)
+  ),
   age = dataset$age_years,
   sex = dataset$sex,
   pregnancy_status = dataset$pregnancy_status,
@@ -64,6 +71,13 @@ table.
 
 ``` r
 result <- compute_short_format_prevalence(
+  indicators = list(
+    iodine_indicator,
+    ferritin_indicator(ferritin_adjustment_cutoff),
+    ferritin_indicator(no_adjustment),
+    anaemia_indicator,
+    ida_indicator(no_adjustment)
+  ),
   age = testdata$age_years,
   sex = testdata$sex,
   pregnancy_status = testdata$pregnancy_status,
@@ -85,7 +99,7 @@ result <- compute_short_format_prevalence(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 59.15%
+#> micronutrients Coverage: 80.68%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -93,17 +107,17 @@ covr::package_coverage()
 #> R/concept-lactating-status.R: 0.00%
 #> R/concept-mothers-education.R: 0.00%
 #> R/concept-wealth-quintile.R: 0.00%
-#> R/indicators-iron-deficiency-anaemia.R: 0.00%
-#> R/indicators-ferritin.R: 0.98%
 #> R/indicators-anaemia.R: 3.70%
 #> R/measurements.R: 11.43%
 #> R/concept-sex.R: 22.22%
 #> R/utils.R: 31.82%
 #> R/indicators-iodine.R: 33.33%
-#> R/indicators.R: 60.10%
+#> R/indicators-ferritin.R: 66.99%
 #> R/concept-pregnancy-status.R: 81.25%
 #> R/age-groups.R: 83.67%
+#> R/indicators.R: 86.36%
 #> R/concepts.R: 95.00%
-#> R/prevalence.R: 95.09%
+#> R/prevalence.R: 95.12%
+#> R/indicators-iron-deficiency-anaemia.R: 97.53%
 #> R/classifications.R: 100.00%
 ```

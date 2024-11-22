@@ -8,9 +8,12 @@ utils::globalVariables(c(
   "%between%", "pregnancy_status", "sex"
 ))
 
+#' Ferritin indicator
+#' @param value_adjustment the adjustment method.
 #' @include indicators.R
-#' @noRd
+#' @export
 ferritin_indicator <- function(value_adjustment = no_adjustment) {
+  stopifnot(is_adjustment(value_adjustment))
   short_name <- "ferritin"
 
   prevalence_category_names <- c("depletedironstores", "riskofironoverload")

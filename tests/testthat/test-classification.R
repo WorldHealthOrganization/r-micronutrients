@@ -1,6 +1,13 @@
 test_that("row level classification works", {
   testdata <- random_datset(100)
   res <- classify_data(
+    indicators = list(
+      iodine_indicator,
+      ferritin_indicator(ferritin_adjustment_cutoff),
+      ferritin_indicator(no_adjustment),
+      anaemia_indicator,
+      ida_indicator(no_adjustment)
+    ),
     age = testdata$age_years,
     sex = testdata$sex,
     pregnancy_status = testdata$pregnancy_status,

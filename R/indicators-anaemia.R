@@ -49,8 +49,10 @@ anaemia_implausible_values <- function(value, age = NULL, sex = NULL) {
   value
 }
 
+#' Anaemia indicator
+#'
 #' @include indicators.R
-#' @noRd
+#' @export
 anaemia_indicator <- indicator(
   name = "Anaemia - Haemoglobin (g/L)",
   abbreviated_name = "anaemia",
