@@ -70,6 +70,43 @@ classify_data <- function(
     pregnancyweeks = NULL,
     pregnancymonths = NULL,
     malaria = NULL) {
+  classify_data_internal(
+    sex = sex,
+    age = age,
+    pregnancy_status = pregnancy_status,
+    lactating_status = lactating_status,
+    CRP = CRP,
+    AGP = AGP,
+    iodine = iodine,
+    ferritin = ferritin,
+    haemoglobin = haemoglobin,
+    altitude = altitude,
+    is_smoker = is_smoker,
+    smokes_cigarettes_per_day = smokes_cigarettes_per_day,
+    pregnancyweeks = pregnancyweeks,
+    pregnancymonths = pregnancymonths,
+    malaria = malaria,
+    .format_column_names = TRUE
+  )
+}
+
+classify_data_internal <- function(
+    sex,
+    age,
+    pregnancy_status = NULL,
+    lactating_status = NULL,
+    CRP = NULL,
+    AGP = NULL,
+    ferritin = NULL,
+    iodine = NULL,
+    haemoglobin = NULL,
+    altitude = NULL,
+    is_smoker = NULL,
+    smokes_cigarettes_per_day = NULL,
+    pregnancyweeks = NULL,
+    pregnancymonths = NULL,
+    malaria = NULL,
+    .format_column_names = TRUE) {
   concept_list <- concepts_from_args(
     sex = sex,
     age = age,
@@ -95,7 +132,14 @@ classify_data <- function(
 
   results <- indicators_compute_all(global_indicators, values, concept_list)
   names(results) <- NULL
-  do.call(cbind, results)
+  df <- do.call(cbind, results)
+  if (!.format_column_names) {
+    return(df)
+  }
+  colnames(df) <- paste0("indicator_", colnames(df))
+  concept_df <- do.call(cbind, concept_list)
+  colnames(concept_df) <- paste0("input_", colnames(concept_df))
+  cbind(concept_df, df)
 }
 
 not_null <- function(x) {
