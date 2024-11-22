@@ -27,6 +27,7 @@
 #'
 #' @export
 compute_long_format_prevalence <- function(
+    indicators,
     sex,
     age,
     pregnancy_status = NULL,
@@ -51,6 +52,7 @@ compute_long_format_prevalence <- function(
     team = NULL) {
   compute_prevalence(
     long_format_prevalence,
+    indicators,
     sex = sex,
     age = age,
     pregnancy_status = pregnancy_status,
@@ -98,6 +100,7 @@ compute_long_format_prevalence <- function(
 #'
 #' @export
 compute_short_format_prevalence <- function(
+    indicators,
     sex,
     age,
     pregnancy_status = NULL,
@@ -122,6 +125,7 @@ compute_short_format_prevalence <- function(
     team = NULL) {
   compute_prevalence(
     short_format_prevalence,
+    indicators,
     sex = sex,
     age = age,
     pregnancy_status = pregnancy_status,
@@ -149,6 +153,7 @@ compute_short_format_prevalence <- function(
 
 compute_prevalence <- function(
     prev_function,
+    indicators,
     sex,
     age,
     pregnancy_status = NULL,
@@ -171,7 +176,9 @@ compute_prevalence <- function(
     other_region = NULL,
     other_grouping_variable = NULL,
     team = NULL) {
+  validate_indicators(indicators)
   classified_data <- classify_data_internal(
+    indicators = indicators,
     sex = sex, age = age, pregnancy_status = pregnancy_status,
     lactating_status = lactating_status, CRP = CRP, AGP = AGP,
     ferritin = ferritin, iodine = iodine, haemoglobin = haemoglobin,
@@ -207,14 +214,14 @@ compute_prevalence <- function(
   input_concepts <- do.call(cbind, concept_list)
   stopifnot(nrow(input_concepts) == nrow(classified_data))
   survey_data <- cbind(classified_data, input_concepts)
-  prevalence_data <- prev_function(survey_data)
+  prevalence_data <- prev_function(survey_data, indicators)
   prevalence_data
 }
 
 #' @import survey
 #' @import rlang
-long_format_prevalence <- function(survey_data) {
-  indicators <- Filter(prevalence_report_long, global_indicators)
+long_format_prevalence <- function(survey_data, indicators) {
+  indicators <- Filter(prevalence_report_long, indicators)
 
   # first we build a dataset that is used by {survey} for analysis
   survey_data <- build_prevalence_survey_data(survey_data, indicators)
@@ -276,9 +283,8 @@ long_format_prevalence <- function(survey_data) {
   )
 }
 
-short_format_prevalence <- function(survey_data) {
-  indicators <- Filter(prevalence_report_short, global_indicators)
-
+short_format_prevalence <- function(survey_data, indicators) {
+  indicators <- Filter(prevalence_report_short, indicators)
 
   # first we build a dataset that is used by {survey} for analysis
   survey_data <- build_prevalence_survey_data(survey_data, indicators)

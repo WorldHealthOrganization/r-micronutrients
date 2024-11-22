@@ -5,6 +5,7 @@
 #' to determine classification results for various micronutrient deficiencies and adequacy, while accounting for
 #' additional contextual factors such as pregnancy, smoking, altitude, and malaria status.
 #'
+#' @param indicators a list of indicators that should be computed.
 #' @param sex A vector indicating the sex of individuals. Valid values are "m", "1", "Male" for males and "f", "2", "Female" for females.
 #' @param age A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.
 #' @param pregnancy_status (Optional) A vector indicating pregnancy status. Encoded as either 1 (yes), 2 (no), or 3 (unknown).
@@ -39,6 +40,7 @@
 #'
 #' # Classify the dataset
 #' classify_data(
+#'.  indicators = list(iodine_indicator, ferritin_indicator(no_adjustment)),
 #'   age = data$age_years,
 #'   sex = data$sex,
 #'   pregnancy_status = data$pregnancy_status,
@@ -52,9 +54,9 @@
 #' # View results
 #' print(res)
 #' }
-#' @include indicators-all.R
 #' @export
 classify_data <- function(
+    indicators,
     sex,
     age,
     pregnancy_status = NULL,
@@ -71,6 +73,7 @@ classify_data <- function(
     pregnancymonths = NULL,
     malaria = NULL) {
   classify_data_internal(
+    indicators,
     sex = sex,
     age = age,
     pregnancy_status = pregnancy_status,
@@ -91,6 +94,7 @@ classify_data <- function(
 }
 
 classify_data_internal <- function(
+    indicators,
     sex,
     age,
     pregnancy_status = NULL,
@@ -107,6 +111,7 @@ classify_data_internal <- function(
     pregnancymonths = NULL,
     malaria = NULL,
     .format_column_names = TRUE) {
+  validate_indicators(indicators)
   concept_list <- concepts_from_args(
     sex = sex,
     age = age,
@@ -126,11 +131,11 @@ classify_data_internal <- function(
   )
   cols <- names(concept_list)
 
-  values <- lapply(global_indicators, function(x) {
+  values <- lapply(indicators, function(x) {
     concept_list[[x$value_concept]]
   })
 
-  results <- indicators_compute_all(global_indicators, values, concept_list)
+  results <- indicators_compute_all(indicators, values, concept_list)
   names(results) <- NULL
   df <- do.call(cbind, results)
   if (!.format_column_names) {
@@ -140,6 +145,11 @@ classify_data_internal <- function(
   concept_df <- do.call(cbind, concept_list)
   colnames(concept_df) <- paste0("input_", colnames(concept_df))
   cbind(concept_df, df)
+}
+
+validate_indicators <- function(indicators) {
+  stopifnot(is.list(indicators))
+  stopifnot(all(vapply(indicators, is_indicator, logical(1L))))
 }
 
 not_null <- function(x) {

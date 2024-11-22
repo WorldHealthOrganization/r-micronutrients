@@ -5,6 +5,7 @@
 \title{Compute Short-Format Prevalence Estimates for Micronutrient Indicators}
 \usage{
 compute_short_format_prevalence(
+  indicators,
   sex,
   age,
   pregnancy_status = NULL,
@@ -30,6 +31,8 @@ compute_short_format_prevalence(
 )
 }
 \arguments{
+\item{indicators}{a list of indicators that should be computed.}
+
 \item{sex}{A vector indicating the sex of individuals. Valid values are "m", "1", "Male" for males and "f", "2", "Female" for females.}
 
 \item{age}{A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.}

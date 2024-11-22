@@ -10,8 +10,10 @@ iron_deficiency_implausible <- function(value, ...) {
   value
 }
 
+#' Iron deficiency anaemia indciator
+#' @param ferritin_adjustment adjustment method.
 #' @include indicators.R
-#' @noRd
+#' @export
 ida_indicator <- function(ferritin_adjustment = no_adjustment) {
   short_name <- "ida"
   prev_categories <- "ida"

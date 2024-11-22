@@ -193,6 +193,8 @@ required_concepts.indicator_adjustment <- function(x) {
   x$required_concepts
 }
 
+#' No adjustment
+#' @export
 no_adjustment <- adjustment(
   required_concepts = character(),
   fun = \(value) value

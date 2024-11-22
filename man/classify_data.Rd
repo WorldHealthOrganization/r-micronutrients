@@ -5,6 +5,7 @@
 \title{Classify Survey Data Based on Micronutrient Indicators}
 \usage{
 classify_data(
+  indicators,
   sex,
   age,
   pregnancy_status = NULL,
@@ -23,6 +24,8 @@ classify_data(
 )
 }
 \arguments{
+\item{indicators}{a list of indicators that should be computed.}
+
 \item{sex}{A vector indicating the sex of individuals. Valid values are "m", "1", "Male" for males and "f", "2", "Female" for females.}
 
 \item{age}{A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.}
@@ -82,6 +85,7 @@ data <- reade.csv(...)
 
 # Classify the dataset
 classify_data(
+.  indicators = list(iodine_indicator, ferritin_indicator(no_adjustment)),
   age = data$age_years,
   sex = data$sex,
   pregnancy_status = data$pregnancy_status,
