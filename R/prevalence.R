@@ -227,9 +227,9 @@ compute_prevalence <- function(
     strata = strata,
     sample_weight = sample_weight
   )
-  input_concepts <- do.call(cbind, concept_list)
+  input_concepts <- dplyr::bind_cols(concept_list)
   stopifnot(nrow(input_concepts) == nrow(classified_data))
-  survey_data <- cbind(classified_data, input_concepts)
+  survey_data <- dplyr::bind_cols(classified_data, input_concepts)
   prevalence_data <- prev_function(survey_data, indicators)
   prevalence_data
 }

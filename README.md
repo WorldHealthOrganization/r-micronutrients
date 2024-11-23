@@ -15,6 +15,9 @@ micronutrient indicators from survey data. It is based on the code from
 the [Micronutrient Survey Analyzer
 tool](https://github.com/WorldHealthOrganization/micronutrients-survey-analyzer-dev/tree/dev).
 
+It is not meant for serious use yet. The goal is to build the foundation
+to turn the logic into a package once the shiny app is mature enough.
+
 ## Installation
 
 You can install the development version of micronutrients from
@@ -99,7 +102,7 @@ result <- compute_short_format_prevalence(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 81.35%
+#> micronutrients Coverage: 80.76%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -116,8 +119,8 @@ covr::package_coverage()
 #> R/concept-pregnancy-status.R: 81.25%
 #> R/age-groups.R: 83.67%
 #> R/indicators.R: 85.31%
+#> R/prevalence.R: 95.18%
 #> R/concepts.R: 96.00%
-#> R/prevalence.R: 96.48%
 #> R/indicators-iron-deficiency-anaemia.R: 97.53%
 #> R/classifications.R: 100.00%
 ```

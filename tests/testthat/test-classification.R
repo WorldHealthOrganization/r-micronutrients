@@ -113,3 +113,20 @@ test_that("all inputs need to be of equal length", {
     )
   )
 })
+
+test_that("you can use lubridate to define the age", {
+  testdata <- random_datset(100)
+  age <- lubridate::duration(1:100, "months")
+  res <- individual_classification(
+    indicators = list(
+      ida_indicator(no_adjustment)
+    ),
+    age = age,
+    sex = testdata$sex,
+    ferritin = testdata$ferritin_measurement,
+    haemoglobin = testdata$haemoglobin_measurement,
+    pregnancy_status = testdata$pregnancy_status,
+    CRP = testdata$crp_measurement,
+    AGP = testdata$agp_measurement
+  )
+})

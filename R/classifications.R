@@ -134,9 +134,9 @@ classify_data_internal <- function(
     return(df)
   }
   colnames(df) <- paste0("indicator_", colnames(df))
-  concept_df <- do.call(cbind, concept_list)
+  concept_df <- dplyr::bind_cols(concept_list)
   colnames(concept_df) <- paste0("input_", colnames(concept_df))
-  cbind(concept_df, df)
+  dplyr::bind_cols(concept_df, df)
 }
 
 validate_indicators <- function(indicators) {
