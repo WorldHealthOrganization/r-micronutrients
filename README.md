@@ -41,7 +41,7 @@ To compute row-level classifiction you can do the following:
 
 ``` r
 dataset <- read.csv("some_data_set")
-result <- classify_data(
+result <- individual_classification(
   indicators = list(
     iodine_indicator,
     ferritin_indicator(ferritin_adjustment_cutoff),
@@ -99,7 +99,7 @@ result <- compute_short_format_prevalence(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 80.68%
+#> micronutrients Coverage: 81.47%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -115,9 +115,9 @@ covr::package_coverage()
 #> R/indicators-ferritin.R: 66.99%
 #> R/concept-pregnancy-status.R: 81.25%
 #> R/age-groups.R: 83.67%
-#> R/indicators.R: 86.36%
-#> R/concepts.R: 95.00%
-#> R/prevalence.R: 95.12%
+#> R/indicators.R: 85.31%
+#> R/prevalence.R: 96.74%
 #> R/indicators-iron-deficiency-anaemia.R: 97.53%
 #> R/classifications.R: 100.00%
+#> R/concepts.R: 100.00%
 ```

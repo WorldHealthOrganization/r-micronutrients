@@ -1,18 +1,21 @@
-#' Compute Long-Format Prevalence Estimates for Micronutrient Indicators
+#' Long Format Prevalence
 #'
-#' This function computes detailed prevalence estimates from individual-level classification data
-#' and aggregates them into long-format outputs. These outputs include prevalence rates, means,
-#' percentiles, and confidence intervals for key nutritional and health indicators, grouped by
-#' demographic and other stratifying variables.
+#' Long format prevalence is using a wide range of cutoffs;
+#' includes prevalence estimates with corresponding standard errors and
+#' confidence intervals, and summary statistics (mean and standard deviation).
 #'
-#' @inheritParams classify_data
-#' @param wealth_quintile (Optional) A vector indicating the wealth quintile of individuals.
+#' @inheritParams individual_classification
+#' @param strata (Optional) A numeric vector. Each individual / household should be assigned to a strata and cluster; these design-related variables are considered by the analyses to boost the stability of estimated variance. If not provided, it will be assumed that all individuals belong to the same unique strata/cluster.
+#' @param cluster (Optional) A numeric vector. Each individual / household should be assigned to a strata and cluster; these design-related variables are considered by the analyses to boost the stability of estimated variance. If not provided, it will be assumed that all individuals belong to the same unique strata/cluster. All individuals with missing cluster data will be excluded from the analysis sample.
+#' Notes: The calculation of prevalence estimates requires cluster labels to be nested within each stratum; i.e. cluster labels are unique for each stratum (usually sequentially). In instances of non-nested clusters, the tool will require the user to confirm that this was done on purpose and prevalence estimates will be calculated regardless
+#' @param sample_weight (Optional) A numeric vector of the sampling weight. A sampling weight must be assigned to everyone in the sample to compensate for unequal probabilities of case selection in a sample, usually owing to the design. All individuals not assigned a sampling weight should be excluded from analyses for generating micronutrient estimates but remain in the data set for reporting purposes. If sampling weights are not provided, the sample will be assumed to be self-weighted, i.e. the sampling weight equals one (unweighted analyses will be carried out).
+#' @param wealth_quintile (Optional) A vector indicating the wealth quintile of individuals. Accepted values: 1, 2, 3, 4, 5; or Q1, Q2, Q3, Q4, Q5; whereby 1=poorest and 5=richest, in ascending order.
 #' @param mothers_education (Optional) A vector indicating the education level of mothers, encoded numerically or categorically.
-#' @param area (Optional) A vector indicating the area of residence, e.g., "urban" or "rural".
+#' @param area (Optional) A vector indicating the area of residence, Accepted values: "urban" or "rural".
 #' @param region (Optional) A vector specifying the region or administrative division.
 #' @param other_region (Optional) A vector for alternative region groupings.
 #' @param other_grouping_variable (Optional) A vector for any additional grouping variable.
-#' @param team (Optional) A vector specifying the team conducting the survey.
+#' @param team (Optional) A numeric vector specifying the team conducting the survey. Whenever provided, this variable is used for performing data quality assessment stratified to help interpretation.
 #'
 #' @return A long-format data frame with prevalence estimates and supporting statistics.
 #'
@@ -43,6 +46,9 @@ compute_long_format_prevalence <- function(
     pregnancyweeks = NULL,
     pregnancymonths = NULL,
     malaria = NULL,
+    cluster = NULL,
+    strata = NULL,
+    sample_weight = NULL,
     wealth_quintile = NULL,
     mothers_education = NULL,
     area = NULL,
@@ -74,24 +80,22 @@ compute_long_format_prevalence <- function(
     region = region,
     other_region = other_region,
     other_grouping_variable = other_grouping_variable,
-    team = team
+    team = team,
+    cluster = cluster,
+    strata = strata,
+    sample_weight = sample_weight
   )
 }
 
-#' Compute Short-Format Prevalence Estimates for Micronutrient Indicators
+#' Compute Short Format Prevalence
 #'
-#' This function computes summary prevalence estimates from individual-level classification data
-#' and aggregates them into a concise, short-format data frame. The output includes metrics
-#' such as prevalence rates, means, percentiles, and confidence intervals for key nutritional and health indicators.
+#' Short format prevalence file according to the WHO recommended cutoffs
+#' standard analysis; includes prevalence estimates with corresponding
+#' standard errors and confidence intervals, and summary statistics
+#' (mean and standard deviation).
 #'
-#' @inheritParams classify_data
-#' @param wealth_quintile (Optional) A vector indicating the wealth quintile of individuals.
-#' @param mothers_education (Optional) A vector indicating the education level of mothers, encoded numerically or categorically.
-#' @param area (Optional) A vector indicating the area of residence, e.g., "urban" or "rural".
-#' @param region (Optional) A vector specifying the region or administrative division.
-#' @param other_region (Optional) A vector for alternative region groupings.
-#' @param other_grouping_variable (Optional) A vector for any additional grouping variable.
-#' @param team (Optional) A vector specifying the team conducting the survey.
+#' @inheritParams individual_classification
+#' @inheritParams compute_long_format_prevalence
 #'
 #' @return A short-format data frame with summary statistics for key indicators.
 #'
@@ -116,6 +120,9 @@ compute_short_format_prevalence <- function(
     pregnancyweeks = NULL,
     pregnancymonths = NULL,
     malaria = NULL,
+    cluster = NULL,
+    strata = NULL,
+    sample_weight = NULL,
     wealth_quintile = NULL,
     mothers_education = NULL,
     area = NULL,
@@ -147,7 +154,10 @@ compute_short_format_prevalence <- function(
     region = region,
     other_region = other_region,
     other_grouping_variable = other_grouping_variable,
-    team = team
+    team = team,
+    cluster = cluster,
+    strata = strata,
+    sample_weight = sample_weight
   )
 }
 
@@ -169,6 +179,9 @@ compute_prevalence <- function(
     pregnancyweeks = NULL,
     pregnancymonths = NULL,
     malaria = NULL,
+    cluster = NULL,
+    strata = NULL,
+    sample_weight = NULL,
     wealth_quintile = NULL,
     mothers_education = NULL,
     area = NULL,
@@ -209,7 +222,10 @@ compute_prevalence <- function(
     region = region,
     other_region = other_region,
     other_grouping_variable = other_grouping_variable,
-    team = team
+    team = team,
+    cluster = cluster,
+    strata = strata,
+    sample_weight = sample_weight
   )
   input_concepts <- do.call(cbind, concept_list)
   stopifnot(nrow(input_concepts) == nrow(classified_data))

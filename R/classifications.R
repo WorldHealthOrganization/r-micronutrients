@@ -1,38 +1,30 @@
-#' Classify Survey Data Based on Micronutrient Indicators
+#' Individual Classification
 #'
-#' This function classifies survey data by calculating micronutrient status based on provided measurements
-#' such as ferritin, haemoglobin, and inflammation markers (CRP and AGP). It uses predefined global indicators
-#' to determine classification results for various micronutrient deficiencies and adequacy, while accounting for
-#' additional contextual factors such as pregnancy, smoking, altitude, and malaria status.
+#' Provides individual classifications of micronutrient status according to
+#' WHO recommended cutoffs to define micronutrient status of populations.
 #'
-#' @param indicators a list of indicators that should be computed.
-#' @param sex A vector indicating the sex of individuals. Valid values are "m", "1", "Male" for males and "f", "2", "Female" for females.
+#' @param indicators a list of indicators that should be computed. Note, please do not add the same indicator twice.
+#' @param sex A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
+#' .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.
 #' @param age A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.
-#' @param pregnancy_status (Optional) A vector indicating pregnancy status. Encoded as either 1 (yes), 2 (no), or 3 (unknown).
-#' @param lactating_status (Optional) A vector indicating lactation status. Encoded as either 1 (yes), 2 (no), or 3 (unknown).
+#' @param pregnancy_status (Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
+#'                         When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant"
+#' @param lactating_status (Optional) A vector indicating lactation status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2").
+#' @param pregnancyweeks (Optional) A numeric vector indicating the number of weeks of pregnancy.
+#' @param pregnancymonths (Optional) A numeric vector indicating the number of months of pregnancy.
 #' @param CRP (Optional) A vector of C-reactive protein (CRP) measurements (in mg/L), used to adjust for inflammation.
 #' @param AGP (Optional) A vector of alpha-1-acid glycoprotein (AGP) measurements (in g/L), used to adjust for inflammation.
 #' @param ferritin (Optional) A vector of ferritin measurements (in \\u00b5gg/L).
 #' @param iodine (Optional) A vector of iodine measurements (in \\u00b5gg/L).
 #' @param haemoglobin (Optional) A vector of haemoglobin measurements (in g/L).
-#' @param altitude (Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects.
-#' @param is_smoker (Optional) A vector indicating smoking status. Valid values are 1 (yes), 2 (no), or equivalent labels like "yes", "no".
+#' @param altitude (Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects. Elevation is a compulsory variable and it should always be reported in the dataset. Even when no elevation data is collected, a variable for 'elevation' should be created and set as "0" for all individuals without reported elevation. When elevation is not reported, that individual case will be excluded from the analysis and considered as 'missing'
+#' @param is_smoker (Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). When ‘smoking status’ is mapped and no value is reported, the tool will consider this value as "no smoking".
 #' @param smokes_cigarettes_per_day (Optional) A numeric vector representing the number of cigarettes smoked per day.
-#' @param pregnancyweeks (Optional) A numeric vector indicating the number of weeks of pregnancy.
-#' @param pregnancymonths (Optional) A numeric vector indicating the number of months of pregnancy.
-#' @param malaria (Optional) A vector indicating malaria status. Encoded as 1 (yes), 2 (no), or equivalent labels like "yes", "no".
+#' @param malaria (Optional) A vector indicating malaria status. Accepted values: for Yes (“Y”, “y”, or “1”) and No (“N”, “n”, or “2”).
 #'
-#' @return A data frame with classification results for each individual. The output includes:
-#' - `*_result`: The classification result for each indicator (e.g., "Adequate iron stores", "Iron deficiency").
-#' - `*_input_value`: The input values corresponding to each classification (e.g., ferritin levels, haemoglobin levels).
-#'
-#' @details
-#' The indicators used include:
-#' - Iodine deficiency (short: iodine)
-#' - Anaemia (short: anemia)
-#' - Iron-deficiency anaemia (IDA) with no adjustment (short: ida)
-#' - Ferritin with inflammation adjustment (short: ferritin_adj)
-#' - Ferritin without adjustment (short: ferritin_unadj)
+#' @return A data frame with classification results for each individual.
+#' For each indicator the result of the indicator and its adjusted input value is included.
+#' Also each input for the computation is also listed.
 #'
 #' @examples
 #' \dontrun{
@@ -40,7 +32,7 @@
 #'
 #' # Classify the dataset
 #' classify_data(
-#'.  indicators = list(iodine_indicator, ferritin_indicator(no_adjustment)),
+#'   indicators = list(iodine_indicator, ferritin_indicator(no_adjustment)),
 #'   age = data$age_years,
 #'   sex = data$sex,
 #'   pregnancy_status = data$pregnancy_status,
@@ -55,11 +47,13 @@
 #' print(res)
 #' }
 #' @export
-classify_data <- function(
+individual_classification <- function(
     indicators,
     sex,
     age,
     pregnancy_status = NULL,
+    pregnancyweeks = NULL,
+    pregnancymonths = NULL,
     lactating_status = NULL,
     CRP = NULL,
     AGP = NULL,
@@ -69,8 +63,6 @@ classify_data <- function(
     altitude = NULL,
     is_smoker = NULL,
     smokes_cigarettes_per_day = NULL,
-    pregnancyweeks = NULL,
-    pregnancymonths = NULL,
     malaria = NULL) {
   classify_data_internal(
     indicators,

@@ -193,7 +193,10 @@ required_concepts.indicator_adjustment <- function(x) {
   x$required_concepts
 }
 
-#' No adjustment
+#' Indicator adjustment methods
+#'
+#' This can be used to signal no adjustment for an indicator.
+#' @rdname adjustments
 #' @export
 no_adjustment <- adjustment(
   required_concepts = character(),
@@ -242,7 +245,12 @@ indicator_compute <- function(x, value, concepts) {
 
   required_concepts_missing <- !all(requirements %in% names(concepts))
   if (required_concepts_missing) {
-    return(NULL)
+    missing_concepts <- setdiff(requirements, names(concepts))
+    stop(
+      "Indicator: '",
+      format(x),
+      "' needs the following inputs: ", paste(missing_concepts, collapse = ", ")
+    )
   }
 
   adjusted_value <- indicator_adjust_value(x, value, concepts)
@@ -257,6 +265,12 @@ indicator_compute <- function(x, value, concepts) {
   }, envir = execution_envir)
   cannot_compute <- !eval(rlang::get_expr(x$precondition), execution_envir)
   if (cannot_compute) {
+    stop(
+      "Indicator: '",
+      format(x),
+      "' cannot be computed because a precondition is not met.",
+      "Precondition: ", x$precondition
+    )
     return(NULL)
   }
   conditions <- unlist(
@@ -311,9 +325,11 @@ indicators_compute_all <- function(indicators, values, concepts) {
     indicator <- indicators[[i]]
 
     res <- if (is.null(values[[i]])) {
-      tibble::tibble(
-        result = NA_real_,
-        input_value = NA_real_
+      stop(
+        "Indicator: '", format(indicator),
+        "'. Please provide a value for '",
+        indicator$value_concept,
+        "'"
       )
     } else {
       result <- indicator_compute(indicator, values[[i]], concepts)

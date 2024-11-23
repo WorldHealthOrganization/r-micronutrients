@@ -28,9 +28,8 @@ iodine_implausible_values <- function(value, ...) {
   value
 }
 
-#' Iodine indicator
-#'
 #' @include indicators.R
+#' @rdname indicators
 #' @export
 iodine_indicator <- indicator(
   name = "Urinary Iodine Concentration in \u00B5g/L",

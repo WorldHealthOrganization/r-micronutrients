@@ -1,6 +1,6 @@
 test_that("row level classification works", {
   testdata <- random_datset(100)
-  res <- classify_data(
+  res <- individual_classification(
     indicators = list(
       iodine_indicator,
       ferritin_indicator(ferritin_adjustment_cutoff),
@@ -34,4 +34,36 @@ test_that("row level classification works", {
     "input_altitude", "input_smokes_cigarettes_per_day", "input_pregnancyweeks",
     "input_pregnancymonths"
   ) %in% colnames(res)))
+})
+
+test_that("user is warned about missing concepts", {
+  expect_error(
+    individual_classification(
+      indicators = list(
+        iodine_indicator,
+        ferritin_indicator(ferritin_adjustment_cutoff),
+        ferritin_indicator(no_adjustment),
+        anaemia_indicator,
+        ida_indicator(no_adjustment)
+      ),
+      sex = "1",
+      age = 1
+    )
+  )
+})
+
+test_that("user is warned about malformed input", {
+  expect_error(
+    individual_classification(
+      indicators = list(
+        iodine_indicator,
+        ferritin_indicator(ferritin_adjustment_cutoff),
+        ferritin_indicator(no_adjustment),
+        anaemia_indicator,
+        ida_indicator(no_adjustment)
+      ),
+      sex = "hello",
+      age = 1
+    ), regexp = "sex"
+  )
 })
