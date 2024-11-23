@@ -64,6 +64,40 @@ test_that("user is warned about malformed input", {
       ),
       sex = "hello",
       age = 1
-    ), regexp = "sex"
+    ),
+    regexp = "sex"
   )
+})
+
+test_that("all adjustment methods do not create errors", {
+  adjustments <- list(
+    ferritin_adjustment_cutoff,
+    ferritin_implausible_adjustment(),
+    ferritin_adjustment_rm_agp_crp,
+    ferritin_adjustment_arithmetic_correction,
+    ferritin_adjustment_regression_correction
+  )
+  testdata <- random_datset(100)
+  for (x in adjustments) {
+    res <- individual_classification(
+      indicators = list(
+        ferritin_indicator(x)
+      ),
+      age = testdata$age_years,
+      sex = testdata$sex,
+      pregnancy_status = testdata$pregnancy_status,
+      lactating_status = testdata$lactating_status,
+      ferritin = testdata$ferritin_measurement,
+      iodine = testdata$iodine,
+      CRP = testdata$crp_measurement,
+      AGP = testdata$agp_measurement,
+      haemoglobin = testdata$haemoglobin_measurement,
+      is_smoker = testdata$is_smoker,
+      altitude = testdata$altitude,
+      smokes_cigarettes_per_day = testdata$smokes_cigarettes_per_day,
+      pregnancyweeks = testdata$pregnancyweeks,
+      pregnancymonths = testdata$pregnancymonths
+    )
+    expect_true(is.data.frame(res), label = format(x))
+  }
 })

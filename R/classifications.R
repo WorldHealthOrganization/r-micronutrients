@@ -3,7 +3,7 @@
 #' Provides individual classifications of micronutrient status according to
 #' WHO recommended cutoffs to define micronutrient status of populations.
 #'
-#' @param indicators a list of indicators that should be computed. Note, please do not add the same indicator twice.
+#' @param indicators a list of indicators that should be computed. Note, please do not add the same indicator twice. Also you can only use one adjustment at a time at the moment.
 #' @param sex A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
 #' .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.
 #' @param age A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.
