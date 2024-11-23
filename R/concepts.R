@@ -338,12 +338,20 @@ concepts <- concepts_list(
 # takes a variadic pairlist and make it a named list with non-null values
 concepts_from_args <- function(...) {
   vals <- Filter(not_null, list(...))
-  max_len <- max(lengths(vals))
   keys <- names(vals)
+  # at last we check that all values have the same length
+  if (length(vals) > 0) {
+    ll <- lengths(vals)
+    len <- ll[[1]]
+    all_equal_length <- all(vapply(ll, "==", logical(1L), len))
+    if (!all_equal_length) {
+      stop("All values need to be of equal length")
+    }
+  }
   vals <- lapply(seq_along(vals), function(i) {
     key <- keys[[i]]
     concept <- concepts[[key]]
-    vals <- rep_len(vals[[i]], length.out = max_len)
+    vals <- vals[[i]]
     if (!concept$acceptor$fun(vals)) {
       stop("Invalid value for ", key, ": ", concept$acceptor$error_msg)
     }

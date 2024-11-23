@@ -29,7 +29,7 @@ pak::pak("WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser")
 
 There are three functions exported at the moment:
 
-- `classify_data` to compute row level indicators
+- `individual_classification` to compute row level indicators
 - `compute_long_format_prevalence` to compute detailed prevalence
   estimates and other summary statistics
 - `compute_short_format_prevalence` to compute less-detailed prevalence
@@ -99,7 +99,7 @@ result <- compute_short_format_prevalence(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 81.47%
+#> micronutrients Coverage: 81.35%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -116,8 +116,8 @@ covr::package_coverage()
 #> R/concept-pregnancy-status.R: 81.25%
 #> R/age-groups.R: 83.67%
 #> R/indicators.R: 85.31%
-#> R/prevalence.R: 96.74%
+#> R/concepts.R: 96.00%
+#> R/prevalence.R: 96.48%
 #> R/indicators-iron-deficiency-anaemia.R: 97.53%
 #> R/classifications.R: 100.00%
-#> R/concepts.R: 100.00%
 ```

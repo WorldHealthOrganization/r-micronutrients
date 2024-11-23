@@ -101,3 +101,15 @@ test_that("all adjustment methods do not create errors", {
     expect_true(is.data.frame(res), label = format(x))
   }
 })
+
+test_that("all inputs need to be of equal length", {
+  expect_error(
+    individual_classification(
+      indicators = list(
+        ferritin_indicator(x)
+      ),
+      age = c(1,2),
+      sex = c(1,2,1)
+    )
+  )
+})

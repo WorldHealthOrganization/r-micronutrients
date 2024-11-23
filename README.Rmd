@@ -36,7 +36,7 @@ pak::pak("WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser")
 
 There are three functions exported at the moment:
 
-* `classify_data` to compute row level indicators
+* `individual_classification` to compute row level indicators
 * `compute_long_format_prevalence` to compute detailed prevalence estimates and other summary statistics
 * `compute_short_format_prevalence` to compute less-detailed prevalence estimates and other summary statistics
 

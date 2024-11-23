@@ -1,3 +1,5 @@
+set.seed(1)
+
 #' Generates a random dataset of testing. Only useful for testing the mechanics.
 random_datset <- function(n) {
   data.frame(
