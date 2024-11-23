@@ -46,7 +46,7 @@ To compute row-level classifiction you can do the following:
 
 ```{r, eval=FALSE}
 dataset <- read.csv("some_data_set")
-result <- classify_data(
+result <- individual_classification(
   indicators = list(
     iodine_indicator,
     ferritin_indicator(ferritin_adjustment_cutoff),

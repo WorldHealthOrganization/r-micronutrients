@@ -2,7 +2,7 @@
 % Please edit documentation in R/prevalence.R
 \name{compute_short_format_prevalence}
 \alias{compute_short_format_prevalence}
-\title{Compute Short-Format Prevalence Estimates for Micronutrient Indicators}
+\title{Compute Short Format Prevalence}
 \usage{
 compute_short_format_prevalence(
   indicators,
@@ -21,6 +21,9 @@ compute_short_format_prevalence(
   pregnancyweeks = NULL,
   pregnancymonths = NULL,
   malaria = NULL,
+  cluster = NULL,
+  strata = NULL,
+  sample_weight = NULL,
   wealth_quintile = NULL,
   mothers_education = NULL,
   area = NULL,
@@ -31,15 +34,17 @@ compute_short_format_prevalence(
 )
 }
 \arguments{
-\item{indicators}{a list of indicators that should be computed.}
+\item{indicators}{a list of indicators that should be computed. Note, please do not add the same indicator twice.}
 
-\item{sex}{A vector indicating the sex of individuals. Valid values are "m", "1", "Male" for males and "f", "2", "Female" for females.}
+\item{sex}{A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
+.           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.}
 
 \item{age}{A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.}
 
-\item{pregnancy_status}{(Optional) A vector indicating pregnancy status. Encoded as either 1 (yes), 2 (no), or 3 (unknown).}
+\item{pregnancy_status}{(Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
+When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant"}
 
-\item{lactating_status}{(Optional) A vector indicating lactation status. Encoded as either 1 (yes), 2 (no), or 3 (unknown).}
+\item{lactating_status}{(Optional) A vector indicating lactation status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2").}
 
 \item{CRP}{(Optional) A vector of C-reactive protein (CRP) measurements (in mg/L), used to adjust for inflammation.}
 
@@ -51,9 +56,9 @@ compute_short_format_prevalence(
 
 \item{haemoglobin}{(Optional) A vector of haemoglobin measurements (in g/L).}
 
-\item{altitude}{(Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects.}
+\item{altitude}{(Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects. Elevation is a compulsory variable and it should always be reported in the dataset. Even when no elevation data is collected, a variable for 'elevation' should be created and set as "0" for all individuals without reported elevation. When elevation is not reported, that individual case will be excluded from the analysis and considered as 'missing'}
 
-\item{is_smoker}{(Optional) A vector indicating smoking status. Valid values are 1 (yes), 2 (no), or equivalent labels like "yes", "no".}
+\item{is_smoker}{(Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). When ‘smoking status’ is mapped and no value is reported, the tool will consider this value as "no smoking".}
 
 \item{smokes_cigarettes_per_day}{(Optional) A numeric vector representing the number of cigarettes smoked per day.}
 
@@ -61,13 +66,20 @@ compute_short_format_prevalence(
 
 \item{pregnancymonths}{(Optional) A numeric vector indicating the number of months of pregnancy.}
 
-\item{malaria}{(Optional) A vector indicating malaria status. Encoded as 1 (yes), 2 (no), or equivalent labels like "yes", "no".}
+\item{malaria}{(Optional) A vector indicating malaria status. Accepted values: for Yes (“Y”, “y”, or “1”) and No (“N”, “n”, or “2”).}
 
-\item{wealth_quintile}{(Optional) A vector indicating the wealth quintile of individuals.}
+\item{cluster}{(Optional) A numeric vector. Each individual / household should be assigned to a strata and cluster; these design-related variables are considered by the analyses to boost the stability of estimated variance. If not provided, it will be assumed that all individuals belong to the same unique strata/cluster. All individuals with missing cluster data will be excluded from the analysis sample.
+Notes: The calculation of prevalence estimates requires cluster labels to be nested within each stratum; i.e. cluster labels are unique for each stratum (usually sequentially). In instances of non-nested clusters, the tool will require the user to confirm that this was done on purpose and prevalence estimates will be calculated regardless}
+
+\item{strata}{(Optional) A numeric vector. Each individual / household should be assigned to a strata and cluster; these design-related variables are considered by the analyses to boost the stability of estimated variance. If not provided, it will be assumed that all individuals belong to the same unique strata/cluster.}
+
+\item{sample_weight}{(Optional) A numeric vector of the sampling weight. A sampling weight must be assigned to everyone in the sample to compensate for unequal probabilities of case selection in a sample, usually owing to the design. All individuals not assigned a sampling weight should be excluded from analyses for generating micronutrient estimates but remain in the data set for reporting purposes. If sampling weights are not provided, the sample will be assumed to be self-weighted, i.e. the sampling weight equals one (unweighted analyses will be carried out).}
+
+\item{wealth_quintile}{(Optional) A vector indicating the wealth quintile of individuals. Accepted values: 1, 2, 3, 4, 5; or Q1, Q2, Q3, Q4, Q5; whereby 1=poorest and 5=richest, in ascending order.}
 
 \item{mothers_education}{(Optional) A vector indicating the education level of mothers, encoded numerically or categorically.}
 
-\item{area}{(Optional) A vector indicating the area of residence, e.g., "urban" or "rural".}
+\item{area}{(Optional) A vector indicating the area of residence, Accepted values: "urban" or "rural".}
 
 \item{region}{(Optional) A vector specifying the region or administrative division.}
 
@@ -75,15 +87,16 @@ compute_short_format_prevalence(
 
 \item{other_grouping_variable}{(Optional) A vector for any additional grouping variable.}
 
-\item{team}{(Optional) A vector specifying the team conducting the survey.}
+\item{team}{(Optional) A numeric vector specifying the team conducting the survey. Whenever provided, this variable is used for performing data quality assessment stratified to help interpretation.}
 }
 \value{
 A short-format data frame with summary statistics for key indicators.
 }
 \description{
-This function computes summary prevalence estimates from individual-level classification data
-and aggregates them into a concise, short-format data frame. The output includes metrics
-such as prevalence rates, means, percentiles, and confidence intervals for key nutritional and health indicators.
+Short format prevalence file according to the WHO recommended cutoffs
+standard analysis; includes prevalence estimates with corresponding
+standard errors and confidence intervals, and summary statistics
+(mean and standard deviation).
 }
 \details{
 The function provides a streamlined output compared to long-format prevalence functions, focusing on key summary metrics.
