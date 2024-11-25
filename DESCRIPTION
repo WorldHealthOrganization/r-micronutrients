@@ -23,6 +23,9 @@ Imports:
     tibble,
     vctrs
 Collate: 
+    'indicators.R'
+    'indicators-ferritin.R'
+    'adjustments-export.R'
     'age-groups.R'
     'classifications.R'
     'concept-area.R'
@@ -34,13 +37,12 @@ Collate:
     'concept-pregnancy-status.R'
     'concept-sex.R'
     'concept-wealth-quintile.R'
-    'indicators.R'
-    'indicators-ferritin.R'
     'indicators-anaemia.R'
     'indicators-iodine.R'
     'measurements.R'
     'concepts.R'
     'indicators-iron-deficiency-anaemia.R'
+    'indicators-export.R'
     'package-micronutrients.R'
     'prevalence.R'
     'utils.R'

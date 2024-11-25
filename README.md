@@ -30,27 +30,46 @@ pak::pak("WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser")
 
 ## API
 
-There are three functions exported at the moment:
+The following functions compute results:
 
 - `individual_classification` to compute row level indicators
-- `compute_long_format_prevalence` to compute detailed prevalence
+- `prevalence_long_format` to compute detailed prevalence estimates and
+  other summary statistics
+- `prevalence_short_format` to compute less-detailed prevalence
   estimates and other summary statistics
-- `compute_short_format_prevalence` to compute less-detailed prevalence
-  estimates and other summary statistics
+
+Indicators:
+
+- `indicator_anaemia()`
+- `indicator_ferritin(adjustment)`
+- `indicator_ida(adjustment)`
+- `indicator_iodine()`
+
+Adjustments:
+
+- `adjustment_none()`
+- `adjustment_ferritin_arithmetic_correction()`
+- `adjustment_ferritin_cutoff()`
+- `adjustment_ferritin_implausible()`
+- `adjustment_ferritin_regression_correction()`
+- `adjustment_ferritin_rm_agp_crp()`
+
+Depending on the indicators and adjustment methods you use you have to
+input specific values, like `CRP` or `AGP`.
 
 ## Example
 
-To compute row-level classifiction you can do the following:
+To compute row-level classification you can do the following:
 
 ``` r
 dataset <- read.csv("some_data_set")
 result <- individual_classification(
   indicators = list(
-    iodine_indicator,
-    ferritin_indicator(ferritin_adjustment_cutoff),
-    ferritin_indicator(no_adjustment),
-    anaemia_indicator,
-    ida_indicator(no_adjustment)
+    indicator_iodine(),
+    indicator_ferritin(adjustment_none()),
+    indicator_ferritin(adjustment_ferritin_implausible()),
+    indicator_anaemia(),
+    indicator_ida()
   ),
   age = dataset$age_years,
   sex = dataset$sex,
@@ -73,13 +92,13 @@ Prevalence functions accept the same arguments and compute a summary
 table.
 
 ``` r
-result <- compute_short_format_prevalence(
+result <- prevalence_short_format(
   indicators = list(
-    iodine_indicator,
-    ferritin_indicator(ferritin_adjustment_cutoff),
-    ferritin_indicator(no_adjustment),
-    anaemia_indicator,
-    ida_indicator(no_adjustment)
+    indicator_iodine(),
+    indicator_ferritin(adjustment_none()),
+    indicator_ferritin(adjustment_ferritin_implausible()),
+    indicator_anaemia(),
+    indicator_ida()
   ),
   age = testdata$age_years,
   sex = testdata$sex,
@@ -102,7 +121,7 @@ result <- compute_short_format_prevalence(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 80.76%
+#> micronutrients Coverage: 80.96%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -120,7 +139,9 @@ covr::package_coverage()
 #> R/age-groups.R: 83.67%
 #> R/indicators.R: 85.31%
 #> R/prevalence.R: 95.18%
-#> R/concepts.R: 96.00%
 #> R/indicators-iron-deficiency-anaemia.R: 97.53%
+#> R/adjustments-export.R: 100.00%
 #> R/classifications.R: 100.00%
+#> R/concepts.R: 100.00%
+#> R/indicators-export.R: 100.00%
 ```

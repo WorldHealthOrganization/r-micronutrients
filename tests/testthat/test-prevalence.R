@@ -1,12 +1,12 @@
 test_that("long prevalence", {
   testdata <- random_datset(100)
-  res <- compute_long_format_prevalence(
+  res <- prevalence_long_format(
     indicators = list(
-      iodine_indicator,
-      ferritin_indicator(ferritin_adjustment_cutoff),
-      ferritin_indicator(no_adjustment),
-      anaemia_indicator,
-      ida_indicator(no_adjustment)
+      indicator_iodine(),
+      indicator_ferritin(),
+      indicator_ferritin(adjustment_ferritin_implausible()),
+      indicator_anaemia(),
+      indicator_ida()
     ),
     age = testdata$age_years,
     sex = testdata$sex,
@@ -28,13 +28,13 @@ test_that("long prevalence", {
 
 test_that("short prevalence", {
   testdata <- random_datset(100)
-  res <- compute_short_format_prevalence(
+  res <- prevalence_short_format(
     indicators = list(
-      iodine_indicator,
-      ferritin_indicator(ferritin_adjustment_cutoff),
-      ferritin_indicator(no_adjustment),
-      anaemia_indicator,
-      ida_indicator(no_adjustment)
+      indicator_iodine(),
+      indicator_ferritin(),
+      indicator_ferritin(adjustment_ferritin_implausible()),
+      indicator_anaemia(),
+      indicator_ida()
     ),
     age = testdata$age_years,
     sex = testdata$sex,

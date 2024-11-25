@@ -8,10 +8,7 @@ utils::globalVariables(c(
   "%between%", "pregnancy_status", "sex"
 ))
 
-#' @param value_adjustment the adjustment method.
 #' @include indicators.R
-#' @rdname indicators
-#' @export
 ferritin_indicator <- function(value_adjustment = no_adjustment) {
   stopifnot(is_adjustment(value_adjustment))
   short_name <- "ferritin"
@@ -199,8 +196,6 @@ ferritin_adjustment_rm_agp_crp_fun <- function(value, CRP, AGP, malaria = NULL) 
   value
 }
 
-#' @rdname adjustments
-#' @export
 ferritin_implausible_adjustment <- function() {
   adjustment(
     required_concepts = NULL,
@@ -208,8 +203,6 @@ ferritin_implausible_adjustment <- function() {
   )
 }
 
-#' @rdname adjustments
-#' @export
 ferritin_adjustment_rm_agp_crp <- adjustment(
   required_concepts = c(
     "CRP", "AGP"
@@ -234,8 +227,6 @@ ferritin_adjustment_cutoff_fun <- function(value, CRP, AGP, malaria = NULL) {
   value
 }
 
-#' @rdname adjustments
-#' @export
 ferritin_adjustment_cutoff <- adjustment(
   required_concepts = character(),
   fun = ferritin_adjustment_cutoff_fun,
@@ -308,20 +299,14 @@ ferritin_adjustment_arithmetic_correction_fun <- function(value, CRP, AGP) {
   data$iFerr2F4
 }
 
-#' @rdname adjustments
-#' @export
 ferritin_adjustment_arithmetic_correction <- adjustment(
   required_concepts = c("CRP", "AGP"),
   fun = ferritin_adjustment_arithmetic_correction_fun,
   sub_class = "ferritin_adjustment_arithmetic_correction"
 )
 
-
-
 utils::globalVariables(c("value", "CRP", "AGP", "WRA"))
 
-#' @rdname adjustments
-#' @export
 ferritin_adjustment_regression_correction <- adjustment(
   required_concepts = c("CRP", "AGP"),
   fun = function(value, CRP, AGP) {

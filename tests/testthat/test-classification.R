@@ -2,11 +2,11 @@ test_that("row level classification works", {
   testdata <- random_datset(100)
   res <- individual_classification(
     indicators = list(
-      iodine_indicator,
-      ferritin_indicator(ferritin_adjustment_cutoff),
-      ferritin_indicator(no_adjustment),
-      anaemia_indicator,
-      ida_indicator(no_adjustment)
+      indicator_iodine(),
+      indicator_ferritin(adjustment_none()),
+      indicator_ferritin(adjustment_ferritin_implausible()),
+      indicator_anaemia(),
+      indicator_ida()
     ),
     age = testdata$age_years,
     sex = testdata$sex,
@@ -40,11 +40,11 @@ test_that("user is warned about missing concepts", {
   expect_error(
     individual_classification(
       indicators = list(
-        iodine_indicator,
-        ferritin_indicator(ferritin_adjustment_cutoff),
-        ferritin_indicator(no_adjustment),
-        anaemia_indicator,
-        ida_indicator(no_adjustment)
+        indicator_iodine(),
+        indicator_ferritin(),
+        indicator_ferritin(adjustment_ferritin_implausible()),
+        indicator_anaemia(),
+        indicator_ida()
       ),
       sex = "1",
       age = 1
@@ -56,11 +56,11 @@ test_that("user is warned about malformed input", {
   expect_error(
     individual_classification(
       indicators = list(
-        iodine_indicator,
-        ferritin_indicator(ferritin_adjustment_cutoff),
-        ferritin_indicator(no_adjustment),
-        anaemia_indicator,
-        ida_indicator(no_adjustment)
+        indicator_iodine(),
+        indicator_ferritin(),
+        indicator_ferritin(adjustment_ferritin_implausible()),
+        indicator_anaemia(),
+        indicator_ida()
       ),
       sex = "hello",
       age = 1
@@ -71,17 +71,17 @@ test_that("user is warned about malformed input", {
 
 test_that("all adjustment methods do not create errors", {
   adjustments <- list(
-    ferritin_adjustment_cutoff,
-    ferritin_implausible_adjustment(),
-    ferritin_adjustment_rm_agp_crp,
-    ferritin_adjustment_arithmetic_correction,
-    ferritin_adjustment_regression_correction
+    adjustment_ferritin_cutoff(),
+    adjustment_ferritin_implausible(),
+    adjustment_ferritin_rm_agp_crp(),
+    adjustment_ferritin_arithmetic_correction(),
+    adjustment_ferritin_regression_correction()
   )
   testdata <- random_datset(100)
   for (x in adjustments) {
     res <- individual_classification(
       indicators = list(
-        ferritin_indicator(x)
+        indicator_ferritin(x)
       ),
       age = testdata$age_years,
       sex = testdata$sex,
@@ -106,7 +106,7 @@ test_that("all inputs need to be of equal length", {
   expect_error(
     individual_classification(
       indicators = list(
-        ferritin_indicator(x)
+        indicator_ferritin()
       ),
       age = c(1,2),
       sex = c(1,2,1)
@@ -119,7 +119,7 @@ test_that("you can use lubridate to define the age", {
   age <- lubridate::duration(1:100, "months")
   res <- individual_classification(
     indicators = list(
-      ida_indicator(no_adjustment)
+      indicator_ida(no_adjustment)
     ),
     age = age,
     sex = testdata$sex,
@@ -129,4 +129,6 @@ test_that("you can use lubridate to define the age", {
     CRP = testdata$crp_measurement,
     AGP = testdata$agp_measurement
   )
+  expect_true(is.data.frame(res))
+  expect_true(is.duration(res$input_age))
 })

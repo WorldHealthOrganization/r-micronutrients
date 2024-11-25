@@ -29,7 +29,7 @@
 #' for analyses requiring specific population segments or contexts.
 #'
 #' @export
-compute_long_format_prevalence <- function(
+prevalence_long_format <- function(
     indicators,
     sex,
     age,
@@ -57,7 +57,7 @@ compute_long_format_prevalence <- function(
     other_grouping_variable = NULL,
     team = NULL) {
   compute_prevalence(
-    long_format_prevalence,
+    long_format_prevalence_internal,
     indicators,
     sex = sex,
     age = age,
@@ -95,7 +95,7 @@ compute_long_format_prevalence <- function(
 #' (mean and standard deviation).
 #'
 #' @inheritParams individual_classification
-#' @inheritParams compute_long_format_prevalence
+#' @inheritParams prevalence_long_format
 #'
 #' @return A short-format data frame with summary statistics for key indicators.
 #'
@@ -103,7 +103,7 @@ compute_long_format_prevalence <- function(
 #' The function provides a streamlined output compared to long-format prevalence functions, focusing on key summary metrics.
 #'
 #' @export
-compute_short_format_prevalence <- function(
+prevalence_short_format <- function(
     indicators,
     sex,
     age,
@@ -131,7 +131,7 @@ compute_short_format_prevalence <- function(
     other_grouping_variable = NULL,
     team = NULL) {
   compute_prevalence(
-    short_format_prevalence,
+    short_format_prevalence_internal,
     indicators,
     sex = sex,
     age = age,
@@ -236,7 +236,7 @@ compute_prevalence <- function(
 
 #' @import survey
 #' @import rlang
-long_format_prevalence <- function(survey_data, indicators) {
+long_format_prevalence_internal <- function(survey_data, indicators) {
   indicators <- Filter(prevalence_report_long, indicators)
 
   # first we build a dataset that is used by {survey} for analysis
@@ -299,7 +299,7 @@ long_format_prevalence <- function(survey_data, indicators) {
   )
 }
 
-short_format_prevalence <- function(survey_data, indicators) {
+short_format_prevalence_internal <- function(survey_data, indicators) {
   indicators <- Filter(prevalence_report_short, indicators)
 
   # first we build a dataset that is used by {survey} for analysis

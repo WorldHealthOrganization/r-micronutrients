@@ -44,14 +44,14 @@ concepts <- concepts_list(
     }, "Pregancy status is encoded as either 1 (yes), 2 (no) or 3 (unknown)."),
     standardizer = function(x) {
       x <- as.character(x)
-      res <- rep.int(NA, length(x))
+      res <- rep.int(NA_character_, length(x))
       res[x %in% c("1", "y", "yes")] <- "Pregnant"
       res[x %in% c("2", "n", "no", "unk", "unknown")] <- "Not Pregnant"
       stopifnot(all(res %in% c(pregnancy_status_levels, NA_character_)))
       factor(res, levels = pregnancy_status_levels)
     },
     validator = \(x) is.factor(x) && all(levels(x) == pregnancy_status_levels),
-    prototype = NA
+    prototype = NA_character_
   ),
   ## prenancymonths ----
   concept(
