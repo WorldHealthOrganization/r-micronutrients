@@ -108,8 +108,8 @@ test_that("all inputs need to be of equal length", {
       indicators = list(
         indicator_ferritin()
       ),
-      age = c(1,2),
-      sex = c(1,2,1)
+      age = c(1, 2),
+      sex = c(1, 2, 1)
     )
   )
 })

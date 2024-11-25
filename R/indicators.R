@@ -329,7 +329,8 @@ indicators_compute_all <- function(indicators, values, concepts) {
         "Indicator: '", format(indicator),
         "'. Please provide a value for '",
         indicator$value_concept,
-        "'", call. = FALSE
+        "'",
+        call. = FALSE
       )
     } else {
       result <- indicator_compute(indicator, values[[i]], concepts)
