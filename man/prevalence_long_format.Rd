@@ -77,7 +77,7 @@ Notes: The calculation of prevalence estimates requires cluster labels to be nes
 
 \item{wealth_quintile}{(Optional) A vector indicating the wealth quintile of individuals. Accepted values: 1, 2, 3, 4, 5; or Q1, Q2, Q3, Q4, Q5; whereby 1=poorest and 5=richest, in ascending order.}
 
-\item{mothers_education}{(Optional) A vector indicating the education level of mothers, encoded numerically or categorically.}
+\item{mothers_education}{(Optional) A vector indicating the education level of mothers, encoded numerically as 0 to 3.}
 
 \item{area}{(Optional) A vector indicating the area of residence, Accepted values: "urban" or "rural".}
 

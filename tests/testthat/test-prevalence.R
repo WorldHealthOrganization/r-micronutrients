@@ -21,7 +21,9 @@ test_that("long prevalence", {
     altitude = testdata$altitude,
     smokes_cigarettes_per_day = testdata$smokes_cigarettes_per_day,
     pregnancyweeks = testdata$pregnancyweeks,
-    pregnancymonths = testdata$pregnancymonths
+    pregnancymonths = testdata$pregnancymonths,
+    cluster = 1:nrow(testdata),
+    strata = rep.int(1, nrow(testdata))
   )
   expect_true(is.data.frame(res))
 })
@@ -49,7 +51,9 @@ test_that("short prevalence", {
     altitude = testdata$altitude,
     smokes_cigarettes_per_day = testdata$smokes_cigarettes_per_day,
     pregnancyweeks = testdata$pregnancyweeks,
-    pregnancymonths = testdata$pregnancymonths
+    pregnancymonths = testdata$pregnancymonths,
+    cluster = 1:nrow(testdata),
+    strata = rep.int(1, nrow(testdata))
   )
   expect_true(is.data.frame(res))
 })

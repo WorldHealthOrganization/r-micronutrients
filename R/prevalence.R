@@ -10,7 +10,7 @@
 #' Notes: The calculation of prevalence estimates requires cluster labels to be nested within each stratum; i.e. cluster labels are unique for each stratum (usually sequentially). In instances of non-nested clusters, the tool will require the user to confirm that this was done on purpose and prevalence estimates will be calculated regardless
 #' @param sample_weight (Optional) A numeric vector of the sampling weight. A sampling weight must be assigned to everyone in the sample to compensate for unequal probabilities of case selection in a sample, usually owing to the design. All individuals not assigned a sampling weight should be excluded from analyses for generating micronutrient estimates but remain in the data set for reporting purposes. If sampling weights are not provided, the sample will be assumed to be self-weighted, i.e. the sampling weight equals one (unweighted analyses will be carried out).
 #' @param wealth_quintile (Optional) A vector indicating the wealth quintile of individuals. Accepted values: 1, 2, 3, 4, 5; or Q1, Q2, Q3, Q4, Q5; whereby 1=poorest and 5=richest, in ascending order.
-#' @param mothers_education (Optional) A vector indicating the education level of mothers, encoded numerically or categorically.
+#' @param mothers_education (Optional) A vector indicating the education level of mothers, encoded numerically as 0 to 3.
 #' @param area (Optional) A vector indicating the area of residence, Accepted values: "urban" or "rural".
 #' @param region (Optional) A vector specifying the region or administrative division.
 #' @param other_region (Optional) A vector for alternative region groupings.

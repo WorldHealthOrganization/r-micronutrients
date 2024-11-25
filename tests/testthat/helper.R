@@ -17,6 +17,13 @@ random_datset <- function(n) {
     smokes_cigarettes_per_day = rpois(n, 3),
     altitude = pmax(0, rnorm(n, mean = 500, sd = 1000)),
     malaria = sample(c(1L, 2L, NA_integer_), size = n, replace = TRUE, prob = c(0.1, 0.89, 0.01)),
-    iodine = pmax(0, rnorm(n, mean = 50, sd = 100))
+    iodine = pmax(0, rnorm(n, mean = 50, sd = 100)),
+    wealth_quintile = sample(paste0("Q", 1:5), size = n, replace = TRUE),
+    mothers_education = sample(0:3, size = n, replace = TRUE),
+    area = sample(c("rural", "urban"), size = n, replace = TRUE),
+    region = sample(c("1", "2"), size = n, replace = TRUE),
+    other_region = sample(c("A", "B"), size = n, replace = TRUE),
+    other_grouping_variable = sample(c("C", "D"), size = n, replace = TRUE),
+    team = sample(0:5, size = n, replace = TRUE)
   )
 }
