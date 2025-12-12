@@ -30,32 +30,33 @@
 #'
 #' @export
 prevalence_long_format <- function(
-    indicators,
-    sex,
-    age,
-    pregnancy_status = NULL,
-    lactating_status = NULL,
-    CRP = NULL,
-    AGP = NULL,
-    ferritin = NULL,
-    iodine = NULL,
-    haemoglobin = NULL,
-    altitude = NULL,
-    is_smoker = NULL,
-    smokes_cigarettes_per_day = NULL,
-    pregnancyweeks = NULL,
-    pregnancymonths = NULL,
-    malaria = NULL,
-    cluster = NULL,
-    strata = NULL,
-    sample_weight = NULL,
-    wealth_quintile = NULL,
-    mothers_education = NULL,
-    area = NULL,
-    region = NULL,
-    other_region = NULL,
-    other_grouping_variable = NULL,
-    team = NULL) {
+  indicators,
+  sex,
+  age,
+  pregnancy_status = NULL,
+  lactating_status = NULL,
+  CRP = NULL,
+  AGP = NULL,
+  ferritin = NULL,
+  iodine = NULL,
+  haemoglobin = NULL,
+  altitude = NULL,
+  is_smoker = NULL,
+  smokes_cigarettes_per_day = NULL,
+  pregnancyweeks = NULL,
+  pregnancymonths = NULL,
+  malaria = NULL,
+  cluster = NULL,
+  strata = NULL,
+  sample_weight = NULL,
+  wealth_quintile = NULL,
+  mothers_education = NULL,
+  area = NULL,
+  region = NULL,
+  other_region = NULL,
+  other_grouping_variable = NULL,
+  team = NULL
+) {
   compute_prevalence(
     long_format_prevalence_internal,
     indicators,
@@ -104,32 +105,33 @@ prevalence_long_format <- function(
 #'
 #' @export
 prevalence_short_format <- function(
-    indicators,
-    sex,
-    age,
-    pregnancy_status = NULL,
-    lactating_status = NULL,
-    CRP = NULL,
-    AGP = NULL,
-    ferritin = NULL,
-    iodine = NULL,
-    haemoglobin = NULL,
-    altitude = NULL,
-    is_smoker = NULL,
-    smokes_cigarettes_per_day = NULL,
-    pregnancyweeks = NULL,
-    pregnancymonths = NULL,
-    malaria = NULL,
-    cluster = NULL,
-    strata = NULL,
-    sample_weight = NULL,
-    wealth_quintile = NULL,
-    mothers_education = NULL,
-    area = NULL,
-    region = NULL,
-    other_region = NULL,
-    other_grouping_variable = NULL,
-    team = NULL) {
+  indicators,
+  sex,
+  age,
+  pregnancy_status = NULL,
+  lactating_status = NULL,
+  CRP = NULL,
+  AGP = NULL,
+  ferritin = NULL,
+  iodine = NULL,
+  haemoglobin = NULL,
+  altitude = NULL,
+  is_smoker = NULL,
+  smokes_cigarettes_per_day = NULL,
+  pregnancyweeks = NULL,
+  pregnancymonths = NULL,
+  malaria = NULL,
+  cluster = NULL,
+  strata = NULL,
+  sample_weight = NULL,
+  wealth_quintile = NULL,
+  mothers_education = NULL,
+  area = NULL,
+  region = NULL,
+  other_region = NULL,
+  other_grouping_variable = NULL,
+  team = NULL
+) {
   compute_prevalence(
     short_format_prevalence_internal,
     indicators,
@@ -162,41 +164,51 @@ prevalence_short_format <- function(
 }
 
 compute_prevalence <- function(
-    prev_function,
-    indicators,
-    sex,
-    age,
-    pregnancy_status = NULL,
-    lactating_status = NULL,
-    CRP = NULL,
-    AGP = NULL,
-    ferritin = NULL,
-    iodine = NULL,
-    haemoglobin = NULL,
-    altitude = NULL,
-    is_smoker = NULL,
-    smokes_cigarettes_per_day = NULL,
-    pregnancyweeks = NULL,
-    pregnancymonths = NULL,
-    malaria = NULL,
-    cluster = NULL,
-    strata = NULL,
-    sample_weight = NULL,
-    wealth_quintile = NULL,
-    mothers_education = NULL,
-    area = NULL,
-    region = NULL,
-    other_region = NULL,
-    other_grouping_variable = NULL,
-    team = NULL) {
+  prev_function,
+  indicators,
+  sex,
+  age,
+  pregnancy_status = NULL,
+  lactating_status = NULL,
+  CRP = NULL,
+  AGP = NULL,
+  ferritin = NULL,
+  iodine = NULL,
+  haemoglobin = NULL,
+  altitude = NULL,
+  is_smoker = NULL,
+  smokes_cigarettes_per_day = NULL,
+  pregnancyweeks = NULL,
+  pregnancymonths = NULL,
+  malaria = NULL,
+  cluster = NULL,
+  strata = NULL,
+  sample_weight = NULL,
+  wealth_quintile = NULL,
+  mothers_education = NULL,
+  area = NULL,
+  region = NULL,
+  other_region = NULL,
+  other_grouping_variable = NULL,
+  team = NULL
+) {
   validate_indicators(indicators)
   classified_data <- classify_data_internal(
     indicators = indicators,
-    sex = sex, age = age, pregnancy_status = pregnancy_status,
-    lactating_status = lactating_status, CRP = CRP, AGP = AGP,
-    ferritin = ferritin, iodine = iodine, haemoglobin = haemoglobin,
-    altitude = altitude, is_smoker = is_smoker, smokes_cigarettes_per_day = smokes_cigarettes_per_day,
-    pregnancymonths = pregnancymonths, pregnancyweeks = pregnancyweeks,
+    sex = sex,
+    age = age,
+    pregnancy_status = pregnancy_status,
+    lactating_status = lactating_status,
+    CRP = CRP,
+    AGP = AGP,
+    ferritin = ferritin,
+    iodine = iodine,
+    haemoglobin = haemoglobin,
+    altitude = altitude,
+    is_smoker = is_smoker,
+    smokes_cigarettes_per_day = smokes_cigarettes_per_day,
+    pregnancymonths = pregnancymonths,
+    pregnancyweeks = pregnancyweeks,
     malaria = malaria,
     .format_column_names = FALSE
   )
@@ -249,7 +261,6 @@ long_format_prevalence_internal <- function(survey_data, indicators) {
     unlist()
   reorder_cols <- sapply(indicators, indicator_reorder_columns, "long") |>
     unlist()
-
 
   design <- prevalence_design(survey_df)
 
@@ -313,7 +324,6 @@ short_format_prevalence_internal <- function(survey_data, indicators) {
     unlist()
   reorder_cols <- sapply(indicators, indicator_reorder_columns, "short") |>
     unlist()
-
 
   design <- prevalence_design(survey_df)
 
@@ -488,8 +498,13 @@ build_prevalence_survey_data <- function(survey_df, indicators) {
     indicator_columns <- vec_c(indicator_columns, colnames(prev_results))
 
     if (!is.null(agg_prev_categories)) {
-      agg_prev_results <- as_tibble(lapply(agg_prev_categories, \(fun) fun(result)))
-      colnames(agg_prev_results) <- paste0("prev_mean_", colnames(agg_prev_results))
+      agg_prev_results <- as_tibble(lapply(agg_prev_categories, \(fun) {
+        fun(result)
+      }))
+      colnames(agg_prev_results) <- paste0(
+        "prev_mean_",
+        colnames(agg_prev_results)
+      )
       survey_df <- dplyr::bind_cols(survey_df, agg_prev_results)
       indicator_columns <- vec_c(indicator_columns, colnames(agg_prev_results))
     }
@@ -511,17 +526,34 @@ build_prevalence_survey_data <- function(survey_df, indicators) {
   )
 }
 
-combine_and_format_estimates <- function(indicators, strat_labels, expected_columns, age_start_end, rename_cols, reorder_cols, ...) {
+combine_and_format_estimates <- function(
+  indicators,
+  strat_labels,
+  expected_columns,
+  age_start_end,
+  rename_cols,
+  reorder_cols,
+  ...
+) {
   estimates <- list(...)
-  result <- Reduce(function(acc, el) {
-    dplyr::inner_join(acc, el, by = c("stratification", "stratification_type"))
-  }, estimates)
+  result <- Reduce(
+    function(acc, el) {
+      dplyr::inner_join(
+        acc,
+        el,
+        by = c("stratification", "stratification_type")
+      )
+    },
+    estimates
+  )
   result <- dplyr::group_by(
     result,
     .data$stratification_type
   ) |>
     dplyr::mutate(
-      Group = strat_labels[[.data$stratification_type[[1]]]](.data$stratification)
+      Group = strat_labels[[.data$stratification_type[[1]]]](
+        .data$stratification
+      )
     )
   result <- dplyr::bind_cols(
     age_group_info_columns(
@@ -531,7 +563,9 @@ combine_and_format_estimates <- function(indicators, strat_labels, expected_colu
     result
   )
 
-  result <- dplyr::left_join(result, age_start_end,
+  result <- dplyr::left_join(
+    result,
+    age_start_end,
     by = c("stratification", "stratification_type", "age_unit")
   )
   result[["stratification"]] <- NULL
@@ -566,39 +600,44 @@ combine_and_format_estimates <- function(indicators, strat_labels, expected_colu
 
 # this extract age group info from the stratification labels
 age_group_info_columns <- function(strat_types, strat_values) {
-  mapply(function(strat_type, strat_value) {
-    is_age_group <- grepl("age_group", strat_type, fixed = TRUE)
-    # start <- NA_integer_
-    # end <- NA_integer_
-    unit <- NA_character_
-    if (is_age_group) {
-      # is_plus <- grepl("plus", strat_type, fixed = TRUE)
-      unit <- if (grepl("years", strat_type, fixed = TRUE)) {
-        "years"
-      } else {
-        "months"
+  mapply(
+    function(strat_type, strat_value) {
+      is_age_group <- grepl("age_group", strat_type, fixed = TRUE)
+      # start <- NA_integer_
+      # end <- NA_integer_
+      unit <- NA_character_
+      if (is_age_group) {
+        # is_plus <- grepl("plus", strat_type, fixed = TRUE)
+        unit <- if (grepl("years", strat_type, fixed = TRUE)) {
+          "years"
+        } else {
+          "months"
+        }
+        # if (is_plus) {
+        #     match <- stringr::str_match(strat_value, "(\\d+)\\+\\sy")
+        #     if (nrow(match) == 1 && ncol(match) == 2) {
+        #         start <- as.integer(match[, 2])
+        #     }
+        # } else {
+        #     match <- stringr::str_match(
+        #         strat_value, "\\[(\\d+)\\,(\\d+)\\)"
+        #     )
+        #     if (nrow(match) == 1 && ncol(match) == 3) {
+        #         start <- as.integer(match[, 2])
+        #         end <- as.integer(match[, 3])
+        #     }
+        # }
       }
-      # if (is_plus) {
-      #     match <- stringr::str_match(strat_value, "(\\d+)\\+\\sy")
-      #     if (nrow(match) == 1 && ncol(match) == 2) {
-      #         start <- as.integer(match[, 2])
-      #     }
-      # } else {
-      #     match <- stringr::str_match(
-      #         strat_value, "\\[(\\d+)\\,(\\d+)\\)"
-      #     )
-      #     if (nrow(match) == 1 && ncol(match) == 3) {
-      #         start <- as.integer(match[, 2])
-      #         end <- as.integer(match[, 3])
-      #     }
-      # }
-    }
-    tibble(
-      # age_start = start,
-      # age_end = end,
-      age_unit = unit
-    )
-  }, strat_types, strat_values, SIMPLIFY = FALSE) |>
+      tibble(
+        # age_start = start,
+        # age_end = end,
+        age_unit = unit
+      )
+    },
+    strat_types,
+    strat_values,
+    SIMPLIFY = FALSE
+  ) |>
     dplyr::bind_rows()
 }
 
@@ -617,27 +656,39 @@ prevalence_long_format_columns <- function(indicators) {
     cutoffs <- indicator_prev_cutoff_names(indicator)
     new_cols <- vec_c(
       paste0(name, vec_c("_pop", "_unwpop")),
-      paste0(name, vec_c(
-        "_mean",
-        "_mean_sd",
-        "_mean_ll",
-        "_mean_ul",
-        "_geomean",
-        "_geomean_ll",
-        "_geomean_ul"
-      )),
-      paste0(name, vec_c(
-        "_10percentile",
-        "_25percentile",
-        "_50percentile",
-        "_75percentile",
-        "_90percentile"
-      )),
+      paste0(
+        name,
+        vec_c(
+          "_mean",
+          "_mean_sd",
+          "_mean_ll",
+          "_mean_ul",
+          "_geomean",
+          "_geomean_ll",
+          "_geomean_ul"
+        )
+      ),
+      paste0(
+        name,
+        vec_c(
+          "_10percentile",
+          "_25percentile",
+          "_50percentile",
+          "_75percentile",
+          "_90percentile"
+        )
+      ),
       unlist(
         lapply(cutoffs, function(cutoff) {
-          paste0(cutoff, vec_c(
-            "_r", "_se", "_ll", "_ul"
-          ))
+          paste0(
+            cutoff,
+            vec_c(
+              "_r",
+              "_se",
+              "_ll",
+              "_ul"
+            )
+          )
         })
       )
     )
@@ -670,22 +721,34 @@ prevalence_short_format_columns <- function(indicators) {
     prev_cats <- c(prev_cats, agg_prev_cats)
     new_cols <- vec_c(
       paste0(name, vec_c("_pop", "_unwpop")),
-      paste0(name, vec_c(
-        "_mean",
-        "_mean_sd",
-        "_mean_ll",
-        "_mean_ul"
-      )),
-      paste0(name, vec_c(
-        "_25percentile",
-        "_50percentile",
-        "_75percentile",
-      )),
+      paste0(
+        name,
+        vec_c(
+          "_mean",
+          "_mean_sd",
+          "_mean_ll",
+          "_mean_ul"
+        )
+      ),
+      paste0(
+        name,
+        vec_c(
+          "_25percentile",
+          "_50percentile",
+          "_75percentile",
+        )
+      ),
       unlist(
         lapply(prev_cats, function(prev_cat) {
-          paste0(prev_cat, vec_c(
-            "_r", "_se", "_ll", "_ul"
-          ))
+          paste0(
+            prev_cat,
+            vec_c(
+              "_r",
+              "_se",
+              "_ll",
+              "_ul"
+            )
+          )
         })
       )
     )
@@ -735,20 +798,45 @@ prevalence_design <- function(analysis_df) {
   )
 }
 
-prevalence_quantile_estimates <- function(weighted_design, indicators, stratification_formula) {
+prevalence_quantile_estimates <- function(
+  weighted_design,
+  indicators,
+  stratification_formula
+) {
   format_strat <- function(indicator, strat_df) {
     value_name <- indicator_export_value_name(indicator)
-    indicator_name <- paste0(indicator_abbreviated_name(indicator), "_input_value")
+    indicator_name <- paste0(
+      indicator_abbreviated_name(indicator),
+      "_input_value"
+    )
     res <- init_stratified_result(strat_df)
-    res[[paste0(value_name, "_10percentile")]] <- strat_df[[paste0(indicator_name, ".0.1")]]
-    res[[paste0(value_name, "_25percentile")]] <- strat_df[[paste0(indicator_name, ".0.25")]]
-    res[[paste0(value_name, "_50percentile")]] <- strat_df[[paste0(indicator_name, ".0.5")]]
-    res[[paste0(value_name, "_75percentile")]] <- strat_df[[paste0(indicator_name, ".0.75")]]
-    res[[paste0(value_name, "_90percentile")]] <- strat_df[[paste0(indicator_name, ".0.9")]]
+    res[[paste0(value_name, "_10percentile")]] <- strat_df[[paste0(
+      indicator_name,
+      ".0.1"
+    )]]
+    res[[paste0(value_name, "_25percentile")]] <- strat_df[[paste0(
+      indicator_name,
+      ".0.25"
+    )]]
+    res[[paste0(value_name, "_50percentile")]] <- strat_df[[paste0(
+      indicator_name,
+      ".0.5"
+    )]]
+    res[[paste0(value_name, "_75percentile")]] <- strat_df[[paste0(
+      indicator_name,
+      ".0.75"
+    )]]
+    res[[paste0(value_name, "_90percentile")]] <- strat_df[[paste0(
+      indicator_name,
+      ".0.9"
+    )]]
     res
   }
   results <- lapply(seq_along(indicators), function(i) {
-    indicator_name <- paste0(indicator_abbreviated_name(indicators[[i]]), "_input_value")
+    indicator_name <- paste0(
+      indicator_abbreviated_name(indicators[[i]]),
+      "_input_value"
+    )
     value_formula <- make.formula(indicator_name)
     weighted_est <- robust_svybys(
       formula = value_formula,
@@ -761,16 +849,25 @@ prevalence_quantile_estimates <- function(weighted_design, indicators, stratific
       na.rm = TRUE,
       na.rm.all = TRUE
     )
-    dplyr::bind_rows(lapply(weighted_est, \(x) format_strat(indicators[[i]], x)))
+    dplyr::bind_rows(lapply(weighted_est, \(x) {
+      format_strat(indicators[[i]], x)
+    }))
   })
   combine_stratified_results(results)
 }
 
 #' @importFrom tibble tibble
 #' @importFrom stats confint
-prevalence_mean_estimates <- function(weighted_design, indicators, stratification_formula) {
+prevalence_mean_estimates <- function(
+  weighted_design,
+  indicators,
+  stratification_formula
+) {
   results <- lapply(seq_along(indicators), function(i) {
-    indicator_name <- paste0(indicator_abbreviated_name(indicators[[i]]), "_input_value")
+    indicator_name <- paste0(
+      indicator_abbreviated_name(indicators[[i]]),
+      "_input_value"
+    )
     value_formula <- make.formula(indicator_name)
     mean_est <- robust_svybys(
       formula = value_formula,
@@ -790,30 +887,35 @@ prevalence_mean_estimates <- function(weighted_design, indicators, stratificatio
       na.rm = TRUE,
       na.rm.all = TRUE
     )
-    mapply(function(mean_est, sd_est) {
-      if (ncol(mean_est) == 1 || ncol(sd_est) == 1) {
-        # an error happened during the computation
-        mean <- mean_sd <- mean_ll <- mean_ul <- NA_real_
-      } else {
-        ci <- confint(mean_est, level = 0.95, df = degf(weighted_design))
-        mean <- mean_est[[indicator_name]]
-        # sometimes the column can be named "V1" instead of <indicator_name>
-        # so we select by position
-        stopifnot(ncol(sd_est) == 3)
-        mean_sd <- sqrt(sd_est[[2L]])
-        mean_ll <- ci[, 1]
-        mean_ul <- ci[, 2]
-      }
+    mapply(
+      function(mean_est, sd_est) {
+        if (ncol(mean_est) == 1 || ncol(sd_est) == 1) {
+          # an error happened during the computation
+          mean <- mean_sd <- mean_ll <- mean_ul <- NA_real_
+        } else {
+          ci <- confint(mean_est, level = 0.95, df = degf(weighted_design))
+          mean <- mean_est[[indicator_name]]
+          # sometimes the column can be named "V1" instead of <indicator_name>
+          # so we select by position
+          stopifnot(ncol(sd_est) == 3)
+          mean_sd <- sqrt(sd_est[[2L]])
+          mean_ll <- ci[, 1]
+          mean_ul <- ci[, 2]
+        }
 
-      value_name <- indicator_export_value_name(indicators[[i]])
-      res <- init_stratified_result(mean_est)
+        value_name <- indicator_export_value_name(indicators[[i]])
+        res <- init_stratified_result(mean_est)
 
-      res[[paste0(value_name, "_mean")]] <- mean
-      res[[paste0(value_name, "_mean_sd")]] <- mean_sd
-      res[[paste0(value_name, "_mean_ll")]] <- mean_ll
-      res[[paste0(value_name, "_mean_ul")]] <- mean_ul
-      res
-    }, mean_est, sd_est, SIMPLIFY = FALSE) |>
+        res[[paste0(value_name, "_mean")]] <- mean
+        res[[paste0(value_name, "_mean_sd")]] <- mean_sd
+        res[[paste0(value_name, "_mean_ll")]] <- mean_ll
+        res[[paste0(value_name, "_mean_ul")]] <- mean_ul
+        res
+      },
+      mean_est,
+      sd_est,
+      SIMPLIFY = FALSE
+    ) |>
       dplyr::bind_rows()
   })
   combine_stratified_results(results)
@@ -822,9 +924,16 @@ prevalence_mean_estimates <- function(weighted_design, indicators, stratificatio
 
 #' @importFrom tibble tibble
 #' @importFrom stats confint
-prevalence_mean_estimates_geometric <- function(weighted_design, indicators, stratification_formula) {
+prevalence_mean_estimates_geometric <- function(
+  weighted_design,
+  indicators,
+  stratification_formula
+) {
   results <- lapply(seq_along(indicators), function(i) {
-    indicator_name <- paste0(indicator_abbreviated_name(indicators[[i]]), "_input_value")
+    indicator_name <- paste0(
+      indicator_abbreviated_name(indicators[[i]]),
+      "_input_value"
+    )
     value_formula <- make.formula(paste0("log(", indicator_name, ")"))
     mean_est <- robust_svybys(
       formula = value_formula,
@@ -846,34 +955,42 @@ prevalence_mean_estimates_geometric <- function(weighted_design, indicators, str
       na.rm.all = TRUE
     )
 
-    mapply(function(mean_est, sd_est) {
-      if (ncol(mean_est) == 1 || ncol(sd_est) == 1) {
-        # an error happened during the computation
-        mean <- mean_sd <- mean_ll <- mean_ul <- NA_real_
-      } else {
-        ci <- exp(confint(mean_est, level = 0.95, df = degf(weighted_design)))
-        mean <- exp(mean_est[[paste0("log(", indicator_name, ")")]])
-        mean_ll <- ci[, 1]
-        mean_ul <- ci[, 2]
-      }
+    mapply(
+      function(mean_est, sd_est) {
+        if (ncol(mean_est) == 1 || ncol(sd_est) == 1) {
+          # an error happened during the computation
+          mean <- mean_sd <- mean_ll <- mean_ul <- NA_real_
+        } else {
+          ci <- exp(confint(mean_est, level = 0.95, df = degf(weighted_design)))
+          mean <- exp(mean_est[[paste0("log(", indicator_name, ")")]])
+          mean_ll <- ci[, 1]
+          mean_ul <- ci[, 2]
+        }
 
-      value_name <- indicator_export_value_name(indicators[[i]])
-      res <- init_stratified_result(mean_est)
+        value_name <- indicator_export_value_name(indicators[[i]])
+        res <- init_stratified_result(mean_est)
 
-      res[[paste0(value_name, "_geomean")]] <- mean
-      res[[paste0(value_name, "_geomean_ll")]] <- mean_ll
-      res[[paste0(value_name, "_geomean_ul")]] <- mean_ul
-      res
-    }, mean_est, sd_est, SIMPLIFY = FALSE) |>
+        res[[paste0(value_name, "_geomean")]] <- mean
+        res[[paste0(value_name, "_geomean_ll")]] <- mean_ll
+        res[[paste0(value_name, "_geomean_ul")]] <- mean_ul
+        res
+      },
+      mean_est,
+      sd_est,
+      SIMPLIFY = FALSE
+    ) |>
       dplyr::bind_rows()
   })
   combine_stratified_results(results)
 }
 
 
-
-prevalence_mean_prev_estimates <- function(weighted_design, indicators,
-                                           stratification_formula, indicator_columns) {
+prevalence_mean_prev_estimates <- function(
+  weighted_design,
+  indicators,
+  stratification_formula,
+  indicator_columns
+) {
   results <- lapply(indicator_columns, function(indicator_column) {
     value_formula <- make.formula(indicator_column)
     indicator_name <- gsub("^prev_mean_", "", indicator_column)
@@ -903,23 +1020,28 @@ prevalence_mean_prev_estimates <- function(weighted_design, indicators,
         na.rm.all = TRUE
       )
     })
-    mapply(function(mean_est, ci) {
-      if (ncol(mean_est) == 1 || ncol(ci) == 1) {
-        # an error happened during the computation
-        r <- se <- ll <- ul <- NA_real_
-      } else {
-        r <- mean_est[[paste0(indicator_column, "TRUE")]]
-        se <- SE(mean_est)[[paste0("se.", indicator_column, "TRUE")]]
-        ll <- ci[["ci_l"]]
-        ul <- ci[["ci_u"]]
-      }
-      res <- init_stratified_result(mean_est)
-      res[[paste0(indicator_name, "_r")]] <- r
-      res[[paste0(indicator_name, "_se")]] <- se
-      res[[paste0(indicator_name, "_ll")]] <- ll
-      res[[paste0(indicator_name, "_ul")]] <- ul
-      res
-    }, mean_est, CI_est, SIMPLIFY = FALSE) |>
+    mapply(
+      function(mean_est, ci) {
+        if (ncol(mean_est) == 1 || ncol(ci) == 1) {
+          # an error happened during the computation
+          r <- se <- ll <- ul <- NA_real_
+        } else {
+          r <- mean_est[[paste0(indicator_column, "TRUE")]]
+          se <- SE(mean_est)[[paste0("se.", indicator_column, "TRUE")]]
+          ll <- ci[["ci_l"]]
+          ul <- ci[["ci_u"]]
+        }
+        res <- init_stratified_result(mean_est)
+        res[[paste0(indicator_name, "_r")]] <- r
+        res[[paste0(indicator_name, "_se")]] <- se
+        res[[paste0(indicator_name, "_ll")]] <- ll
+        res[[paste0(indicator_name, "_ul")]] <- ul
+        res
+      },
+      mean_est,
+      CI_est,
+      SIMPLIFY = FALSE
+    ) |>
       dplyr::bind_rows()
   })
   combine_stratified_results(results)
@@ -977,9 +1099,16 @@ robust_svybys <- function(formula, bys, design, FUN, ...) {
 }
 
 combine_stratified_results <- function(list_of_dfs) {
-  Reduce(function(acc, el) {
-    dplyr::inner_join(acc, el, by = c("stratification", "stratification_type"))
-  }, list_of_dfs)
+  Reduce(
+    function(acc, el) {
+      dplyr::inner_join(
+        acc,
+        el,
+        by = c("stratification", "stratification_type")
+      )
+    },
+    list_of_dfs
+  )
 }
 
 weighted <- function(design) {
@@ -991,7 +1120,11 @@ unweighted <- function(design) {
 }
 
 #' @importFrom tibble as_tibble
-prevalence_pop_estimates <- function(design, indicators, stratification_formula) {
+prevalence_pop_estimates <- function(
+  design,
+  indicators,
+  stratification_formula
+) {
   indicator_names <- lapply(indicators, indicator_abbreviated_name)
   if (length(indicator_names) == 0) {
     return(NULL)
@@ -1002,14 +1135,16 @@ prevalence_pop_estimates <- function(design, indicators, stratification_formula)
   unweighted_est <- svybys(
     formula = prev_formula,
     bys = stratification_formula,
-    design = unweighted(design), FUN = svytotal,
+    design = unweighted(design),
+    FUN = svytotal,
     drop.empty.groups = FALSE,
     na.rm = FALSE # there shouldn't be any NAs
   )
   weighted_est <- svybys(
     formula = prev_formula,
     bys = stratification_formula,
-    design = weighted(design), FUN = svytotal,
+    design = weighted(design),
+    FUN = svytotal,
     drop.empty.groups = FALSE,
     na.rm = FALSE # there shouldn't be any NAs
   )
@@ -1024,9 +1159,13 @@ prevalence_pop_estimates <- function(design, indicators, stratification_formula)
     }
     res
   }
-  dplyr::bind_rows(lapply(unweighted_est, \(x) format_strat(indicators, x, "_unwpop"))) |>
+  dplyr::bind_rows(lapply(unweighted_est, \(x) {
+    format_strat(indicators, x, "_unwpop")
+  })) |>
     dplyr::inner_join(
-      dplyr::bind_rows(lapply(weighted_est, \(x) format_strat(indicators, x, "_pop"))),
+      dplyr::bind_rows(lapply(weighted_est, \(x) {
+        format_strat(indicators, x, "_pop")
+      })),
       by = c("stratification", "stratification_type")
     )
 }
@@ -1052,11 +1191,17 @@ indicator_columns <- function(indicator, columns) {
   }
 
   if (!is.null(ind_agg_prev_prefix)) {
-    cols_agg_prev_ind <- columns[grepl(paste(ind_agg_prev_prefix, collapse = "|"), columns)]
+    cols_agg_prev_ind <- columns[grepl(
+      paste(ind_agg_prev_prefix, collapse = "|"),
+      columns
+    )]
   }
 
   if (!is.null(ind_prev_prefix)) {
-    cols_prev_ind <- columns[grepl(paste(ind_prev_prefix, collapse = "|"), columns)]
+    cols_prev_ind <- columns[grepl(
+      paste(ind_prev_prefix, collapse = "|"),
+      columns
+    )]
   }
 
   c(cols_ind, cols_agg_prev_ind, cols_prev_ind)
@@ -1090,7 +1235,12 @@ prevalence_age_start_end <- function(analysis_df, strat_labels) {
         stratification_type = strat_label
       )
 
-    age_dat[, c("stratification", "stratification_type", "age_start", "age_end")]
+    age_dat[, c(
+      "stratification",
+      "stratification_type",
+      "age_start",
+      "age_end"
+    )]
   })
 
   res_year <- do.call("rbind", res)

@@ -32,8 +32,12 @@ ida_indicator <- function(ferritin_adjustment = no_adjustment) {
     value_concept = "ferritin",
     export_value_name = short_name,
     required_concepts = c(
-      "haemoglobin", "ferritin",
-      "CRP", "AGP", "age", "pregnancy_status"
+      "haemoglobin",
+      "ferritin",
+      "CRP",
+      "AGP",
+      "age",
+      "pregnancy_status"
     ),
     global_condition = age_in_years(age) >= 0,
     categories = list(
@@ -51,14 +55,16 @@ ida_indicator <- function(ferritin_adjustment = no_adjustment) {
 
         # All kids 5-11
         !inflammation(CRP, AGP) &
-          age_in_years(age) >= 5 & age_in_years(age) <= 11 &
+          age_in_years(age) >= 5 &
+          age_in_years(age) <= 11 &
           haemoglobin >= 115 &
           value < 15,
 
         # Males 12-14
         !inflammation(CRP, AGP) &
           is_male(sex) &
-          age_in_years(age) >= 12 & age_in_years(age) <= 14 &
+          age_in_years(age) >= 12 &
+          age_in_years(age) <= 14 &
           haemoglobin >= 120 &
           value < 15,
 
@@ -72,31 +78,38 @@ ida_indicator <- function(ferritin_adjustment = no_adjustment) {
         # Females 12-14, non-pregnant
         !inflammation(CRP, AGP) &
           is_female(sex) &
-          (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
-          age_in_years(age) >= 12 & age_in_years(age) <= 14 &
+          (is.na(is_pregnant(pregnancy_status)) |
+            !is_pregnant(pregnancy_status)) &
+          age_in_years(age) >= 12 &
+          age_in_years(age) <= 14 &
           haemoglobin >= 120 & # this might be 115 the Word doc has two values
           value < 15,
 
         # Females 15-49, non-pregnant
         !inflammation(CRP, AGP) &
           is_female(sex) &
-          (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
-          age_in_years(age) >= 15 & age_in_years(age) <= 49 &
+          (is.na(is_pregnant(pregnancy_status)) |
+            !is_pregnant(pregnancy_status)) &
+          age_in_years(age) >= 15 &
+          age_in_years(age) <= 49 &
           haemoglobin >= 120 & # this might be 120 the Word doc has two values
           value < 15,
 
         # Females 15-49, pregnant
         !inflammation(CRP, AGP) &
           is_female(sex) &
-          (!is.na(is_pregnant(pregnancy_status)) & is_pregnant(pregnancy_status)) &
-          age_in_years(age) >= 15 & age_in_years(age) <= 49 &
+          (!is.na(is_pregnant(pregnancy_status)) &
+            is_pregnant(pregnancy_status)) &
+          age_in_years(age) >= 15 &
+          age_in_years(age) <= 49 &
           haemoglobin >= 110 & # this might be 120 the Word doc has two values
           value < 15,
 
         # Females 50 and older, non-pregnant
         !inflammation(CRP, AGP) &
           is_female(sex) &
-          (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
+          (is.na(is_pregnant(pregnancy_status)) |
+            !is_pregnant(pregnancy_status)) &
           age_in_years(age) >= 50 &
           haemoglobin >= 120 &
           value < 15
@@ -114,14 +127,16 @@ ida_indicator <- function(ferritin_adjustment = no_adjustment) {
 
         # All kids 5-11
         inflammation(CRP, AGP) &
-          age_in_years(age) >= 5 & age_in_years(age) <= 11 &
+          age_in_years(age) >= 5 &
+          age_in_years(age) <= 11 &
           haemoglobin >= 115 &
           value < 70,
 
         # Males 12-14
         inflammation(CRP, AGP) &
           is_male(sex) &
-          age_in_years(age) >= 12 & age_in_years(age) <= 14 &
+          age_in_years(age) >= 12 &
+          age_in_years(age) <= 14 &
           haemoglobin >= 120 &
           value < 70,
 
@@ -135,16 +150,20 @@ ida_indicator <- function(ferritin_adjustment = no_adjustment) {
         # Females 12-14, non-pregnant
         inflammation(CRP, AGP) &
           is_female(sex) &
-          (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
-          age_in_years(age) >= 12 & age_in_years(age) <= 14 &
+          (is.na(is_pregnant(pregnancy_status)) |
+            !is_pregnant(pregnancy_status)) &
+          age_in_years(age) >= 12 &
+          age_in_years(age) <= 14 &
           haemoglobin >= 120 & # this might be 120 the Word doc has two values
           value < 70,
 
         # Females 15-49, non-pregnant
         inflammation(CRP, AGP) &
           is_female(sex) &
-          (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
-          age_in_years(age) >= 15 & age_in_years(age) <= 49 &
+          (is.na(is_pregnant(pregnancy_status)) |
+            !is_pregnant(pregnancy_status)) &
+          age_in_years(age) >= 15 &
+          age_in_years(age) <= 49 &
           haemoglobin >= 120 & # this might be 120 the Word doc has two values
           value < 70,
 
@@ -159,7 +178,8 @@ ida_indicator <- function(ferritin_adjustment = no_adjustment) {
         # Females 50 and older, non-pregnant. This is not defined in doc
         inflammation(CRP, AGP) &
           is_female(sex) &
-          (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
+          (is.na(is_pregnant(pregnancy_status)) |
+            !is_pregnant(pregnancy_status)) &
           age_in_years(age) >= 50 &
           haemoglobin >= 120 &
           value < 70
@@ -181,12 +201,18 @@ ida_indicator <- function(ferritin_adjustment = no_adjustment) {
         )
       })
     ),
-    prevalence_categories = set_names(list(
-      \(x) x %in% c(
-        "Iron deficiency anaemia in apparently healthy individuals",
-        "Iron deficiency anaemia in individuals with infection or inflammation"
-      )
-    ), prev_categories),
+    prevalence_categories = set_names(
+      list(
+        \(x) {
+          x %in%
+            c(
+              "Iron deficiency anaemia in apparently healthy individuals",
+              "Iron deficiency anaemia in individuals with infection or inflammation"
+            )
+        }
+      ),
+      prev_categories
+    ),
     drop_columns = list(
       short = c(
         "ida_unadj_mean",

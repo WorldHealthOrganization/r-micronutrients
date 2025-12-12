@@ -1,4 +1,13 @@
-measurement_units <- c("mcmol_l", "g_l", "mcg_l", "ng_ml", "nmol_l", "mg_l", "m", "ft")
+measurement_units <- c(
+  "mcmol_l",
+  "g_l",
+  "mcg_l",
+  "ng_ml",
+  "nmol_l",
+  "mg_l",
+  "m",
+  "ft"
+)
 
 new_measurement <- function(x, unit) {
   stopifnot(is.double(x), is.character(unit), unit %in% measurement_units)
@@ -107,7 +116,8 @@ vec_arith.vctrs_measurement <- function(op, x, y, ...) {
 #' @import vctrs
 #' @export
 vec_arith.vctrs_measurement.MISSING <- function(op, x, y, ...) {
-  switch(op,
+  switch(
+    op,
     `-` = new_measurement(vec_data(x) * -1, measurement_unit(x)),
     `+` = x,
     stop_incompatible_op(op, x, y)

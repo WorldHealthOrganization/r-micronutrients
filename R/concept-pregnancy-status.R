@@ -25,7 +25,6 @@ is_pregnant <- function(pregnancy_status) {
 #   month_na <- sum(is.na(pregnancy_months))
 # }
 
-
 what_trimester <- function(pregnancy_weeks, pregnancy_months) {
   n <- length(pregnancy_weeks)
   week_na <- sum(is.na(pregnancy_weeks))

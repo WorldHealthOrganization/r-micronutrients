@@ -48,22 +48,23 @@
 #' }
 #' @export
 individual_classification <- function(
-    indicators,
-    sex,
-    age,
-    pregnancy_status = NULL,
-    pregnancyweeks = NULL,
-    pregnancymonths = NULL,
-    lactating_status = NULL,
-    CRP = NULL,
-    AGP = NULL,
-    ferritin = NULL,
-    iodine = NULL,
-    haemoglobin = NULL,
-    altitude = NULL,
-    is_smoker = NULL,
-    smokes_cigarettes_per_day = NULL,
-    malaria = NULL) {
+  indicators,
+  sex,
+  age,
+  pregnancy_status = NULL,
+  pregnancyweeks = NULL,
+  pregnancymonths = NULL,
+  lactating_status = NULL,
+  CRP = NULL,
+  AGP = NULL,
+  ferritin = NULL,
+  iodine = NULL,
+  haemoglobin = NULL,
+  altitude = NULL,
+  is_smoker = NULL,
+  smokes_cigarettes_per_day = NULL,
+  malaria = NULL
+) {
   classify_data_internal(
     indicators,
     sex = sex,
@@ -86,23 +87,24 @@ individual_classification <- function(
 }
 
 classify_data_internal <- function(
-    indicators,
-    sex,
-    age,
-    pregnancy_status = NULL,
-    lactating_status = NULL,
-    CRP = NULL,
-    AGP = NULL,
-    ferritin = NULL,
-    iodine = NULL,
-    haemoglobin = NULL,
-    altitude = NULL,
-    is_smoker = NULL,
-    smokes_cigarettes_per_day = NULL,
-    pregnancyweeks = NULL,
-    pregnancymonths = NULL,
-    malaria = NULL,
-    .format_column_names = TRUE) {
+  indicators,
+  sex,
+  age,
+  pregnancy_status = NULL,
+  lactating_status = NULL,
+  CRP = NULL,
+  AGP = NULL,
+  ferritin = NULL,
+  iodine = NULL,
+  haemoglobin = NULL,
+  altitude = NULL,
+  is_smoker = NULL,
+  smokes_cigarettes_per_day = NULL,
+  pregnancyweeks = NULL,
+  pregnancymonths = NULL,
+  malaria = NULL,
+  .format_column_names = TRUE
+) {
   validate_indicators(indicators)
   concept_list <- concepts_from_args(
     sex = sex,
