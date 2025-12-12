@@ -174,7 +174,7 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
       prevalence_category_names
     ),
     prevalence_category_names = c("Iron deficiency", "Risk of overload") |>
-      setNames(prevalence_category_names),
+      stats::setNames(prevalence_category_names),
     drop_columns = list(
       short = NULL, #c("depletedironstores_unadj_se", "riskofironoverload_unadj_se"),
       long = NULL
