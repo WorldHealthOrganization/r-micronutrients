@@ -13,6 +13,7 @@ test_that("row level classification works", {
     pregnancy_status = testdata$pregnancy_status,
     lactating_status = testdata$lactating_status,
     ferritin = testdata$ferritin_measurement,
+    ida = testdata$ida,
     iodine = testdata$iodine,
     CRP = testdata$crp_measurement,
     AGP = testdata$agp_measurement,
@@ -132,11 +133,12 @@ test_that("you can use lubridate to define the age", {
   age <- lubridate::duration(1:100, "months")
   res <- individual_classification(
     indicators = list(
-      indicator_ida(no_adjustment)
+      indicator_ferritin()
     ),
     age = age,
     sex = testdata$sex,
     ferritin = testdata$ferritin_measurement,
+    ida = testdata$ida,
     haemoglobin = testdata$haemoglobin_measurement,
     pregnancy_status = testdata$pregnancy_status,
     CRP = testdata$crp_measurement,

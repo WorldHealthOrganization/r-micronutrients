@@ -14,8 +14,8 @@ utils::globalVariables(c(
 ))
 
 #' @include indicators.R
+#' @noRd
 ferritin_indicator <- function(value_adjustment = no_adjustment) {
-  stopifnot(is_adjustment(value_adjustment))
   short_name <- "ferritin"
 
   prevalence_category_names <- c("depletedironstores", "riskofironoverload")
@@ -30,11 +30,11 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
 
   inflammation <- function(CRP, AGP) {
     is_ferritin_cutoff_adjustment(value_adjustment) &
-      (!is.na(CRP) & CRP >= 5 | !is.na(AGP) & AGP >= 1)
+      ((!is.na(CRP) & CRP >= 5) | (!is.na(AGP) & AGP >= 1))
   }
 
   indicator(
-    name = "Subclinical Iron status - Ferritin (\u00B5g/L)",
+    name = "Iron Deficiency - Ferritin (\u00B5g/L)",
     abbreviated_name = short_name,
     value_concept = "ferritin",
     export_value_name = short_name,
@@ -53,22 +53,27 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
         inflammation(CRP, AGP) &
           age_in_months(age) < 60 &
           value >= 30,
+
         !inflammation(CRP, AGP) &
           age_in_months(age) < 60 &
           value >= 12,
-        !inflammation(CRP, AGP) &
-          age_in_years(age) >= 5 &
-          value >= 15,
+
+        # !inflammation(CRP, AGP) &
+        #   age_in_years(age) >= 5 &
+        #   value >= 15,
+
         !inflammation(CRP, AGP) &
           age_in_years(age) >= 5 &
           is_female(sex) &
           value >= 15 &
           value <= 150,
+
         !inflammation(CRP, AGP) &
           age_in_years(age) >= 5 &
           is_male(sex) &
           value >= 15 &
           value <= 200,
+
         inflammation(CRP, AGP) &
           age_in_years(age) >= 5 &
           value >= 70 &
@@ -80,6 +85,7 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
         !inflammation(CRP, AGP) &
           age_in_months(age) < 60 &
           value < 12,
+
         !inflammation(CRP, AGP) &
           age_in_years(age) >= 5 &
           value < 15
@@ -90,8 +96,9 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
         inflammation(CRP, AGP) &
           age_in_months(age) < 60 &
           value < 30,
+
         inflammation(CRP, AGP) &
-          # (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
+          #(is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
           age_in_years(age) >= 5 &
           value < 70
       ),
@@ -100,9 +107,10 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
         # female
         !inflammation(CRP, AGP) &
           is_female(sex) &
-          # (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
+          #(is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
           age_in_years(age) >= 5 &
           value > 150,
+
         !inflammation(CRP, AGP) &
           is_male(sex) &
           age_in_years(age) >= 5 &
@@ -112,9 +120,10 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
         name = "Risk of overload in non-healthy individuals",
         inflammation(CRP, AGP) &
           is_female(sex) &
-          # (is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
+          #(is.na(is_pregnant(pregnancy_status)) | !is_pregnant(pregnancy_status)) &
           age_in_years(age) >= 5 &
           value > 500,
+
         inflammation(CRP, AGP) &
           is_male(sex) &
           age_in_years(age) >= 5 &
@@ -132,7 +141,7 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
       }),
       lapply(c(200, 500), function(x) {
         new_prev_cutoff(
-          new_function(pairlist2(value = ), bquote(value > .(x))),
+          new_function(pairlist2(value = ), bquote(value < .(x))),
           paste0(short_name, "_p", x)
         )
       })
@@ -164,8 +173,10 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
       ),
       prevalence_category_names
     ),
+    prevalence_category_names = c("Iron deficiency", "Risk of overload") |>
+      setNames(prevalence_category_names),
     drop_columns = list(
-      short = c("depletedironstores_unadj_se", "riskofironoverload_unadj_se"),
+      short = NULL, #c("depletedironstores_unadj_se", "riskofironoverload_unadj_se"),
       long = NULL
     ),
     rename_columns = list(
@@ -180,23 +191,35 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
 }
 
 is_agp_implausible <- function(AGP) {
-  # git424
+  #git424
   vals <- rep(FALSE, length(AGP))
   vals[is.na(AGP)] <- NA
   vals
-  # !is.na(AGP) & (AGP < 0.5 | AGP > 8)
+  #!is.na(AGP) & (AGP < 0.5 | AGP > 8)
 }
 
 is_crp_implausible <- function(CRP) {
-  # git424
+  #git424
   vals <- rep(FALSE, length(CRP))
   vals[is.na(CRP)] <- NA
   vals
-  # !is.na(CRP) & (CRP < 0.1 | CRP > 4000)
+  #!is.na(CRP) & (CRP < 0.1 | CRP > 4000)
 }
 
 is_ferritin_implausible <- function(ferritin) {
   !is.na(ferritin) & (ferritin < 0.5 | ferritin > 1000)
+}
+
+ferritin_is_implausible <- function(x, ...) {
+  UseMethod("ferritin_is_implausible")
+}
+
+ferritin_implausible.default <- function(x, CRP, AGP) {
+  ferritin_implausible_values(
+    value = x,
+    CRP = CRP,
+    AGP = AGP
+  )
 }
 
 ferritin_implausible_values <- function(value, CRP, AGP) {
@@ -341,14 +364,19 @@ ferritin_adjustment_arithmetic_correction <- adjustment(
   sub_class = "ferritin_adjustment_arithmetic_correction"
 )
 
-utils::globalVariables(c("value", "CRP", "AGP", "WRA"))
 
+utils::globalVariables(c("value", "CRP", "AGP", "WRA"))
 ferritin_adjustment_regression_correction <- adjustment(
   required_concepts = c("CRP", "AGP"),
   fun = function(value, CRP, AGP) {
     if (all(is.na(CRP)) && all(is.na(AGP))) {
       return(value)
     }
+
+    CRP[CRP == 0] <- NA
+    AGP[AGP == 0] <- NA
+    value[value == 0] <- NA
+
     data <- tibble(
       value = as.numeric(value),
       CRP = as.numeric(CRP),

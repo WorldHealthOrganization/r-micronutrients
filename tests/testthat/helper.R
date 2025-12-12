@@ -20,6 +20,7 @@ random_datset <- function(n) {
       prob = c(0.4, 0.1, 0.5)
     ),
     ferritin_measurement = pmax(0.1, rnorm(n, mean = 30, sd = 25)),
+    ida = pmax(0.1, rnorm(n, mean = 30, sd = 25)),
     crp_measurement = pmax(0.1, rnorm(n, mean = 2, sd = 10)),
     agp_measurement = pmax(0.1, rnorm(n, mean = 0.5, sd = 0.5)),
     haemoglobin_measurement = pmax(0.1, rnorm(n, mean = 100, sd = 50)),
