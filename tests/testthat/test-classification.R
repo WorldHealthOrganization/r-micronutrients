@@ -13,6 +13,7 @@ test_that("row level classification works", {
     pregnancy_status = testdata$pregnancy_status,
     lactating_status = testdata$lactating_status,
     ferritin = testdata$ferritin_measurement,
+    ida = testdata$ida,
     iodine = testdata$iodine,
     CRP = testdata$crp_measurement,
     AGP = testdata$agp_measurement,
@@ -25,15 +26,28 @@ test_that("row level classification works", {
   )
   expect_true(is.data.frame(res))
   expect_true(all(grepl(
-    pattern = "^input|^indicator", x = colnames(res)
+    pattern = "^input|^indicator",
+    x = colnames(res)
   )))
-  expect_true(all(c(
-    "input_age", "input_sex", "input_pregnancy_status",
-    "input_lactating_status", "input_ferritin", "input_iodine",
-    "input_CRP", "input_AGP", "input_haemoglobin", "input_is_smoker",
-    "input_altitude", "input_smokes_cigarettes_per_day", "input_pregnancyweeks",
-    "input_pregnancymonths"
-  ) %in% colnames(res)))
+  expect_true(all(
+    c(
+      "input_age",
+      "input_sex",
+      "input_pregnancy_status",
+      "input_lactating_status",
+      "input_ferritin",
+      "input_iodine",
+      "input_CRP",
+      "input_AGP",
+      "input_haemoglobin",
+      "input_is_smoker",
+      "input_altitude",
+      "input_smokes_cigarettes_per_day",
+      "input_pregnancyweeks",
+      "input_pregnancymonths"
+    ) %in%
+      colnames(res)
+  ))
 })
 
 test_that("user is warned about missing concepts", {
@@ -119,11 +133,12 @@ test_that("you can use lubridate to define the age", {
   age <- lubridate::duration(1:100, "months")
   res <- individual_classification(
     indicators = list(
-      indicator_ida(no_adjustment)
+      indicator_ferritin()
     ),
     age = age,
     sex = testdata$sex,
     ferritin = testdata$ferritin_measurement,
+    ida = testdata$ida,
     haemoglobin = testdata$haemoglobin_measurement,
     pregnancy_status = testdata$pregnancy_status,
     CRP = testdata$crp_measurement,

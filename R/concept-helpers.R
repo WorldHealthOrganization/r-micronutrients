@@ -22,8 +22,16 @@
 #'   implausible.
 #'
 #' @noRd
-concept <- function(key, label, acceptor, standardizer, validator, prototype,
-                    is_implausible = NULL, implausible_deps = NULL) {
+concept <- function(
+  key,
+  label,
+  acceptor,
+  standardizer,
+  validator,
+  prototype,
+  is_implausible = NULL,
+  implausible_deps = NULL
+) {
   list(
     key = key,
     label = label,

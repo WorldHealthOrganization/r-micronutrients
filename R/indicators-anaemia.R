@@ -5,9 +5,12 @@
 #     totalanaemia = "Total anaemia"
 # )
 
-
-
-anaemia_adjustment <- function(value, altitude, is_smoker, smokes_cigarettes_per_day) {
+anaemia_adjustment <- function(
+  value,
+  altitude,
+  is_smoker,
+  smokes_cigarettes_per_day
+) {
   value <- vec_cast(value, double())
   stopifnot(
     is.numeric(altitude),
@@ -23,17 +26,23 @@ anaemia_adjustment <- function(value, altitude, is_smoker, smokes_cigarettes_per
   altitude_adjustments <- (0.0056384 * altitude) + (0.0000003 * altitude^2)
   altitude_adjustments <- altitude_adjustments * -1
 
-
   smokes_cigarettes_per_day[smokes_cigarettes_per_day == 0] <- NA_real_
   smoke_adjustments <- rep.int(0, length(value))
   not_na <- !is.na(is_smoker) & !is.na(smokes_cigarettes_per_day)
 
-  smoke_adjustments[not_na & is_smoker] <-
-    (0.4565 * smokes_cigarettes_per_day[not_na & is_smoker]) +
-    (-0.0078 * smokes_cigarettes_per_day[not_na & is_smoker]^2)
+  #git465
+  # smoke_adjustments[not_na & is_smoker] <-
+  #   (0.4565 * smokes_cigarettes_per_day[not_na & is_smoker]) +
+  #   (-0.0078 * smokes_cigarettes_per_day[not_na & is_smoker]^2)
 
-  smoke_adjustments[!is.na(is_smoker) & is_smoker & is.na(smokes_cigarettes_per_day)] <- 3
-  smoke_adjustments[!is.na(is_smoker) & is_smoker & !is.na(smokes_cigarettes_per_day) & smokes_cigarettes_per_day > 19] <- 6
+  smoke_adjustments[is_smoker] <- 3 # some of these will be recomputed by the next two lines
+  smoke_adjustments[
+    not_na &
+      is_smoker &
+      smokes_cigarettes_per_day >= 10 &
+      smokes_cigarettes_per_day < 20
+  ] <- 5
+  smoke_adjustments[not_na & is_smoker & smokes_cigarettes_per_day >= 20] <- 6
   smoke_adjustments <- smoke_adjustments * -1
 
   value + altitude_adjustments + smoke_adjustments
@@ -49,14 +58,22 @@ anaemia_implausible_values <- function(value, age = NULL, sex = NULL) {
   value
 }
 
+#' @include indicators.R
+#' @noRd
 anaemia_indicator <- indicator(
   name = "Anaemia - Haemoglobin (g/L)",
   abbreviated_name = "anaemia",
   value_concept = "haemoglobin",
   export_value_name = "hgb",
   required_concepts = c(
-    "sex", "age", "pregnancy_status", "altitude",
-    "is_smoker", "smokes_cigarettes_per_day", "pregnancyweeks", "pregnancymonths"
+    "sex",
+    "age",
+    "pregnancy_status",
+    "altitude",
+    "is_smoker",
+    "smokes_cigarettes_per_day",
+    "pregnancyweeks",
+    "pregnancymonths"
   ),
   global_condition = age_in_years(age) >= 0, # no restrictions
   categories = list(
@@ -91,29 +108,39 @@ anaemia_indicator <- indicator(
     category(
       name = "No anaemia",
 
-      # f_dev(pregnancyweeks, pregnancymonths),
+      #f_dev(pregnancyweeks, pregnancymonths),
 
       age_in_months(age) < 24 &
         value >= 105,
-      age_in_months(age) >= 24 & age_in_months(age) < 60 &
-        value >= 110,
+
+      age_in_months(age) >= 24 & age_in_months(age) < 60 & value >= 110,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-        age_in_years(age) >= 5 & age_in_years(age) <= 11 &
+        age_in_years(age) >= 5 &
+        age_in_years(age) <= 11 &
         value >= 115,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-        age_in_years(age) >= 12 & age_in_years(age) <= 14 &
+        age_in_years(age) >= 12 &
+        age_in_years(age) <= 14 &
         value >= 120,
+
       is_female(sex) &
-        (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
+        (!is_pregnant(pregnancy_status) |
+          is.na(is_pregnant(pregnancy_status))) &
         age_in_years(age) >= 15 &
         value >= 120,
+
       is_male(sex) &
         age_in_years(age) >= 15 &
         value >= 130,
+
       is_female(sex) &
         is_pregnant(pregnancy_status) &
-        what_trimester(pregnancyweeks, pregnancymonths) %in% c("First", "Third", "Unknown") &
+        what_trimester(pregnancyweeks, pregnancymonths) %in%
+          c("First", "Third", "Unknown") &
         value >= 110,
+
       is_female(sex) &
         is_pregnant(pregnancy_status) &
         what_trimester(pregnancyweeks, pregnancymonths) == "Second" &
@@ -121,64 +148,105 @@ anaemia_indicator <- indicator(
     ),
     category(
       name = "Mild anaemia",
+
       age_in_months(age) < 24 &
-        value >= 95 & value < 105,
-      age_in_months(age) >= 24 & age_in_months(age) < 60 &
-        value >= 100 & value < 110,
+        value >= 95 &
+        value < 105,
+
+      age_in_months(age) >= 24 &
+        age_in_months(age) < 60 &
+        value >= 100 &
+        value < 110,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-        age_in_years(age) >= 5 & age_in_years(age) <= 11 &
-        value >= 110 & value < 115,
+        age_in_years(age) >= 5 &
+        age_in_years(age) <= 11 &
+        value >= 110 &
+        value < 115,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-        age_in_years(age) >= 12 & age_in_years(age) <= 14 &
-        value >= 110 & value < 120,
+        age_in_years(age) >= 12 &
+        age_in_years(age) <= 14 &
+        value >= 110 &
+        value < 120,
+
       is_female(sex) &
-        (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
+        (!is_pregnant(pregnancy_status) |
+          is.na(is_pregnant(pregnancy_status))) &
         age_in_years(age) >= 15 &
-        value >= 110 & value < 120,
+        value >= 110 &
+        value < 120,
+
       is_male(sex) &
         age_in_years(age) >= 15 &
-        value >= 110 & value < 130,
+        value >= 110 &
+        value < 130,
+
       is_female(sex) &
         is_pregnant(pregnancy_status) &
-        what_trimester(pregnancyweeks, pregnancymonths) %in% c("First", "Third", "Unknown") &
-        value >= 100 & value < 110,
+        what_trimester(pregnancyweeks, pregnancymonths) %in%
+          c("First", "Third", "Unknown") &
+        value >= 100 &
+        value < 110,
+
       is_female(sex) &
         is_pregnant(pregnancy_status) &
         what_trimester(pregnancyweeks, pregnancymonths) == "Second" &
-        value >= 95 & value < 105
+        value >= 95 &
+        value < 105
     ),
     category(
       name = "Moderate anaemia",
-      # value > 50
+      #value > 50
       age_in_months(age) < 24 &
-        value >= 70 & value < 95,
-      age_in_months(age) >= 24 & age_in_months(age) < 60 &
-        value >= 70 & value < 100,
+        value >= 70 &
+        value < 95,
+
+      age_in_months(age) >= 24 &
+        age_in_months(age) < 60 &
+        value >= 70 &
+        value < 100,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-        age_in_years(age) >= 5 & age_in_years(age) <= 11 &
-        value >= 80 & value < 110,
+        age_in_years(age) >= 5 &
+        age_in_years(age) <= 11 &
+        value >= 80 &
+        value < 110,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-        age_in_years(age) >= 12 & age_in_years(age) <= 14 &
-        value >= 80 & value < 110,
+        age_in_years(age) >= 12 &
+        age_in_years(age) <= 14 &
+        value >= 80 &
+        value < 110,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
         age_in_years(age) >= 15 &
-        value >= 80 & value < 110,
+        value >= 80 &
+        value < 110,
+
       is_female(sex) &
         is_pregnant(pregnancy_status) &
-        what_trimester(pregnancyweeks, pregnancymonths) %in% c("First", "Third", "Unknown") &
-        value >= 70 & value < 100,
+        what_trimester(pregnancyweeks, pregnancymonths) %in%
+          c("First", "Third", "Unknown") &
+        value >= 70 &
+        value < 100,
+
       is_female(sex) &
         is_pregnant(pregnancy_status) &
         what_trimester(pregnancyweeks, pregnancymonths) == "Second" &
-        value >= 70 & value < 95
+        value >= 70 &
+        value < 95
     ),
     category(
       name = "Severe anaemia",
+
       age_in_months(age) < 60 &
         value < 70,
+
       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
         age_in_years(age) >= 5 &
         value < 80,
+
       is_female(sex) &
         is_pregnant(pregnancy_status) &
         value < 70
@@ -187,13 +255,15 @@ anaemia_indicator <- indicator(
   adjustment = adjustment(
     required_concepts = c(
       "altitude",
-      "is_smoker", "smokes_cigarettes_per_day"
+      "is_smoker",
+      "smokes_cigarettes_per_day"
     ),
     fun = anaemia_adjustment
   ),
   implausible_values = adjustment(
     required_concepts = c(
-      "age", "sex"
+      "age",
+      "sex"
     ),
     fun = anaemia_implausible_values
   ),
@@ -209,7 +279,13 @@ anaemia_indicator <- indicator(
     severeanaemia = \(x) ifelse(is.na(x), NA, x %in% "Severe anaemia")
   ),
   aggregate_prevalence_categories = list(
-    totalanaemia = \(x) ifelse(is.na(x), NA, x %in% c("Mild anaemia", "Moderate anaemia", "Severe anaemia"))
+    totalanaemia = \(x) {
+      ifelse(
+        is.na(x),
+        NA,
+        x %in% c("Mild anaemia", "Moderate anaemia", "Severe anaemia")
+      )
+    }
   ),
   prevalence_category_names = c(
     mildanaemia = "Mild anaemia",

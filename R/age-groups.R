@@ -91,22 +91,50 @@ age_group_months_0_60_g3 <- function(x) {
 apply_age_group_stratifications <- function(data) {
   stopifnot(is.data.frame(data), "age" %in% colnames(data))
   # age months
-  data[["strat_age_group_months_0_60_g1"]] <- age_group_months_0_60_g1(data[["age"]])
-  data[["strat_age_group_months_0_60_g2"]] <- age_group_months_0_60_g2(data[["age"]])
-  data[["strat_age_group_months_0_60_g3"]] <- age_group_months_0_60_g3(data[["age"]])
+  data[["strat_age_group_months_0_60_g1"]] <- age_group_months_0_60_g1(data[[
+    "age"
+  ]])
+  data[["strat_age_group_months_0_60_g2"]] <- age_group_months_0_60_g2(data[[
+    "age"
+  ]])
+  data[["strat_age_group_months_0_60_g3"]] <- age_group_months_0_60_g3(data[[
+    "age"
+  ]])
   # age total
-  data[["strat_age_group_years_5_20"]] <- age_group_years_interval(5, 20)(data[["age"]])
-  data[["strat_age_group_years_5_12"]] <- age_group_years_interval(5, 12)(data[["age"]])
-  data[["strat_age_group_years_6_13"]] <- age_group_years_interval(6, 13)(data[["age"]])
-  data[["strat_age_group_years_10_20"]] <- age_group_years_interval(10, 20)(data[["age"]])
-  data[["strat_age_group_years_10_15"]] <- age_group_years_interval(10, 15)(data[["age"]])
-  data[["strat_age_group_years_15_20"]] <- age_group_years_interval(15, 20)(data[["age"]])
-  data[["strat_age_group_years_15_50"]] <- age_group_years_interval(15, 50)(data[["age"]])
+  data[["strat_age_group_years_5_20"]] <- age_group_years_interval(5, 20)(data[[
+    "age"
+  ]])
+  data[["strat_age_group_years_5_12"]] <- age_group_years_interval(5, 12)(data[[
+    "age"
+  ]])
+  data[["strat_age_group_years_6_13"]] <- age_group_years_interval(6, 13)(data[[
+    "age"
+  ]])
+  data[["strat_age_group_years_10_20"]] <- age_group_years_interval(
+    10,
+    20
+  )(data[["age"]])
+  data[["strat_age_group_years_10_15"]] <- age_group_years_interval(
+    10,
+    15
+  )(data[["age"]])
+  data[["strat_age_group_years_15_20"]] <- age_group_years_interval(
+    15,
+    20
+  )(data[["age"]])
+  data[["strat_age_group_years_15_50"]] <- age_group_years_interval(
+    15,
+    50
+  )(data[["age"]])
   # age 15 to 90 in year increments
   data[["strat_age_group_years_15_90"]] <- age_group_years_15_90(data[["age"]])
   # age group X+
-  data[["strat_age_group_years_60_plus"]] <- age_group_years_plus(60)(data[["age"]])
-  data[["strat_age_group_years_90_plus"]] <- age_group_years_plus(90)(data[["age"]])
+  data[["strat_age_group_years_60_plus"]] <- age_group_years_plus(60)(data[[
+    "age"
+  ]])
+  data[["strat_age_group_years_90_plus"]] <- age_group_years_plus(90)(data[[
+    "age"
+  ]])
   data
 }
 

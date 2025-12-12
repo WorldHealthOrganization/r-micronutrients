@@ -1,27 +1,28 @@
 indicator <- function(
-    name,
-    abbreviated_name,
-    required_concepts,
-    global_condition,
-    categories,
-    value_concept,
-    export_value_name,
-    prev_value_cutoffs,
-    prevalence_categories,
-    aggregate_prevalence_categories = NULL,
-    prevalence_category_names = NULL,
-    adjustment = no_adjustment,
-    implausible_values = no_implausible_values,
-    drop_columns = NULL,
-    rename_columns = NULL,
-    reorder_columns = NULL,
-    plot_settings = NULL,
-    prevalence_reports = list(
-      long = TRUE,
-      short = TRUE
-    ),
-    precondition = TRUE,
-    envir = caller_env()) {
+  name,
+  abbreviated_name,
+  required_concepts,
+  global_condition,
+  categories,
+  value_concept,
+  export_value_name,
+  prev_value_cutoffs,
+  prevalence_categories,
+  aggregate_prevalence_categories = NULL,
+  prevalence_category_names = NULL,
+  adjustment = no_adjustment,
+  implausible_values = no_implausible_values,
+  drop_columns = NULL,
+  rename_columns = NULL,
+  reorder_columns = NULL,
+  plot_settings = NULL,
+  prevalence_reports = list(
+    long = TRUE,
+    short = TRUE
+  ),
+  precondition = TRUE,
+  envir = caller_env()
+) {
   stopifnot(
     all(
       vapply(prev_value_cutoffs, is_prev_cutoff, logical(1))
@@ -221,7 +222,8 @@ no_implausible_values <- adjustment(
 #' @export
 format.indicator <- function(x, ...) {
   paste0(
-    "Indicator: ", x$name
+    "Indicator: ",
+    x$name
   )
 }
 
@@ -232,7 +234,6 @@ print.indicator <- function(x, ...) {
 
 indicator_compute <- function(x, value, concepts) {
   stopifnot(is_indicator(x))
-
 
   adj <- x$adjustment
   implausible_values <- x$implausible_values
@@ -249,7 +250,8 @@ indicator_compute <- function(x, value, concepts) {
     stop(
       "Indicator: '",
       format(x),
-      "' needs the following inputs: ", paste(missing_concepts, collapse = ", ")
+      "' needs the following inputs: ",
+      paste(missing_concepts, collapse = ", ")
     )
   }
 
@@ -260,16 +262,21 @@ indicator_compute <- function(x, value, concepts) {
   )
   execution_envir <- list2env(env_list)
   parent.env(execution_envir) <- x$parent_env
-  assign("%between%", function(lhs, rhs) {
-    !is.na(lhs) & lhs >= rhs[1] & lhs < rhs[2]
-  }, envir = execution_envir)
+  assign(
+    "%between%",
+    function(lhs, rhs) {
+      !is.na(lhs) & lhs >= rhs[1] & lhs < rhs[2]
+    },
+    envir = execution_envir
+  )
   cannot_compute <- !eval(rlang::get_expr(x$precondition), execution_envir)
   if (cannot_compute) {
     stop(
       "Indicator: '",
       format(x),
       "' cannot be computed because a precondition is not met.",
-      "Precondition: ", x$precondition
+      "Precondition: ",
+      x$precondition
     )
     return(NULL)
   }
@@ -277,7 +284,8 @@ indicator_compute <- function(x, value, concepts) {
     lapply(x$categories, function(x) {
       category_conditions_to_formula_list(x, execution_envir)
     }),
-    recursive = FALSE, use.names = TRUE
+    recursive = FALSE,
+    use.names = TRUE
   )
 
   result <- dplyr::case_when(
@@ -285,7 +293,9 @@ indicator_compute <- function(x, value, concepts) {
     TRUE ~ NA_character_
   )
   global_condition <- rlang::get_expr(x$global_condition)
-  result[!na_2_false(eval(global_condition, envir = execution_envir))] <- NA_character_
+  result[
+    !na_2_false(eval(global_condition, envir = execution_envir))
+  ] <- NA_character_
   factor(
     x = result,
     levels = levels(x)
@@ -301,16 +311,20 @@ indicator_adjust_value <- function(indicator, value, concepts) {
 
   # Apply the adjustment
   if (
-    "ferritin_adjustment_rm_agp_crp" %in% class(adj) &
+    "ferritin_adjustment_rm_agp_crp" %in%
+      class(adj) &
       "malaria" %in% names(concepts)
   ) {
     adj$required_concepts <- c(adj$required_concepts, "malaria")
   }
 
-  adjusted_value <- do.call(adj$fun, c(
-    list(value),
-    concepts[required_concepts(adj)]
-  ))
+  adjusted_value <- do.call(
+    adj$fun,
+    c(
+      list(value),
+      concepts[required_concepts(adj)]
+    )
+  )
 
   # Set implausible values to NA
   do.call(
@@ -326,7 +340,8 @@ indicators_compute_all <- function(indicators, values, concepts) {
 
     res <- if (is.null(values[[i]])) {
       stop(
-        "Indicator: '", format(indicator),
+        "Indicator: '",
+        format(indicator),
         "'. Please provide a value for '",
         indicator$value_concept,
         "'",
@@ -346,7 +361,11 @@ indicators_compute_all <- function(indicators, values, concepts) {
         )
       }
     }
-    colnames(res) <- paste0(indicator_abbreviated_name(indicator), "_", colnames(res))
+    colnames(res) <- paste0(
+      indicator_abbreviated_name(indicator),
+      "_",
+      colnames(res)
+    )
     res
   })
 

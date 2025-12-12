@@ -38,10 +38,28 @@ concepts <- concepts_list(
   concept(
     key = "pregnancy_status",
     label = "Pregnacy status",
-    acceptor = concept_acceptor(function(x) {
-      x <- as.character(x)
-      all(tolower(x) %in% c("1", "2", "3", "y", "n", "unk", "unknown", "yes", "no", NA_character_)) && any(!is.na(x))
-    }, "Pregancy status is encoded as either 1 (yes), 2 (no) or 3 (unknown)."),
+    acceptor = concept_acceptor(
+      function(x) {
+        x <- as.character(x)
+        all(
+          tolower(x) %in%
+            c(
+              "1",
+              "2",
+              "3",
+              "y",
+              "n",
+              "unk",
+              "unknown",
+              "yes",
+              "no",
+              NA_character_
+            )
+        ) &&
+          any(!is.na(x))
+      },
+      "Pregancy status is encoded as either 1 (yes), 2 (no) or 3 (unknown)."
+    ),
     standardizer = function(x) {
       x <- as.character(x)
       res <- rep.int(NA_character_, length(x))
@@ -75,10 +93,13 @@ concepts <- concepts_list(
   concept(
     key = "lactating_status",
     label = "Lactating status",
-    acceptor = concept_acceptor(function(x) {
-      x <- as.character(x)
-      all(x %in% c("1", "2", "3", NA_character_)) && any(!is.na(x))
-    }, "Lactating status is encoded as either 1 (yes), 2 (no) or 3 (unknown)."),
+    acceptor = concept_acceptor(
+      function(x) {
+        x <- as.character(x)
+        all(x %in% c("1", "2", "3", NA_character_)) && any(!is.na(x))
+      },
+      "Lactating status is encoded as either 1 (yes), 2 (no) or 3 (unknown)."
+    ),
     standardizer = function(x) {
       x <- as.character(x)
       res <- rep.int(NA, length(x))
@@ -94,10 +115,30 @@ concepts <- concepts_list(
   concept(
     key = "is_smoker",
     label = "Smoking Status",
-    acceptor = concept_acceptor(function(x) {
-      x <- as.character(x)
-      all(tolower(x) %in% c("true", "false", "1", "2", "3", "y", "n", "unk", "unknown", "yes", "no", NA_character_)) && any(!is.na(x))
-    }, "Smoking status is encoded as 1 (yes) or 2 (no)."),
+    acceptor = concept_acceptor(
+      function(x) {
+        x <- as.character(x)
+        all(
+          tolower(x) %in%
+            c(
+              "true",
+              "false",
+              "1",
+              "2",
+              "3",
+              "y",
+              "n",
+              "unk",
+              "unknown",
+              "yes",
+              "no",
+              NA_character_
+            )
+        ) &&
+          any(!is.na(x))
+      },
+      "Smoking status is encoded as 1 (yes) or 2 (no)."
+    ),
     standardizer = function(x) {
       x <- as.character(x)
       res <- rep.int(NA, length(x))
@@ -138,12 +179,16 @@ concepts <- concepts_list(
   concept(
     key = "area",
     label = "Area",
-    acceptor = concept_acceptor(function(x) {
-      all(
-        tolower(x) %in% c("1", "2", "urban", "rural", NA_character_),
-        na.rm = TRUE
-      ) && any(!is.na(x))
-    }, "TODO"),
+    acceptor = concept_acceptor(
+      function(x) {
+        all(
+          tolower(x) %in% c("1", "2", "urban", "rural", NA_character_),
+          na.rm = TRUE
+        ) &&
+          any(!is.na(x))
+      },
+      "TODO"
+    ),
     standardizer = as_area,
     validator = \(x) is.factor(x) & all(levels(x) == area_levels),
     prototype = NA_character_
@@ -170,13 +215,17 @@ concepts <- concepts_list(
   concept(
     key = "mothers_education",
     label = "Mother's Education",
-    acceptor = concept_acceptor(function(x) {
-      is.numeric(x) &&
-        all(
-          x %in% c(0:3, NA_integer_),
-          na.rm = TRUE
-        ) && any(!is.na(x))
-    }, "TODO"),
+    acceptor = concept_acceptor(
+      function(x) {
+        is.numeric(x) &&
+          all(
+            x %in% c(0:3, NA_integer_),
+            na.rm = TRUE
+          ) &&
+          any(!is.na(x))
+      },
+      "TODO"
+    ),
     standardizer = as_mothers_education,
     validator = \(x) is.factor(x) & all(levels(x) == mothers_education_levels),
     prototype = NA_character_
@@ -299,12 +348,16 @@ concepts <- concepts_list(
   concept(
     key = "fasting",
     label = "Fasting",
-    acceptor = concept_acceptor(function(x) {
-      all(
-        tolower(x) %in% c("1", "2", "yes", "no", "y", "n", NA_character_),
-        na.rm = TRUE
-      ) && any(!is.na(x))
-    }, "TODO"),
+    acceptor = concept_acceptor(
+      function(x) {
+        all(
+          tolower(x) %in% c("1", "2", "yes", "no", "y", "n", NA_character_),
+          na.rm = TRUE
+        ) &&
+          any(!is.na(x))
+      },
+      "TODO"
+    ),
     standardizer = as.character,
     validator = is.character,
     prototype = NA_character_
@@ -313,12 +366,16 @@ concepts <- concepts_list(
   concept(
     key = "malaria",
     label = "Malaria",
-    acceptor = concept_acceptor(function(x) {
-      all(
-        tolower(x) %in% c("1", "2", "yes", "no", "y", "n", NA_character_),
-        na.rm = TRUE
-      ) && any(!is.na(x))
-    }, "TODO"),
+    acceptor = concept_acceptor(
+      function(x) {
+        all(
+          tolower(x) %in% c("1", "2", "yes", "no", "y", "n", NA_character_),
+          na.rm = TRUE
+        ) &&
+          any(!is.na(x))
+      },
+      "TODO"
+    ),
     standardizer = function(x) {
       x <- as.character(x)
       res <- rep.int(NA, length(x))

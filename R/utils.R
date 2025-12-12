@@ -116,13 +116,19 @@ path_ext <- function(path) {
 }
 
 get_age_cats <- function(dat) {
-  age_groups_with_values <- vapply(names(total_age_group_names), function(x) {
-    any(total_age_group_functions[[x]](dat[["age"]]))
-  }, logical(1))
+  age_groups_with_values <- vapply(
+    names(total_age_group_names),
+    function(x) {
+      any(total_age_group_functions[[x]](dat[["age"]]))
+    },
+    logical(1)
+  )
 
   vec_c(
     sort(
-      set_names(names(total_age_group_names), total_age_group_names)[age_groups_with_values]
+      set_names(names(total_age_group_names), total_age_group_names)[
+        age_groups_with_values
+      ]
     )
   )
 }
