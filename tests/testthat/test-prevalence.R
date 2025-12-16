@@ -4,7 +4,7 @@ test_that("long prevalence", {
     indicators = list(
       indicator_iodine(),
       indicator_ferritin(),
-      indicator_ferritin(adjustment_ferritin_implausible()),
+      indicator_ferritin(adjustment_ferritin_cutoff()),
       indicator_anaemia(),
       indicator_ida()
     ),
@@ -283,7 +283,7 @@ test_that("short prevalence", {
     indicators = list(
       indicator_iodine(),
       indicator_ferritin(),
-      indicator_ferritin(adjustment_ferritin_implausible()),
+      indicator_ferritin(adjustment_ferritin_cutoff()),
       indicator_anaemia(),
       indicator_ida()
     ),

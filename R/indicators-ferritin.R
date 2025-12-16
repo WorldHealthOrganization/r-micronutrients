@@ -266,18 +266,11 @@ ferritin_adjustment_rm_agp_crp <- adjustment(
 )
 
 
-# git469 this is not the same kind of adjustment. The "adjustment"
+# This is not the same kind of adjustment. The "adjustment"
 # happens in the inflammation function where it requires that
 # this is the adjustment as part of "inflammation"
 ferritin_adjustment_cutoff_fun <- function(value, CRP, AGP, malaria = NULL) {
   value <- vec_cast(value, double())
-  na <- measurement_mcg_l(NA_real_)
-  # value[CRP >= 5] <- na
-  # value[AGP >= 1] <- na
-  # if(!is.null(malaria)){
-  #   value[malaria == "Malaria"] <- na
-  # }
-
   value
 }
 
@@ -300,34 +293,34 @@ ferritin_adjustment_arithmetic_correction_fun <- function(value, CRP, AGP) {
     iAGP = as.numeric(AGP)
   )
 
-  data <- data %>%
-    mutate(
-      iCRPHigh = case_when(
-        iCRP > 5 ~ 1, # Elevated CRP
-        iCRP <= 5 ~ 0, # Normal CRP
-        TRUE ~ NA_real_ # Assign NA to any other cases
-      )
+  data <- mutate(
+    data,
+    iCRPHigh = case_when(
+      iCRP > 5 ~ 1, # Elevated CRP
+      iCRP <= 5 ~ 0, # Normal CRP
+      TRUE ~ NA_real_ # Assign NA to any other cases
     )
+  )
 
-  data <- data %>%
-    mutate(
-      iAGPHigh = case_when(
-        iAGP > 1 ~ 1, # Elevated AGP
-        iAGP <= 1 ~ 0, # Normal AGP
-        TRUE ~ NA_real_ # Assign NA to any other cases
-      )
+  data <- mutate(
+    data,
+    iAGPHigh = case_when(
+      iAGP > 1 ~ 1, # Elevated AGP
+      iAGP <= 1 ~ 0, # Normal AGP
+      TRUE ~ NA_real_ # Assign NA to any other cases
     )
+  )
 
-  data <- data %>%
-    mutate(
-      iInflamCat = case_when(
-        iCRPHigh == 0 & iAGPHigh == 0 ~ 0, # None
-        iCRPHigh == 1 & iAGPHigh == 0 ~ 1, # Incubation
-        iCRPHigh == 1 & iAGPHigh == 1 ~ 2, # Early convalescent
-        iCRPHigh == 0 & iAGPHigh == 1 ~ 3, # Late convalescent
-        TRUE ~ NA_real_ # Assign NA to any other cases
-      )
+  data <- mutate(
+    data,
+    iInflamCat = case_when(
+      iCRPHigh == 0 & iAGPHigh == 0 ~ 0, # None
+      iCRPHigh == 1 & iAGPHigh == 0 ~ 1, # Incubation
+      iCRPHigh == 1 & iAGPHigh == 1 ~ 2, # Early convalescent
+      iCRPHigh == 0 & iAGPHigh == 1 ~ 3, # Late convalescent
+      TRUE ~ NA_real_ # Assign NA to any other cases
     )
+  )
 
   data$iLogFerr <- log(data$iFerr)
 
@@ -344,16 +337,16 @@ ferritin_adjustment_arithmetic_correction_fun <- function(value, CRP, AGP) {
   data$iFerrAntilogCat2 <- exp(data$iLogFerrCat0_2)
   data$iFerrAntilogCat3 <- exp(data$iLogFerrCat0_3)
 
-  data <- data %>%
-    mutate(
-      iFerr2F4 = case_when(
-        iInflamCat == 0 ~ iFerr, # None
-        iInflamCat == 1 ~ iFerr * 0.53449, # Incubation
-        iInflamCat == 2 ~ iFerr * 0.419884, # Early convalescent
-        iInflamCat == 3 ~ iFerr * 0.8044426, # Late convalescent
-        TRUE ~ NA_real_ # Assign NA to any other cases
-      )
+  data <- mutate(
+    data,
+    iFerr2F4 = case_when(
+      iInflamCat == 0 ~ iFerr, # None
+      iInflamCat == 1 ~ iFerr * 0.53449, # Incubation
+      iInflamCat == 2 ~ iFerr * 0.419884, # Early convalescent
+      iInflamCat == 3 ~ iFerr * 0.8044426, # Late convalescent
+      TRUE ~ NA_real_ # Assign NA to any other cases
     )
+  )
 
   data$iFerr2F4
 }
@@ -397,20 +390,20 @@ ferritin_adjustment_regression_correction <- adjustment(
       data = data
     ))$coefficients["iLogAGP", "Estimate"]
 
-    data <- data %>%
-      mutate(
-        iLogFerrAdj = case_when(
-          iLogCRP > logcrpdecile & iLogAGP > logagpdecile ~ iLogFerr -
-            logcrpcoeffSF * (iLogCRP - logcrpdecile) -
-            logagpcoeffSF * (iLogAGP - logagpdecile),
-          iLogCRP <= logcrpdecile & iLogAGP > logagpdecile ~ iLogFerr -
-            logagpcoeffSF * (iLogAGP - logagpdecile),
-          iLogCRP > logcrpdecile & iLogAGP <= logagpdecile ~ iLogFerr -
-            logcrpcoeffSF * (iLogCRP - logcrpdecile),
-          iLogCRP <= logcrpdecile & iLogAGP <= logagpdecile ~ iLogFerr,
-          TRUE ~ NA_real_
-        )
+    data <- mutate(
+      data,
+      iLogFerrAdj = case_when(
+        iLogCRP > logcrpdecile & iLogAGP > logagpdecile ~ iLogFerr -
+          logcrpcoeffSF * (iLogCRP - logcrpdecile) -
+          logagpcoeffSF * (iLogAGP - logagpdecile),
+        iLogCRP <= logcrpdecile & iLogAGP > logagpdecile ~ iLogFerr -
+          logagpcoeffSF * (iLogAGP - logagpdecile),
+        iLogCRP > logcrpdecile & iLogAGP <= logagpdecile ~ iLogFerr -
+          logcrpcoeffSF * (iLogCRP - logcrpdecile),
+        iLogCRP <= logcrpdecile & iLogAGP <= logagpdecile ~ iLogFerr,
+        TRUE ~ NA_real_
       )
+    )
     data$iFerr2F5 <- exp(data$iLogFerrAdj)
 
     # suppressMessages({

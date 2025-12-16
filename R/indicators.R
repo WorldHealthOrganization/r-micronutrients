@@ -194,11 +194,6 @@ required_concepts.indicator_adjustment <- function(x) {
   x$required_concepts
 }
 
-#' Indicator adjustment methods
-#'
-#' This can be used to signal no adjustment for an indicator.
-#' @rdname adjustments
-#' @export
 no_adjustment <- adjustment(
   required_concepts = character(),
   fun = \(value) value
