@@ -21,18 +21,8 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 `micronutrients` is currently an early prototype to compute micronutrient indicators from survey data.
-It is based on the code from the [Micronutrient Survey Analyzer tool](https://github.com/WorldHealthOrganization/micronutrients-survey-analyzer-dev/tree/dev).
 
-It is not meant for serious use yet. The goal is to build the foundation to turn the logic into a package once the shiny app is mature enough.
-
-## Installation
-
-You can install the development version of micronutrients from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("pak")
-pak::pak("WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser")
-```
+It is not meant for serious use yet.
 
 ## API
 
@@ -54,7 +44,6 @@ Adjustments:
 * `adjustment_none()`
 * `adjustment_ferritin_arithmetic_correction()`
 * `adjustment_ferritin_cutoff()`
-* `adjustment_ferritin_implausible()`
 * `adjustment_ferritin_regression_correction()`
 * `adjustment_ferritin_rm_agp_crp()`
 
@@ -70,7 +59,7 @@ result <- individual_classification(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_none()),
-    indicator_ferritin(adjustment_ferritin_implausible()),
+    indicator_ferritin(adjustment_ferritin_cutoff()),
     indicator_anaemia(),
     indicator_ida()
   ),
@@ -98,7 +87,7 @@ result <- prevalence_short_format(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_none()),
-    indicator_ferritin(adjustment_ferritin_implausible()),
+    indicator_ferritin(adjustment_ferritin_cutoff()),
     indicator_anaemia(),
     indicator_ida()
   ),

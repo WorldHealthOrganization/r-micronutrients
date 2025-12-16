@@ -11,22 +11,9 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 `micronutrients` is currently an early prototype to compute
-micronutrient indicators from survey data. It is based on the code from
-the [Micronutrient Survey Analyzer
-tool](https://github.com/WorldHealthOrganization/micronutrients-survey-analyzer-dev/tree/dev).
+micronutrient indicators from survey data.
 
-It is not meant for serious use yet. The goal is to build the foundation
-to turn the logic into a package once the shiny app is mature enough.
-
-## Installation
-
-You can install the development version of micronutrients from
-[GitHub](https://github.com/) with:
-
-``` r
-# install.packages("pak")
-pak::pak("WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser")
-```
+It is not meant for serious use yet.
 
 ## API
 
@@ -50,7 +37,6 @@ Adjustments:
 - `adjustment_none()`
 - `adjustment_ferritin_arithmetic_correction()`
 - `adjustment_ferritin_cutoff()`
-- `adjustment_ferritin_implausible()`
 - `adjustment_ferritin_regression_correction()`
 - `adjustment_ferritin_rm_agp_crp()`
 
@@ -67,7 +53,7 @@ result <- individual_classification(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_none()),
-    indicator_ferritin(adjustment_ferritin_implausible()),
+    indicator_ferritin(adjustment_ferritin_cutoff()),
     indicator_anaemia(),
     indicator_ida()
   ),
@@ -96,7 +82,7 @@ result <- prevalence_short_format(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_none()),
-    indicator_ferritin(adjustment_ferritin_implausible()),
+    indicator_ferritin(adjustment_ferritin_cutoff()),
     indicator_anaemia(),
     indicator_ida()
   ),
@@ -121,7 +107,7 @@ result <- prevalence_short_format(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 80.96%
+#> micronutrients Coverage: 81.73%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -129,19 +115,19 @@ covr::package_coverage()
 #> R/concept-lactating-status.R: 0.00%
 #> R/concept-mothers-education.R: 0.00%
 #> R/concept-wealth-quintile.R: 0.00%
-#> R/indicators-anaemia.R: 3.70%
 #> R/measurements.R: 11.43%
 #> R/concept-sex.R: 22.22%
-#> R/utils.R: 31.82%
+#> R/utils.R: 29.17%
 #> R/indicators-iodine.R: 33.33%
-#> R/indicators-ferritin.R: 66.99%
+#> R/indicators-ferritin.R: 65.82%
+#> R/indicators-iron-deficiency-anaemia.R: 74.64%
 #> R/concept-pregnancy-status.R: 81.25%
-#> R/age-groups.R: 83.67%
-#> R/indicators.R: 85.31%
-#> R/prevalence.R: 95.18%
-#> R/indicators-iron-deficiency-anaemia.R: 97.53%
+#> R/indicators.R: 85.28%
+#> R/age-groups.R: 89.61%
+#> R/prevalence.R: 96.52%
 #> R/adjustments-export.R: 100.00%
 #> R/classifications.R: 100.00%
 #> R/concepts.R: 100.00%
+#> R/indicators-anaemia.R: 100.00%
 #> R/indicators-export.R: 100.00%
 ```
