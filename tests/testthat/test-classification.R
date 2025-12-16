@@ -4,7 +4,7 @@ test_that("row level classification works", {
     indicators = list(
       indicator_iodine(),
       indicator_ferritin(adjustment_none()),
-      indicator_ferritin(adjustment_ferritin_implausible()),
+      indicator_ferritin(adjustment_ferritin_cutoff()),
       indicator_anaemia(),
       indicator_ida()
     ),
@@ -56,7 +56,7 @@ test_that("user is warned about missing concepts", {
       indicators = list(
         indicator_iodine(),
         indicator_ferritin(),
-        indicator_ferritin(adjustment_ferritin_implausible()),
+        indicator_ferritin(adjustment_ferritin_cutoff()),
         indicator_anaemia(),
         indicator_ida()
       ),
@@ -72,7 +72,7 @@ test_that("user is warned about malformed input", {
       indicators = list(
         indicator_iodine(),
         indicator_ferritin(),
-        indicator_ferritin(adjustment_ferritin_implausible()),
+        indicator_ferritin(adjustment_ferritin_cutoff()),
         indicator_anaemia(),
         indicator_ida()
       ),
@@ -86,7 +86,6 @@ test_that("user is warned about malformed input", {
 test_that("all adjustment methods do not create errors", {
   adjustments <- list(
     adjustment_ferritin_cutoff(),
-    adjustment_ferritin_implausible(),
     adjustment_ferritin_rm_agp_crp(),
     adjustment_ferritin_arithmetic_correction(),
     adjustment_ferritin_regression_correction()

@@ -1,4 +1,3 @@
-#' @importFrom magrittr %>%
 #' @importFrom dplyr mutate
 #' @import lubridate
 #' @importFrom stats na.exclude
