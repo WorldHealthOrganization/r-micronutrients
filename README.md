@@ -7,13 +7,13 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![R-CMD-check](https://github.com/WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WorldHealthOrganization/CRANMicronutrientsSurveyAnalyser/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/WorldHealthOrganization/r-micronutrients/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WorldHealthOrganization/r-micronutrients/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `micronutrients` is currently an early prototype to compute
 micronutrient indicators from survey data.
 
-It is not meant for serious use yet.
+It is not meant for serious use yet and still work in progress.
 
 ## API
 
