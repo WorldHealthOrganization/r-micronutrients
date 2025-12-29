@@ -83,7 +83,7 @@ result <- individual_classification(
 Prevalence functions accept the same arguments and compute a summary table.
 
 ```{r, eval=FALSE}
-result <- prevalence_short_format(
+result <- micronutrients_stats(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_none()),
