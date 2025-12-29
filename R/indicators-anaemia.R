@@ -59,6 +59,7 @@ anaemia_implausible_values <- function(value, age = NULL, sex = NULL) {
 }
 
 #' @include indicators.R
+#' @import rlang
 #' @noRd
 anaemia_indicator <- indicator(
   name = "Anaemia - Haemoglobin (g/L)",

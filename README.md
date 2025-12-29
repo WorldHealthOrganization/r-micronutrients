@@ -78,7 +78,7 @@ Prevalence functions accept the same arguments and compute a summary
 table.
 
 ``` r
-result <- prevalence_short_format(
+result <- micronutrients_stats(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_none()),
@@ -107,7 +107,7 @@ result <- prevalence_short_format(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 81.73%
+#> micronutrients Coverage: 80.65%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -122,9 +122,9 @@ covr::package_coverage()
 #> R/indicators-ferritin.R: 65.82%
 #> R/indicators-iron-deficiency-anaemia.R: 74.64%
 #> R/concept-pregnancy-status.R: 81.25%
-#> R/indicators.R: 85.28%
+#> R/indicators.R: 84.85%
 #> R/age-groups.R: 89.61%
-#> R/prevalence.R: 96.52%
+#> R/prevalence.R: 98.40%
 #> R/adjustments-export.R: 100.00%
 #> R/classifications.R: 100.00%
 #> R/concepts.R: 100.00%

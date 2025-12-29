@@ -1,8 +1,9 @@
-#' Long Format Prevalence
+#' Compute Short Format Statistics
 #'
-#' Long format prevalence is using a wide range of cutoffs;
-#' includes prevalence estimates with corresponding standard errors and
-#' confidence intervals, and summary statistics (mean and standard deviation).
+#' Short format statistics table according to the WHO recommended cutoffs
+#' standard analysis; includes prevalence estimates with corresponding
+#' standard errors and confidence intervals, and summary statistics
+#' (mean and standard deviation).
 #'
 #' @inheritParams individual_classification
 #' @param strata (Optional) A numeric vector. Each individual / household should be assigned to a strata and cluster; these design-related variables are considered by the analyses to boost the stability of estimated variance. If not provided, it will be assumed that all individuals belong to the same unique strata/cluster.
@@ -13,92 +14,7 @@
 #' @param mothers_education (Optional) A vector indicating the education level of mothers, encoded numerically as 0 to 3.
 #' @param area (Optional) A vector indicating the area of residence, Accepted values: "urban" or "rural".
 #' @param region (Optional) A vector specifying the region or administrative division.
-#' @param other_region (Optional) A vector for alternative region groupings.
 #' @param other_grouping_variable (Optional) A vector for any additional grouping variable.
-#' @param team (Optional) A numeric vector specifying the team conducting the survey. Whenever provided, this variable is used for performing data quality assessment stratified to help interpretation.
-#'
-#' @return A long-format data frame with prevalence estimates and supporting statistics.
-#'
-#' @details
-#' The output data frame contains rows for each grouping level (e.g., by age, sex, or other strata)
-#' and a wide range of metrics, including means, standard deviations, percentiles, and confidence
-#' intervals for various indicators. Percentiles and prevalence thresholds are computed for indicators
-#' such as haemoglobin and ferritin, adjusted and unadjusted for inflammation where relevant.
-#'
-#' The function can handle additional grouping variables and stratifications, providing flexibility
-#' for analyses requiring specific population segments or contexts.
-#'
-#' @export
-prevalence_long_format <- function(
-  indicators,
-  sex,
-  age,
-  pregnancy_status = NULL,
-  lactating_status = NULL,
-  CRP = NULL,
-  AGP = NULL,
-  ferritin = NULL,
-  ida = NULL,
-  iodine = NULL,
-  haemoglobin = NULL,
-  altitude = NULL,
-  is_smoker = NULL,
-  smokes_cigarettes_per_day = NULL,
-  pregnancyweeks = NULL,
-  pregnancymonths = NULL,
-  malaria = NULL,
-  cluster = NULL,
-  strata = NULL,
-  sample_weight = NULL,
-  wealth_quintile = NULL,
-  mothers_education = NULL,
-  area = NULL,
-  region = NULL,
-  other_region = NULL,
-  other_grouping_variable = NULL,
-  team = NULL
-) {
-  compute_prevalence(
-    long_format_prevalence_internal,
-    indicators,
-    sex = sex,
-    age = age,
-    pregnancy_status = pregnancy_status,
-    lactating_status = lactating_status,
-    CRP = CRP,
-    AGP = AGP,
-    ferritin = ferritin,
-    ida = ida,
-    iodine = iodine,
-    haemoglobin = haemoglobin,
-    altitude = altitude,
-    is_smoker = is_smoker,
-    smokes_cigarettes_per_day = smokes_cigarettes_per_day,
-    pregnancyweeks = pregnancyweeks,
-    pregnancymonths = pregnancymonths,
-    malaria = malaria,
-    wealth_quintile = wealth_quintile,
-    mothers_education = mothers_education,
-    area = area,
-    region = region,
-    other_region = other_region,
-    other_grouping_variable = other_grouping_variable,
-    team = team,
-    cluster = cluster,
-    strata = strata,
-    sample_weight = sample_weight
-  )
-}
-
-#' Compute Short Format Prevalence
-#'
-#' Short format prevalence file according to the WHO recommended cutoffs
-#' standard analysis; includes prevalence estimates with corresponding
-#' standard errors and confidence intervals, and summary statistics
-#' (mean and standard deviation).
-#'
-#' @inheritParams individual_classification
-#' @inheritParams prevalence_long_format
 #'
 #' @return A short-format data frame with summary statistics for key indicators.
 #'
@@ -106,7 +22,7 @@ prevalence_long_format <- function(
 #' The function provides a streamlined output compared to long-format prevalence functions, focusing on key summary metrics.
 #'
 #' @export
-prevalence_short_format <- function(
+micronutrients_stats <- function(
   indicators,
   sex,
   age,
@@ -131,9 +47,7 @@ prevalence_short_format <- function(
   mothers_education = NULL,
   area = NULL,
   region = NULL,
-  other_region = NULL,
-  other_grouping_variable = NULL,
-  team = NULL
+  other_grouping_variable = NULL
 ) {
   compute_prevalence(
     short_format_prevalence_internal,
@@ -158,9 +72,7 @@ prevalence_short_format <- function(
     mothers_education = mothers_education,
     area = area,
     region = region,
-    other_region = other_region,
     other_grouping_variable = other_grouping_variable,
-    team = team,
     cluster = cluster,
     strata = strata,
     sample_weight = sample_weight
@@ -254,68 +166,6 @@ compute_prevalence <- function(
 
 #' @import survey
 #' @import rlang
-long_format_prevalence_internal <- function(survey_data, indicators) {
-  indicators <- Filter(prevalence_report_long, indicators)
-
-  # first we build a dataset that is used by {survey} for analysis
-  survey_data <- build_prevalence_survey_data(survey_data, indicators)
-  survey_df <- survey_data$data
-  strat_labels <- survey_data$strat_labels
-  strat_formula <- survey_data$strat_formula
-  indicator_columns <- survey_data$indicator_columns
-  rename_cols <- sapply(indicators, indicator_rename_columns, "long") |>
-    unlist()
-  reorder_cols <- sapply(indicators, indicator_reorder_columns, "long") |>
-    unlist()
-
-  design <- prevalence_design(survey_df)
-
-  prev_age_start_end <- prevalence_age_start_end(survey_df, strat_labels)
-  pop_estimates <- prevalence_pop_estimates(
-    design,
-    indicators,
-    strat_formula
-  )
-  quantile_estimates <- prevalence_quantile_estimates(
-    weighted(design),
-    indicators,
-    strat_formula
-  )
-
-  mean_estimates <- prevalence_mean_estimates(
-    weighted(design),
-    indicators,
-    strat_formula
-  )
-
-  prev_mean_estimates <- prevalence_mean_prev_estimates(
-    weighted(design),
-    indicators,
-    strat_formula,
-    cut_off_columns(indicators)
-  )
-
-  mean_estimates_geometric <- prevalence_mean_estimates_geometric(
-    weighted(design),
-    indicators,
-    strat_formula
-  )
-
-  combine_and_format_estimates(
-    indicators,
-    strat_labels,
-    expected_columns = prevalence_long_format_columns(indicators),
-    age_start_end = prev_age_start_end,
-    rename_cols = rename_cols,
-    reorder_cols = reorder_cols,
-    pop_estimates,
-    quantile_estimates,
-    mean_estimates,
-    prev_mean_estimates,
-    mean_estimates_geometric
-  )
-}
-
 short_format_prevalence_internal <- function(survey_data, indicators) {
   indicators <- Filter(prevalence_report_short, indicators)
 
@@ -647,67 +497,6 @@ age_group_info_columns <- function(strat_types, strat_values) {
     dplyr::bind_rows()
 }
 
-prevalence_long_format_columns <- function(indicators) {
-  ordered_cols <- c(
-    "Group",
-    "age_start",
-    "age_end",
-    "age_unit"
-  )
-  drop_cols <- NULL
-
-  for (indicator in indicators) {
-    name <- indicator_export_value_name(indicator)
-    drop_cols <- c(drop_cols, indicator_drop_columns(indicator, "long"))
-    cutoffs <- indicator_prev_cutoff_names(indicator)
-    new_cols <- vec_c(
-      paste0(name, vec_c("_pop", "_unwpop")),
-      paste0(
-        name,
-        vec_c(
-          "_mean",
-          "_mean_sd",
-          "_mean_ll",
-          "_mean_ul",
-          "_geomean",
-          "_geomean_ll",
-          "_geomean_ul"
-        )
-      ),
-      paste0(
-        name,
-        vec_c(
-          "_10percentile",
-          "_25percentile",
-          "_50percentile",
-          "_75percentile",
-          "_90percentile"
-        )
-      ),
-      unlist(
-        lapply(cutoffs, function(cutoff) {
-          paste0(
-            cutoff,
-            vec_c(
-              "_r",
-              "_se",
-              "_ll",
-              "_ul"
-            )
-          )
-        })
-      )
-    )
-
-    ordered_cols <- vec_c(
-      ordered_cols,
-      new_cols
-    )
-  }
-
-  ordered_cols[!(ordered_cols %in% drop_cols)]
-}
-
 prevalence_short_format_columns <- function(indicators) {
   ordered_cols <- c(
     "Group",
@@ -724,7 +513,7 @@ prevalence_short_format_columns <- function(indicators) {
     # rename_cols <- c(rename_cols, indicator_rename_columns(indicator, "short"))
     prev_cats <- names(indicator_prevalence_categories(indicator))
     agg_prev_cats <- names(indicator_agg_prevalence_categories(indicator))
-    prev_cats <- c(prev_cats, agg_prev_cats)
+    prev_cats <- c(agg_prev_cats, prev_cats)
     new_cols <- vec_c(
       paste0(name, vec_c("_pop", "_unwpop")),
       paste0(
@@ -927,70 +716,6 @@ prevalence_mean_estimates <- function(
   combine_stratified_results(results)
 }
 
-
-#' @importFrom tibble tibble
-#' @importFrom stats confint
-prevalence_mean_estimates_geometric <- function(
-  weighted_design,
-  indicators,
-  stratification_formula
-) {
-  results <- lapply(seq_along(indicators), function(i) {
-    indicator_name <- paste0(
-      indicator_abbreviated_name(indicators[[i]]),
-      "_input_value"
-    )
-    value_formula <- make.formula(paste0("log(", indicator_name, ")"))
-    mean_est <- robust_svybys(
-      formula = value_formula,
-      bys = stratification_formula,
-      design = weighted_design,
-      FUN = svymean,
-      drop.empty.groups = FALSE,
-      na.rm = TRUE,
-      na.rm.all = TRUE
-    )
-
-    sd_est <- robust_svybys(
-      formula = value_formula,
-      bys = stratification_formula,
-      design = weighted_design,
-      FUN = robust_svyvar(paste0("log(", indicator_name, ")")),
-      drop.empty.groups = FALSE,
-      na.rm = TRUE,
-      na.rm.all = TRUE
-    )
-
-    mapply(
-      function(mean_est, sd_est) {
-        if (ncol(mean_est) == 1 || ncol(sd_est) == 1) {
-          # an error happened during the computation
-          mean <- mean_sd <- mean_ll <- mean_ul <- NA_real_
-        } else {
-          ci <- exp(confint(mean_est, level = 0.95, df = degf(weighted_design)))
-          mean <- exp(mean_est[[paste0("log(", indicator_name, ")")]])
-          mean_ll <- ci[, 1]
-          mean_ul <- ci[, 2]
-        }
-
-        value_name <- indicator_export_value_name(indicators[[i]])
-        res <- init_stratified_result(mean_est)
-
-        res[[paste0(value_name, "_geomean")]] <- mean
-        res[[paste0(value_name, "_geomean_ll")]] <- mean_ll
-        res[[paste0(value_name, "_geomean_ul")]] <- mean_ul
-        res
-      },
-      mean_est,
-      sd_est,
-      SIMPLIFY = FALSE
-    ) |>
-      dplyr::bind_rows()
-  })
-  combine_stratified_results(results)
-}
-
-
 prevalence_mean_prev_estimates <- function(
   weighted_design,
   indicators,
@@ -1180,37 +905,6 @@ init_stratified_result <- function(strat_df) {
   res[["stratification_type"]] <- colnames(res)
   colnames(res) <- c("stratification", "stratification_type")
   res
-}
-
-indicator_columns <- function(indicator, columns) {
-  # git399
-  ind_prefix <- indicator_export_value_name(indicator)
-  ind_agg_prev_prefix <- names(indicator_agg_prevalence_categories(indicator))
-  ind_prev_prefix <- names(indicator_prevalence_categories(indicator))
-
-  cols_ind <- NULL
-  cols_agg_prev_ind <- NULL
-  cols_prev_ind <- NULL
-
-  if (!is.null(ind_prefix)) {
-    cols_ind <- columns[grepl(paste0("^", ind_prefix, collapse = "|"), columns)]
-  }
-
-  if (!is.null(ind_agg_prev_prefix)) {
-    cols_agg_prev_ind <- columns[grepl(
-      paste(ind_agg_prev_prefix, collapse = "|"),
-      columns
-    )]
-  }
-
-  if (!is.null(ind_prev_prefix)) {
-    cols_prev_ind <- columns[grepl(
-      paste(ind_prev_prefix, collapse = "|"),
-      columns
-    )]
-  }
-
-  c(cols_ind, cols_agg_prev_ind, cols_prev_ind)
 }
 
 cut_off_columns <- function(indicators, indicator_columns) {
