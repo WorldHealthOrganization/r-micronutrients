@@ -86,20 +86,20 @@ result <- prevalence_short_format(
     indicator_anaemia(),
     indicator_ida()
   ),
-  age = testdata$age_years,
-  sex = testdata$sex,
-  pregnancy_status = testdata$pregnancy_status,
-  lactating_status = testdata$lactating_status,
-  ferritin = testdata$ferritin_measurement,
-  iodine = testdata$iodine,
-  CRP = testdata$crp_measurement,
-  AGP = testdata$agp_measurement,
-  haemoglobin = testdata$haemoglobin_measurement,
-  is_smoker = testdata$is_smoker,
-  altitude = testdata$altitude,
-  smokes_cigarettes_per_day = testdata$smokes_cigarettes_per_day,
-  pregnancyweeks = testdata$pregnancyweeks,
-  pregnancymonths = testdata$pregnancymonths
+  age = dataset$age_years,
+  sex = dataset$sex,
+  pregnancy_status = dataset$pregnancy_status,
+  lactating_status = dataset$lactating_status,
+  ferritin = dataset$ferritin_measurement,
+  iodine = dataset$iodine,
+  CRP = dataset$crp_measurement,
+  AGP = dataset$agp_measurement,
+  haemoglobin = dataset$haemoglobin_measurement,
+  is_smoker = dataset$is_smoker,
+  altitude = dataset$altitude,
+  smokes_cigarettes_per_day = dataset$smokes_cigarettes_per_day,
+  pregnancyweeks = dataset$pregnancyweeks,
+  pregnancymonths = dataset$pregnancymonths
 )
 ```
 
