@@ -78,38 +78,8 @@ anaemia_indicator <- indicator(
   ),
   global_condition = age_in_years(age) >= 0, # no restrictions
   categories = list(
-    # category(
-    #     name = "Total anaemia",
-    #     #value > 50
-    #     (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-    #       age_in_months(age) < 60 &
-    #       value < 110,
-    #
-    #     (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-    #       age_in_years(age) >= 5 & age_in_years(age) <= 11 &
-    #       value < 115,
-    #
-    #     (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-    #       age_in_years(age) >= 12 & age_in_years(age) <= 14 &
-    #       value < 120,
-    #
-    #     is_male(sex) &
-    #       age_in_years(age) >= 15 &
-    #       value < 130,
-    #
-    #     is_female(sex) &
-    #       (!is_pregnant(pregnancy_status) | is.na(is_pregnant(pregnancy_status))) &
-    #       age_in_years(age) >= 15 &
-    #       value < 120,
-    #
-    #     # female
-    #     is_pregnant(pregnancy_status) &
-    #       value < 110
-    # ),
     category(
       name = "No anaemia",
-
-      #f_dev(pregnancyweeks, pregnancymonths),
 
       age_in_months(age) < 24 &
         value >= 105,

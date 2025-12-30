@@ -128,20 +128,19 @@ classify_data_internal <- function(
     pregnancymonths = pregnancymonths,
     malaria = malaria
   )
-  cols <- names(concept_list)
+  cols <- names(concept_list$values)
 
   values <- lapply(indicators, function(x) {
-    concept_list[[x$value_concept]]
+    concept_list$values[[x$value_concept]]
   })
-
-  results <- indicators_compute_all(indicators, values, concept_list)
+  results <- indicators_compute_all(indicators, values, concept_list$values)
   names(results) <- NULL
   df <- do.call(cbind, results)
   if (!.format_column_names) {
     return(df)
   }
   colnames(df) <- paste0("indicator_", colnames(df))
-  concept_df <- dplyr::bind_cols(concept_list)
+  concept_df <- dplyr::bind_cols(concept_list$values[concept_list$non_nulls])
   colnames(concept_df) <- paste0("input_", colnames(concept_df))
   dplyr::bind_cols(concept_df, df)
 }

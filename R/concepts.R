@@ -230,15 +230,6 @@ concepts <- concepts_list(
     validator = \(x) is.factor(x) & all(levels(x) == mothers_education_levels),
     prototype = NA_character_
   ),
-  ## team ----
-  concept(
-    key = "team",
-    label = "Team",
-    acceptor = concept_acceptor(is.numeric, "TODO"),
-    standardizer = identity,
-    validator = is.numeric,
-    prototype = NA_integer_
-  ),
   ## sample_weight ----
   concept(
     key = "sample_weight",
@@ -307,15 +298,6 @@ concepts <- concepts_list(
     validator = is.numeric,
     prototype = measurement_mg_l(NA_real_),
     is_implausible = is_crp_implausible
-  ),
-  ## other_region ----
-  concept(
-    key = "other_region",
-    label = "Other Region",
-    acceptor = concept_acceptor(\(x) is.character(x) | is.numeric(x), "TODO"),
-    standardizer = as.character,
-    validator = is.character,
-    prototype = NA_character_
   ),
   ## other_grouping_variable ----
   concept(
@@ -392,18 +374,47 @@ concepts <- concepts_list(
   )
 )
 
-# takes a variadic pairlist and make it a named list with non-null values
+#' optional_concepts is a list of all concepts that do not need to be supplied
+#' by the user. In case the user does not explicitly assigns values to these
+#' the NA values of the specific concept is used.
+#' @noRd
+optional_concepts <- c(
+  "is_smoker",
+  "smokes_cigarettes_per_day",
+  "pregnancy_status",
+  "pregnancyweeks",
+  "pregnancymonths",
+  "lactating_status",
+  "CRP",
+  "AGP",
+  "malaria"
+)
+
+#' concepts_from_args takes a variadic pairlist
+#' and makes it a named list with non-null values.
+#'
+#' @return a list with two componments: `values` contains the named list
+#' of all values. `non_nulls` contains a character vector that indicates
+#' which concepts have been explicitly defined because some concepts
+#' create default values in case they have not been defined explicitly.
+#'
+#' @noRd
 concepts_from_args <- function(...) {
-  vals <- Filter(not_null, list(...))
+  all_values <- list(...)
+  vals <- Filter(not_null, all_values)
   keys <- names(vals)
+  if (length(vals) == 0) {
+    return(list(
+      values = list(),
+      non_nulls = character()
+    ))
+  }
   # at last we check that all values have the same length
-  if (length(vals) > 0) {
-    ll <- lengths(vals)
-    len <- ll[[1]]
-    all_equal_length <- all(vapply(ll, "==", logical(1L), len))
-    if (!all_equal_length) {
-      stop("All values need to be of equal length")
-    }
+  ll <- lengths(vals)
+  len <- ll[[1]]
+  all_equal_length <- all(vapply(ll, "==", logical(1L), len))
+  if (!all_equal_length) {
+    stop("All values need to be of equal length")
   }
   vals <- lapply(seq_along(vals), function(i) {
     key <- keys[[i]]
@@ -422,7 +433,27 @@ concepts_from_args <- function(...) {
     concept$standardizer(vals)
   })
   names(vals) <- keys
-  vals
+  value_length <- length(vals[[1]])
+  for (optional_concept_key in optional_concepts) {
+    if (optional_concept_key %in% keys) {
+      next()
+    }
+    optional_concept <- concepts[[optional_concept_key]]
+    if (is.null(optional_concept)) {
+      stop("Internal error: optional concept is null")
+    }
+    vals <- c(
+      vals,
+      stats::setNames(
+        list(rep.int(optional_concept$prototype, value_length)),
+        optional_concept_key
+      )
+    )
+  }
+  list(
+    values = vals,
+    non_nulls = keys
+  )
 }
 
 #' A helper data structure to map concept keys to labels

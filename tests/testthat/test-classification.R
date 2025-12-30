@@ -50,6 +50,42 @@ test_that("row level classification works", {
   ))
 })
 
+test_that("optional values have their prototype values", {
+  testdata <- random_datset(100)
+  res <- individual_classification(
+    indicators = list(
+      indicator_iodine(),
+      indicator_ferritin(adjustment_none()),
+      indicator_ferritin(adjustment_ferritin_cutoff()),
+      indicator_anaemia(),
+      indicator_ida()
+    ),
+    age = testdata$age_years,
+    sex = testdata$sex,
+    ferritin = testdata$ferritin_measurement,
+    haemoglobin = testdata$haemoglobin_measurement,
+    ida = testdata$ida,
+    iodine = testdata$iodine,
+    altitude = testdata$altitude
+  )
+  expect_true(is.data.frame(res))
+  expect_true(all(grepl(
+    pattern = "^input|^indicator",
+    x = colnames(res)
+  )))
+  expect_true(all(
+    c(
+      "input_age",
+      "input_sex",
+      "input_ferritin",
+      "input_iodine",
+      "input_haemoglobin",
+      "input_altitude"
+    ) %in%
+      colnames(res)
+  ))
+})
+
 test_that("user is warned about missing concepts", {
   expect_error(
     individual_classification(
@@ -104,6 +140,7 @@ test_that("all adjustment methods do not create errors", {
       iodine = testdata$iodine,
       CRP = testdata$crp_measurement,
       AGP = testdata$agp_measurement,
+      malaria = testdata$malaria,
       haemoglobin = testdata$haemoglobin_measurement,
       is_smoker = testdata$is_smoker,
       altitude = testdata$altitude,
