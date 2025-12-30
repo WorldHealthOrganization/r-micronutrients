@@ -365,7 +365,19 @@ indicators_compute_all <- function(indicators, values, concepts) {
   })
 
   i_names <- vapply(indicators, indicator_abbreviated_name, character(1))
-  Filter(\(x) nrow(x) != 2, set_names(indicator_values, i_names))
+
+  iv <- Filter(\(x) nrow(x) != 2, set_names(indicator_values, i_names))
+
+  # Special treatment for combo indicator
+  if ("ida_unadj" %in% i_names) {
+    iv <- recompute_ida(iv, "unadj", indicators)
+  }
+
+  if ("ida_adj" %in% i_names) {
+    iv <- recompute_ida(iv, "adj", indicators)
+  }
+
+  iv
 }
 
 na_2_false <- function(x) {

@@ -106,8 +106,7 @@ compute_prevalence <- function(
   area = NULL,
   region = NULL,
   other_region = NULL,
-  other_grouping_variable = NULL,
-  team = NULL
+  other_grouping_variable = NULL
 ) {
   validate_indicators(indicators)
   classified_data <- classify_data_internal(
@@ -150,14 +149,14 @@ compute_prevalence <- function(
     mothers_education = mothers_education,
     area = area,
     region = region,
-    other_region = other_region,
     other_grouping_variable = other_grouping_variable,
-    team = team,
     cluster = cluster,
     strata = strata,
     sample_weight = sample_weight
   )
-  input_concepts <- dplyr::bind_cols(concept_list)
+  input_concepts <- dplyr::bind_cols(concept_list$values[
+    concept_list$non_nulls
+  ])
   stopifnot(nrow(input_concepts) == nrow(classified_data))
   survey_data <- dplyr::bind_cols(classified_data, input_concepts)
   prevalence_data <- prev_function(survey_data, indicators)

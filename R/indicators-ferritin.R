@@ -41,7 +41,6 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
     required_concepts = c(
       "sex",
       "age",
-      "pregnancy_status",
       "CRP",
       "AGP"
     ),
@@ -236,8 +235,17 @@ ferritin_adjustment_rm_agp_crp_fun <- function(
   value,
   CRP,
   AGP,
-  malaria = NULL
+  malaria
 ) {
+  if (length(CRP) > 0 && all(is.na(CRP))) {
+    warning("CRP values are all NAs")
+  }
+  if (length(AGP) > 0 && all(is.na(AGP))) {
+    warning("AGP values are all NAs")
+  }
+  if (length(malaria) > 0 && all(is.na(malaria))) {
+    warning("malaria values are all NAs")
+  }
   value <- vec_cast(value, double())
   na <- measurement_mcg_l(NA_real_)
   value[CRP >= 5] <- na
@@ -285,6 +293,12 @@ ferritin_adjustment_arithmetic_correction_fun <- function(value, CRP, AGP) {
     length(value) == length(CRP),
     length(value) == length(AGP)
   )
+  if (length(CRP) > 0 && all(is.na(CRP))) {
+    warning("CRP values are all NAs")
+  }
+  if (length(AGP) > 0 && all(is.na(AGP))) {
+    warning("AGP values are all NAs")
+  }
 
   # git296
   data <- tibble(
@@ -357,8 +371,6 @@ ferritin_adjustment_arithmetic_correction <- adjustment(
   sub_class = "ferritin_adjustment_arithmetic_correction"
 )
 
-
-utils::globalVariables(c("value", "CRP", "AGP", "WRA"))
 ferritin_adjustment_regression_correction <- adjustment(
   required_concepts = c("CRP", "AGP"),
   fun = function(value, CRP, AGP) {
@@ -366,9 +378,9 @@ ferritin_adjustment_regression_correction <- adjustment(
       return(value)
     }
 
-    CRP[CRP == 0] <- NA
-    AGP[AGP == 0] <- NA
-    value[value == 0] <- NA
+    CRP[CRP == 0] <- NA_real_
+    AGP[AGP == 0] <- NA_real_
+    value[value == 0] <- NA_real_
 
     data <- tibble(
       value = as.numeric(value),
@@ -381,14 +393,28 @@ ferritin_adjustment_regression_correction <- adjustment(
 
     data$logcrpdecile <- quantile(data$iLogCRP, probs = 0.1, na.rm = TRUE)[[1]]
     data$logagpdecile <- quantile(data$iLogAGP, probs = 0.1, na.rm = TRUE)[[1]]
-    data$logcrpcoeffSF <- summary(lm(
+    data <- data[
+      !is.na(data$iLogFerr) & !is.na(data$iLogCRP) & !is.na(data$iLogAGP),
+    ]
+    if (nrow(data) == 0) {
+      # in this case the LM fit will error because we have 0 rows left with
+      # non-na cases.
+      stop(
+        "All CRP, AGP or Ferritin values are either NA or 0. We cannot apply the regression correction."
+      )
+    }
+    lmModel <- summary(lm(
       iLogFerr ~ iLogCRP + iLogAGP,
       data = data
-    ))$coefficients["iLogCRP", "Estimate"]
-    data$logagpcoeffSF <- summary(lm(
-      iLogFerr ~ iLogCRP + iLogAGP,
-      data = data
-    ))$coefficients["iLogAGP", "Estimate"]
+    ))
+    data$logcrpcoeffSF <- NA_real_
+    data$logagpcoeffSF <- NA_real_
+    if ("iLogCRP" %in% rownames(lmModel$coefficients)) {
+      data$logcrpcoeffSF <- lmModel$coefficients["iLogCRP", "Estimate"]
+    }
+    if ("iLogAGP" %in% rownames(lmModel$coefficients)) {
+      data$logagpcoeffSF <- lmModel$coefficients["iLogAGP", "Estimate"]
+    }
 
     data <- mutate(
       data,

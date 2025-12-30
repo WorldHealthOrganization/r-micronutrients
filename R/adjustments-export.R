@@ -26,7 +26,6 @@ adjustment_ferritin_cutoff <- function() {
   ferritin_adjustment_cutoff
 }
 
-
 #' Indicator adjustment methods
 #'
 #' This can be used to signal no adjustment for an indicator.

@@ -34,10 +34,8 @@ iodine_indicator <- indicator(
   value_concept = "iodine",
   export_value_name = "iodine",
   required_concepts = c(
-    "sex",
     "age",
-    "pregnancy_status",
-    "lactating_status"
+    "pregnancy_status"
   ),
   global_condition = age_in_years(age) >= 0, # no restrictions
   categories = list(
