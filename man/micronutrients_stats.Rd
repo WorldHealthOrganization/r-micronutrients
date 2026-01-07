@@ -13,7 +13,6 @@ micronutrients_stats(
   CRP = NULL,
   AGP = NULL,
   ferritin = NULL,
-  ida = NULL,
   iodine = NULL,
   haemoglobin = NULL,
   altitude = NULL,
@@ -50,8 +49,6 @@ When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant"}
 \item{AGP}{(Optional) A vector of alpha-1-acid glycoprotein (AGP) measurements (in g/L), used to adjust for inflammation.}
 
 \item{ferritin}{(Optional) A vector of ferritin measurements (in \\u00b5gg/L).}
-
-\item{ida}{(Optional) A vector of iron deficiency measurements.}
 
 \item{iodine}{(Optional) A vector of iodine measurements (in \\u00b5gg/L).}
 

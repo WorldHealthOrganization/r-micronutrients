@@ -6,25 +6,34 @@
 #' @include indicators-anaemia.R
 #' @rdname indicators
 #' @export
-indicator_anaemia <- function() anaemia_indicator
+indicator_anaemia <- function() {
+  anaemia_indicator
+}
 
 #' @param ferritin_adjustment the adjustment method for ferritin.
 #' @include indicators-ferritin.R
 #' @rdname indicators
 #' @export
-indicator_ferritin <- function(ferritin_adjustment = adjustment_none()) {
-  ferritin_indicator(ferritin_adjustment)
+indicator_ferritin <- function(ferritin_adjustment) {
+  stopifnot(is_adjustment(ferritin_adjustment))
+  list(
+    ferritin_indicator(no_adjustment),
+    ferritin_indicator(ferritin_adjustment)
+  )
 }
 
-#' @param ferritin_adjustment the adjustment method for ferritin.
 #' @rdname indicators
-#' @include indicators-iron-deficiency-anaemia.R
 #' @export
-indicator_ida <- function(ferritin_adjustment = adjustment_none()) {
-  ida_indicator(ferritin_adjustment)
+indicator_ida <- function() {
+  list(
+    ida_indicator_unadjusted,
+    ida_indicator_adjusted
+  )
 }
 
 #' @include indicators-iodine.R
 #' @rdname indicators
 #' @export
-indicator_iodine <- function() iodine_indicator
+indicator_iodine <- function() {
+  iodine_indicator
+}

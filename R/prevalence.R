@@ -31,7 +31,6 @@ micronutrients_stats <- function(
   CRP = NULL,
   AGP = NULL,
   ferritin = NULL,
-  ida = NULL,
   iodine = NULL,
   haemoglobin = NULL,
   altitude = NULL,
@@ -59,7 +58,6 @@ micronutrients_stats <- function(
     CRP = CRP,
     AGP = AGP,
     ferritin = ferritin,
-    ida = ida,
     iodine = iodine,
     haemoglobin = haemoglobin,
     altitude = altitude,
@@ -89,7 +87,6 @@ compute_prevalence <- function(
   CRP = NULL,
   AGP = NULL,
   ferritin = NULL,
-  ida = NULL,
   iodine = NULL,
   haemoglobin = NULL,
   altitude = NULL,
@@ -108,6 +105,7 @@ compute_prevalence <- function(
   other_region = NULL,
   other_grouping_variable = NULL
 ) {
+  indicators <- flatten_indicators(indicators)
   validate_indicators(indicators)
   classified_data <- classify_data_internal(
     indicators = indicators,
@@ -118,7 +116,6 @@ compute_prevalence <- function(
     CRP = CRP,
     AGP = AGP,
     ferritin = ferritin,
-    ida = ida,
     iodine = iodine,
     haemoglobin = haemoglobin,
     altitude = altitude,
@@ -179,7 +176,6 @@ short_format_prevalence_internal <- function(survey_data, indicators) {
     unlist()
   reorder_cols <- sapply(indicators, indicator_reorder_columns, "short") |>
     unlist()
-
   design <- prevalence_design(survey_df)
 
   prev_age_start_end <- prevalence_age_start_end(survey_df, strat_labels)
@@ -189,6 +185,7 @@ short_format_prevalence_internal <- function(survey_data, indicators) {
     indicators,
     strat_formula
   )
+
   quantile_estimates <- prevalence_quantile_estimates(
     weighted(design),
     indicators,
@@ -333,8 +330,17 @@ build_prevalence_survey_data <- function(survey_df, indicators) {
   indicator_columns <- character()
   for (indicator in indicators) {
     indicator_name <- indicator_abbreviated_name(indicator)
-    value <- survey_df[[paste0(indicator_name, "_input_value")]]
+    value_col <- paste0(indicator_name, "_input_value")
+    value <- if (is.null(survey_df[[value_col]])) {
+      survey_df[[paste0(indicator_name, "_result")]]
+    } else {
+      survey_df[[paste0(indicator_name, "_input_value")]]
+    }
     survey_df[[paste0("prev_", indicator_name)]] <- !is.na(value)
+    if (is.null(survey_df[[value_col]])) {
+      # we stop here because we don't have any numeric values for cutoffs
+      next()
+    }
     cutoffs <- indicator_apply_prev_cutoffs(indicator, value)
     colnames(cutoffs) <- paste0("prev_mean_", colnames(cutoffs))
     survey_df <- dplyr::bind_cols(survey_df, cutoffs)
@@ -513,39 +519,44 @@ prevalence_short_format_columns <- function(indicators) {
     prev_cats <- names(indicator_prevalence_categories(indicator))
     agg_prev_cats <- names(indicator_agg_prevalence_categories(indicator))
     prev_cats <- c(agg_prev_cats, prev_cats)
-    new_cols <- vec_c(
-      paste0(name, vec_c("_pop", "_unwpop")),
-      paste0(
-        name,
-        vec_c(
-          "_mean",
-          "_mean_sd",
-          "_mean_ll",
-          "_mean_ul"
-        )
-      ),
-      paste0(
-        name,
-        vec_c(
-          "_25percentile",
-          "_50percentile",
-          "_75percentile",
-        )
-      ),
-      unlist(
-        lapply(prev_cats, function(prev_cat) {
-          paste0(
-            prev_cat,
-            vec_c(
-              "_r",
-              "_se",
-              "_ll",
-              "_ul"
-            )
+    new_cols <- if (is_composite_indicator(indicator)) {
+      paste0(name, vec_c("_pop", "_unwpop", "_r", "_se", "_ll", "_ul"))
+    } else {
+      vec_c(
+        paste0(name, vec_c("_pop", "_unwpop")),
+        paste0(
+          name,
+          vec_c(
+            "_mean",
+            "_mean_sd",
+            "_mean_ll",
+            "_mean_ul"
           )
-        })
+        ),
+        paste0(
+          name,
+          vec_c(
+            "_25percentile",
+            "_50percentile",
+            "_75percentile",
+          )
+        ),
+        unlist(
+          lapply(prev_cats, function(prev_cat) {
+            paste0(
+              prev_cat,
+              vec_c(
+                "_r",
+                "_se",
+                "_ll",
+                "_ul"
+              )
+            )
+          })
+        )
       )
-    )
+    }
+
     ordered_cols <- vec_c(
       ordered_cols,
       new_cols
@@ -555,7 +566,6 @@ prevalence_short_format_columns <- function(indicators) {
   # if(!is.null(rename_cols)){
   #   ordered_cols[match(rename_cols, ordered_cols, nomatch = 0)] <- names(rename_cols)
   # }
-
   ordered_cols[!ordered_cols %in% drop_cols]
 }
 
@@ -627,8 +637,12 @@ prevalence_quantile_estimates <- function(
     res
   }
   results <- lapply(seq_along(indicators), function(i) {
+    indicator <- indicators[[i]]
+    if (is_composite_indicator(indicator)) {
+      return(NULL)
+    }
     indicator_name <- paste0(
-      indicator_abbreviated_name(indicators[[i]]),
+      indicator_abbreviated_name(indicator),
       "_input_value"
     )
     value_formula <- make.formula(indicator_name)
@@ -644,7 +658,7 @@ prevalence_quantile_estimates <- function(
       na.rm.all = TRUE
     )
     dplyr::bind_rows(lapply(weighted_est, \(x) {
-      format_strat(indicators[[i]], x)
+      format_strat(indicator, x)
     }))
   })
   combine_stratified_results(results)
@@ -658,8 +672,12 @@ prevalence_mean_estimates <- function(
   stratification_formula
 ) {
   results <- lapply(seq_along(indicators), function(i) {
+    indicator <- indicators[[i]]
+    if (is_composite_indicator(indicator)) {
+      return(NULL)
+    }
     indicator_name <- paste0(
-      indicator_abbreviated_name(indicators[[i]]),
+      indicator_abbreviated_name(indicator),
       "_input_value"
     )
     value_formula <- make.formula(indicator_name)
@@ -831,6 +849,12 @@ robust_svybys <- function(formula, bys, design, FUN, ...) {
 combine_stratified_results <- function(list_of_dfs) {
   Reduce(
     function(acc, el) {
+      if (is.null(el)) {
+        return(acc)
+      }
+      if (is.null(acc)) {
+        return(el)
+      }
       dplyr::inner_join(
         acc,
         el,
@@ -880,7 +904,7 @@ prevalence_pop_estimates <- function(
   )
 
   format_strat <- function(indicators, strat_df, suffix) {
-    value_names <- lapply(indicators, \(x) x$export_value_name)
+    value_names <- lapply(indicators, indicator_export_value_name)
     res <- init_stratified_result(strat_df)
     for (i in seq_along(indicators)) {
       col <- paste0(value_names[[i]], suffix)
@@ -907,7 +931,10 @@ init_stratified_result <- function(strat_df) {
 }
 
 cut_off_columns <- function(indicators, indicator_columns) {
-  cols <- lapply(indicators, indicator_prev_cutoff_names) |>
+  cols <- lapply(
+    Filter(is_indicator, indicators),
+    indicator_prev_cutoff_names
+  ) |>
     unlist()
   paste0("prev_mean_", cols)
 }

@@ -83,13 +83,20 @@ indicator_prev_cutoff_names <- function(indicator) {
 }
 
 indicator_prevalence_categories <- function(indicator) {
-  stopifnot(is_indicator(indicator))
+  UseMethod("indicator_prevalence_categories")
+}
+
+#' @exportS3Method
+indicator_prevalence_categories.indicator <- function(indicator) {
   indicator$prevalence_categories
 }
 
-
 indicator_agg_prevalence_categories <- function(indicator) {
-  stopifnot(is_indicator(indicator))
+  UseMethod("indicator_agg_prevalence_categories")
+}
+
+#' @exportS3Method
+indicator_agg_prevalence_categories.indicator <- function(indicator) {
   indicator$aggregate_prevalence_categories
 }
 
@@ -104,33 +111,62 @@ indicator_plot_settings <- function(indicator) {
   indicator$plot_settings
 }
 
-
 prevalence_report_long <- function(indicator) {
   isTRUE(indicator$prevalence_report$long)
 }
 
 prevalence_report_short <- function(indicator) {
+  UseMethod("prevalence_report_short")
+}
+
+#' @exportS3Method
+prevalence_report_short.indicator <- function(indicator) {
   isTRUE(indicator$prevalence_report$short)
 }
 
 indicator_export_value_name <- function(indicator) {
-  stopifnot(is_indicator(indicator))
+  UseMethod("indicator_export_value_name")
+}
+
+#' @exportS3Method
+indicator_export_value_name.indicator <- function(indicator) {
   indicator$export_value_name
 }
 
 indicator_drop_columns <- function(indicator, report_type) {
-  stopifnot(is_indicator(indicator))
+  UseMethod("indicator_drop_columns")
+}
+
+#' @exportS3Method
+indicator_drop_columns.indicator <- function(indicator, report_type) {
   indicator$drop_columns[[report_type]]
 }
 
 indicator_rename_columns <- function(indicator, report_type) {
-  stopifnot(is_indicator(indicator))
+  UseMethod("indicator_rename_columns")
+}
+
+#' @exportS3Method
+indicator_rename_columns.indicator <- function(indicator, report_type) {
   indicator$rename_columns[[report_type]]
 }
 
 indicator_reorder_columns <- function(indicator, report_type) {
-  stopifnot(is_indicator(indicator))
+  UseMethod("indicator_reorder_columns")
+}
+
+#' @exportS3Method
+indicator_reorder_columns.indicator <- function(indicator, report_type) {
   indicator$reorder_columns[[report_type]]
+}
+
+indicator_value_concept <- function(x) {
+  UseMethod("indicator_value_concept")
+}
+
+#' @exportS3Method
+indicator_value_concept.indicator <- function(x) {
+  x$value_concept
 }
 
 is_indicator <- function(x) {
@@ -138,20 +174,23 @@ is_indicator <- function(x) {
 }
 
 indicator_name <- function(indicator) {
-  stopifnot(is_indicator(indicator))
+  UseMethod("indicator_name")
+}
+
+#' @exportS3Method
+indicator_name.indicator <- function(indicator) {
   indicator$name
 }
 
-indicator_value_concept <- function(indicator) {
-  stopifnot(is_indicator(indicator))
-  indicator$value_concept
+indicator_abbreviated_name <- function(indicator) {
+  UseMethod("indicator_abbreviated_name")
 }
 
-
-indicator_abbreviated_name <- function(indicator) {
-  stopifnot(is_indicator(indicator))
+#' @exportS3Method
+indicator_abbreviated_name.indicator <- function(indicator) {
   indicator$abbreviated_name
 }
+
 categories <- list
 
 category <- function(name, ...) {
@@ -329,9 +368,14 @@ indicator_adjust_value <- function(indicator, value, concepts) {
 }
 
 indicators_compute_all <- function(indicators, values, concepts) {
+  # ATM we have two types of indicators. Normal indicators and composite indicators.
+  # Composite indicators depend on non-composite indicators and are computed at the
+  # end.
+  base_indicators <- Filter(is_indicator, indicators)
+  composite_indicators <- Filter(is_composite_indicator, indicators)
   without_null <- \(v) Filter(\(x) !is.null(x), v)
-  indicator_values <- lapply(seq_along(indicators), function(i) {
-    indicator <- indicators[[i]]
+  indicator_values <- lapply(seq_along(base_indicators), function(i) {
+    indicator <- base_indicators[[i]]
 
     res <- if (is.null(values[[i]])) {
       stop(
@@ -364,19 +408,21 @@ indicators_compute_all <- function(indicators, values, concepts) {
     res
   })
 
-  i_names <- vapply(indicators, indicator_abbreviated_name, character(1))
+  indicator_names <- vapply(
+    base_indicators,
+    indicator_abbreviated_name,
+    character(1)
+  )
+  iv <- Filter(\(x) nrow(x) != 2, set_names(indicator_values, indicator_names))
 
-  iv <- Filter(\(x) nrow(x) != 2, set_names(indicator_values, i_names))
-
-  # Special treatment for combo indicator
-  if ("ida_unadj" %in% i_names) {
-    iv <- recompute_ida(iv, "unadj", indicators)
-  }
-
-  if ("ida_adj" %in% i_names) {
-    iv <- recompute_ida(iv, "adj", indicators)
-  }
-
+  # now we compute the composite indicators
+  iv <- Reduce(
+    function(acc, x) {
+      x$compute_function(x, indicators, acc)
+    },
+    composite_indicators,
+    iv
+  )
   iv
 }
 
@@ -415,4 +461,19 @@ age_in_months <- function(age) {
 age_in_years <- function(age) {
   stopifnot(lubridate::is.duration(age))
   as.numeric(age, "years")
+}
+
+flatten_indicators <- function(indicators) {
+  result <- list()
+  for (el in indicators) {
+    is_single_indicator <- is_indicator(el) || is_composite_indicator(el)
+    if (!is_single_indicator && is.list(el)) {
+      result <- append(result, el)
+    } else if (is_single_indicator) {
+      result[[length(result) + 1L]] <- el
+    } else {
+      stop("Indicators need to be either indicators or list of indicators.")
+    }
+  }
+  result
 }

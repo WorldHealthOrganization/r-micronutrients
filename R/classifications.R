@@ -15,7 +15,6 @@
 #' @param CRP (Optional) A vector of C-reactive protein (CRP) measurements (in mg/L), used to adjust for inflammation.
 #' @param AGP (Optional) A vector of alpha-1-acid glycoprotein (AGP) measurements (in g/L), used to adjust for inflammation.
 #' @param ferritin (Optional) A vector of ferritin measurements (in \\u00b5gg/L).
-#' @param ida (Optional) A vector of iron deficiency measurements.
 #' @param iodine (Optional) A vector of iodine measurements (in \\u00b5gg/L).
 #' @param haemoglobin (Optional) A vector of haemoglobin measurements (in g/L).
 #' @param altitude (Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects. Elevation is a compulsory variable and it should always be reported in the dataset. Even when no elevation data is collected, a variable for 'elevation' should be created and set as "0" for all individuals without reported elevation. When elevation is not reported, that individual case will be excluded from the analysis and considered as 'missing'
@@ -59,7 +58,6 @@ individual_classification <- function(
   CRP = NULL,
   AGP = NULL,
   ferritin = NULL,
-  ida = NULL,
   iodine = NULL,
   haemoglobin = NULL,
   altitude = NULL,
@@ -77,7 +75,6 @@ individual_classification <- function(
     AGP = AGP,
     iodine = iodine,
     ferritin = ferritin,
-    ida = ida,
     haemoglobin = haemoglobin,
     altitude = altitude,
     is_smoker = is_smoker,
@@ -98,7 +95,6 @@ classify_data_internal <- function(
   CRP = NULL,
   AGP = NULL,
   ferritin = NULL,
-  ida = NULL,
   iodine = NULL,
   haemoglobin = NULL,
   altitude = NULL,
@@ -109,6 +105,7 @@ classify_data_internal <- function(
   malaria = NULL,
   .format_column_names = TRUE
 ) {
+  indicators <- flatten_indicators(indicators)
   validate_indicators(indicators)
   concept_list <- concepts_from_args(
     sex = sex,
@@ -119,7 +116,6 @@ classify_data_internal <- function(
     AGP = AGP,
     iodine = iodine,
     ferritin = ferritin,
-    ida = ida,
     haemoglobin = haemoglobin,
     altitude = altitude,
     is_smoker = is_smoker,
@@ -131,7 +127,12 @@ classify_data_internal <- function(
   cols <- names(concept_list$values)
 
   values <- lapply(indicators, function(x) {
-    concept_list$values[[x$value_concept]]
+    value_concept <- indicator_value_concept(x)
+    if (is.null(value_concept)) {
+      NULL
+    } else {
+      concept_list$values[[value_concept]]
+    }
   })
   results <- indicators_compute_all(indicators, values, concept_list$values)
   names(results) <- NULL
@@ -147,7 +148,13 @@ classify_data_internal <- function(
 
 validate_indicators <- function(indicators) {
   stopifnot(is.list(indicators))
-  stopifnot(all(vapply(indicators, is_indicator, logical(1L))))
+  stopifnot(all(vapply(
+    indicators,
+    function(x) {
+      is_indicator(x) || is_composite_indicator(x)
+    },
+    logical(1L)
+  )))
 }
 
 not_null <- function(x) {

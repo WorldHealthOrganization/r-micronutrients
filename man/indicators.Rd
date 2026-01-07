@@ -9,9 +9,9 @@
 \usage{
 indicator_anaemia()
 
-indicator_ferritin(ferritin_adjustment = adjustment_none())
+indicator_ferritin(ferritin_adjustment)
 
-indicator_ida(ferritin_adjustment = adjustment_none())
+indicator_ida()
 
 indicator_iodine()
 }
