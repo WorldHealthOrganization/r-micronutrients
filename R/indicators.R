@@ -414,8 +414,22 @@ indicators_compute_all <- function(indicators, values, concepts) {
     character(1)
   )
   iv <- Filter(\(x) nrow(x) != 2, set_names(indicator_values, indicator_names))
-
   # now we compute the composite indicators
+  # first we check dependencies
+  for (indicator in composite_indicators) {
+    deps <- indicator$required_indicators
+    if (!all(deps %in% indicator_names)) {
+      missing_deps <- setdiff(deps, indicator_names)
+      stop(
+        "Composite indicator '",
+        format(indicator),
+        "' requires the following other indicators: ",
+        paste(missing_deps, collapse = ", "),
+        call. = FALSE
+      )
+    }
+  }
+  # now we can compute everything
   iv <- Reduce(
     function(acc, x) {
       x$compute_function(x, indicators, acc)

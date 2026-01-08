@@ -1,4 +1,4 @@
-compute_ida <- function(type) {
+ida_compute <- function(type) {
   function(indicator, indicators, indicator_results) {
     anaemia <- Filter(
       \(x) indicator_abbreviated_name(x) == "anaemia",
@@ -69,7 +69,7 @@ ida_prev_categories <- function(type) {
 ida_indicator_unadjusted <- composite_indicator(
   name = "Iron deficiency anaemia (unadjusted)",
   abbreviated_name = "ida_unadj",
-  compute_function = compute_ida("unadj"),
+  compute_function = ida_compute("unadj"),
   prevalence_categories = ida_prev_categories("unadj"),
   requires_indicators = c("ferritin_unadj", "anaemia")
 )
@@ -77,7 +77,7 @@ ida_indicator_unadjusted <- composite_indicator(
 ida_indicator_adjusted <- composite_indicator(
   name = "Iron deficiency anaemia (adjusted)",
   abbreviated_name = "ida_adj",
-  compute_function = compute_ida("adj"),
+  compute_function = ida_compute("adj"),
   prevalence_categories = ida_prev_categories("adj"),
   requires_indicators = c("ferritin_adj", "anaemia")
 )
