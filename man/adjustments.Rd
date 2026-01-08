@@ -5,7 +5,6 @@
 \alias{adjustment_ferritin_regression_correction}
 \alias{adjustment_ferritin_rm_agp_crp}
 \alias{adjustment_ferritin_cutoff}
-\alias{adjustment_none}
 \title{Indicator adjustment methods}
 \usage{
 adjustment_ferritin_arithmetic_correction()
@@ -15,8 +14,6 @@ adjustment_ferritin_regression_correction()
 adjustment_ferritin_rm_agp_crp()
 
 adjustment_ferritin_cutoff()
-
-adjustment_none()
 }
 \description{
 This can be used to signal no adjustment for an indicator.

@@ -269,16 +269,6 @@ concepts <- concepts_list(
     prototype = measurement_mcg_l(NA_real_),
     is_implausible = is_ferritin_implausible
   ),
-  ## ida ----
-  concept(
-    key = "ida",
-    label = "Iron deficiency",
-    accept = concept_acceptor(iron_deficiency_acceptor, "TODO"),
-    standardizer = identity,
-    validator = iron_deficiency_validator,
-    prototype = NA
-    # is_implausible = iron_deficiency_implausible
-  ),
   ## AGP ----
   concept(
     key = "AGP",

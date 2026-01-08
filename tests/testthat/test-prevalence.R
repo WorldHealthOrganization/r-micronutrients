@@ -3,7 +3,6 @@ test_that("micronutrients_stats", {
   res <- micronutrients_stats(
     indicators = list(
       indicator_iodine(),
-      indicator_ferritin(),
       indicator_ferritin(adjustment_ferritin_cutoff()),
       indicator_anaemia(),
       indicator_ida()
@@ -13,7 +12,6 @@ test_that("micronutrients_stats", {
     pregnancy_status = testdata$pregnancy_status,
     lactating_status = testdata$lactating_status,
     ferritin = testdata$ferritin_measurement,
-    ida = testdata$ida,
     iodine = testdata$iodine,
     CRP = testdata$crp_measurement,
     AGP = testdata$agp_measurement,
@@ -105,7 +103,13 @@ test_that("micronutrients_stats", {
       "ida_unadj_r",
       "ida_unadj_se",
       "ida_unadj_ll",
-      "ida_unadj_ul"
+      "ida_unadj_ul",
+      "ida_adj_pop",
+      "ida_adj_unwpop",
+      "ida_adj_r",
+      "ida_adj_se",
+      "ida_adj_ll",
+      "ida_adj_ul"
     )
   )
 })

@@ -3,7 +3,6 @@ test_that("row level classification works", {
   res <- individual_classification(
     indicators = list(
       indicator_iodine(),
-      indicator_ferritin(adjustment_none()),
       indicator_ferritin(adjustment_ferritin_cutoff()),
       indicator_anaemia(),
       indicator_ida()
@@ -13,7 +12,6 @@ test_that("row level classification works", {
     pregnancy_status = testdata$pregnancy_status,
     lactating_status = testdata$lactating_status,
     ferritin = testdata$ferritin_measurement,
-    ida = testdata$ida,
     iodine = testdata$iodine,
     CRP = testdata$crp_measurement,
     AGP = testdata$agp_measurement,
@@ -29,6 +27,13 @@ test_that("row level classification works", {
     pattern = "^input|^indicator",
     x = colnames(res)
   )))
+  expect_true(all(
+    c(
+      "indicator_ida_unadj_result",
+      "indicator_ida_adj_result"
+    ) %in%
+      colnames(res)
+  ))
   expect_true(all(
     c(
       "input_age",
@@ -55,7 +60,6 @@ test_that("optional values have their prototype values", {
   res <- individual_classification(
     indicators = list(
       indicator_iodine(),
-      indicator_ferritin(adjustment_none()),
       indicator_ferritin(adjustment_ferritin_cutoff()),
       indicator_anaemia(),
       indicator_ida()
@@ -64,7 +68,6 @@ test_that("optional values have their prototype values", {
     sex = testdata$sex,
     ferritin = testdata$ferritin_measurement,
     haemoglobin = testdata$haemoglobin_measurement,
-    ida = testdata$ida,
     iodine = testdata$iodine,
     altitude = testdata$altitude
   )
@@ -91,7 +94,6 @@ test_that("user is warned about missing concepts", {
     individual_classification(
       indicators = list(
         indicator_iodine(),
-        indicator_ferritin(),
         indicator_ferritin(adjustment_ferritin_cutoff()),
         indicator_anaemia(),
         indicator_ida()
@@ -107,7 +109,6 @@ test_that("user is warned about malformed input", {
     individual_classification(
       indicators = list(
         indicator_iodine(),
-        indicator_ferritin(),
         indicator_ferritin(adjustment_ferritin_cutoff()),
         indicator_anaemia(),
         indicator_ida()
@@ -169,12 +170,11 @@ test_that("you can use lubridate to define the age", {
   age <- lubridate::duration(1:100, "months")
   res <- individual_classification(
     indicators = list(
-      indicator_ferritin()
+      indicator_ferritin(adjustment_ferritin_cutoff())
     ),
     age = age,
     sex = testdata$sex,
     ferritin = testdata$ferritin_measurement,
-    ida = testdata$ida,
     haemoglobin = testdata$haemoglobin_measurement,
     pregnancy_status = testdata$pregnancy_status,
     CRP = testdata$crp_measurement,
