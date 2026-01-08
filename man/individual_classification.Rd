@@ -29,7 +29,7 @@ individual_classification(
 \item{sex}{A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
 .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.}
 
-\item{age}{A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.}
+\item{age}{A vector of ages in years for the individuals in the dataset. It can also be a \code{lubridate::duration} object which is then converted to years. For example: if you have age in months, you can create a lubridate duration object like this \code{lubridate::duration(age_in_months, units = "months")}.}
 
 \item{pregnancy_status}{(Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
 When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant"}
@@ -69,19 +69,30 @@ WHO recommended cutoffs to define micronutrient status of populations.
 }
 \examples{
 \dontrun{
-data <- reade.csv(...)
+data <- read.csv(...)
 
 # Classify the dataset
-classify_data(
-  indicators = list(iodine_indicator, ferritin_indicator(no_adjustment)),
-  age = data$age_years,
-  sex = data$sex,
-  pregnancy_status = data$pregnancy_status,
-  lactating_status = data$lactating_status,
-  ferritin = data$ferritin_measurement,
-  CRP = data$crp_measurement,
-  AGP = data$agp_measurement,
-  haemoglobin = data$haemoglobin_measurement
+individual_classification(
+ indicators = list(
+   indicator_iodine(),
+   indicator_ferritin(adjustment_ferritin_cutoff()),
+   indicator_anaemia(),
+   indicator_ida()
+ ),
+ age = data$age_years,
+ sex = data$sex,
+ pregnancy_status = data$pregnancy_status,
+ lactating_status = data$lactating_status,
+ ferritin = data$ferritin_measurement,
+ iodine = data$iodine,
+ CRP = data$crp_measurement,
+ AGP = data$agp_measurement,
+ haemoglobin = data$haemoglobin_measurement,
+ is_smoker = data$is_smoker,
+ altitude = data$altitude,
+ smokes_cigarettes_per_day = data$smokes_cigarettes_per_day,
+ pregnancyweeks = data$pregnancyweeks,
+ pregnancymonths = data$pregnancymonths
 )
 
 # View results
