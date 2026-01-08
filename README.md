@@ -20,21 +20,18 @@ It is not meant for serious use yet and still work in progress.
 The following functions compute results:
 
 - `individual_classification` to compute row level indicators
-- `prevalence_long_format` to compute detailed prevalence estimates and
-  other summary statistics
-- `prevalence_short_format` to compute less-detailed prevalence
-  estimates and other summary statistics
+- `micronutrients_stats` to compute less-detailed prevalence estimates
+  and other summary statistics
 
 Indicators:
 
 - `indicator_anaemia()`
 - `indicator_ferritin(adjustment)`
-- `indicator_ida(adjustment)`
+- `indicator_ida()`
 - `indicator_iodine()`
 
 Adjustments:
 
-- `adjustment_none()`
 - `adjustment_ferritin_arithmetic_correction()`
 - `adjustment_ferritin_cutoff()`
 - `adjustment_ferritin_regression_correction()`
@@ -52,7 +49,6 @@ dataset <- read.csv("some_data_set")
 result <- individual_classification(
   indicators = list(
     indicator_iodine(),
-    indicator_ferritin(adjustment_none()),
     indicator_ferritin(adjustment_ferritin_cutoff()),
     indicator_anaemia(),
     indicator_ida()
@@ -81,7 +77,6 @@ table.
 result <- micronutrients_stats(
   indicators = list(
     indicator_iodine(),
-    indicator_ferritin(adjustment_none()),
     indicator_ferritin(adjustment_ferritin_cutoff()),
     indicator_anaemia(),
     indicator_ida()
