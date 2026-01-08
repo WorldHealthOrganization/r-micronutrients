@@ -27,32 +27,36 @@ test_that("row level classification works", {
     pattern = "^input|^indicator",
     x = colnames(res)
   )))
-  expect_true(all(
-    c(
-      "indicator_ida_unadj_result",
-      "indicator_ida_adj_result"
-    ) %in%
-      colnames(res)
-  ))
-  expect_true(all(
+  # we expect a specific column order
+  expect_equal(
+    colnames(res),
     c(
       "input_age",
       "input_sex",
       "input_pregnancy_status",
+      "input_pregnancyweeks",
+      "input_pregnancymonths",
       "input_lactating_status",
-      "input_ferritin",
+      "input_is_smoker",
+      "input_smokes_cigarettes_per_day",
+      "input_altitude",
       "input_iodine",
+      "input_haemoglobin",
+      "input_ferritin",
       "input_CRP",
       "input_AGP",
-      "input_haemoglobin",
-      "input_is_smoker",
-      "input_altitude",
-      "input_smokes_cigarettes_per_day",
-      "input_pregnancyweeks",
-      "input_pregnancymonths"
-    ) %in%
-      colnames(res)
-  ))
+      "indicator_iodine_result",
+      "indicator_iodine_input_value",
+      "indicator_ferritin_unadj_result",
+      "indicator_ferritin_unadj_input_value",
+      "indicator_ferritin_adj_result",
+      "indicator_ferritin_adj_input_value",
+      "indicator_anaemia_result",
+      "indicator_anaemia_input_value",
+      "indicator_ida_unadj_result",
+      "indicator_ida_adj_result"
+    )
+  )
 })
 
 test_that("optional values have their prototype values", {

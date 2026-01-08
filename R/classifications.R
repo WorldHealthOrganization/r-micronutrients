@@ -6,7 +6,7 @@
 #' @param indicators a list of indicators that should be computed. Note, please do not add the same indicator twice. Also you can only use one adjustment at a time at the moment.
 #' @param sex A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
 #' .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.
-#' @param age A vector of ages in years for the individuals in the dataset. Can also be a \code{lubridate::duration} object.
+#' @param age A vector of ages in years for the individuals in the dataset. It can also be a \code{lubridate::duration} object which is then converted to years. For example: if you have age in months, you can create a lubridate duration object like this \code{lubridate::duration(age_in_months, units = "months")}.
 #' @param pregnancy_status (Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
 #'                         When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant"
 #' @param lactating_status (Optional) A vector indicating lactation status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2").
@@ -28,20 +28,31 @@
 #'
 #' @examples
 #' \dontrun{
-#' data <- reade.csv(...)
+#' data <- read.csv(...)
 #'
 #' # Classify the dataset
-#' classify_data(
-#'   indicators = list(iodine_indicator, ferritin_indicator(no_adjustment)),
-#'   age = data$age_years,
-#'   sex = data$sex,
-#'   pregnancy_status = data$pregnancy_status,
-#'   lactating_status = data$lactating_status,
-#'   ferritin = data$ferritin_measurement,
-#'   CRP = data$crp_measurement,
-#'   AGP = data$agp_measurement,
-#'   haemoglobin = data$haemoglobin_measurement
-#' )
+#' individual_classification(
+#'  indicators = list(
+#'    indicator_iodine(),
+#'    indicator_ferritin(adjustment_ferritin_cutoff()),
+#'    indicator_anaemia(),
+#'    indicator_ida()
+#'  ),
+#'  age = data$age_years,
+#'  sex = data$sex,
+#'  pregnancy_status = data$pregnancy_status,
+#'  lactating_status = data$lactating_status,
+#'  ferritin = data$ferritin_measurement,
+#'  iodine = data$iodine,
+#'  CRP = data$crp_measurement,
+#'  AGP = data$agp_measurement,
+#'  haemoglobin = data$haemoglobin_measurement,
+#'  is_smoker = data$is_smoker,
+#'  altitude = data$altitude,
+#'  smokes_cigarettes_per_day = data$smokes_cigarettes_per_day,
+#'  pregnancyweeks = data$pregnancyweeks,
+#'  pregnancymonths = data$pregnancymonths
+#')
 #'
 #' # View results
 #' print(res)
@@ -108,20 +119,20 @@ classify_data_internal <- function(
   indicators <- flatten_indicators(indicators)
   validate_indicators(indicators)
   concept_list <- concepts_from_args(
-    sex = sex,
     age = age,
+    sex = sex,
     pregnancy_status = pregnancy_status,
-    lactating_status = lactating_status,
-    CRP = CRP,
-    AGP = AGP,
-    iodine = iodine,
-    ferritin = ferritin,
-    haemoglobin = haemoglobin,
-    altitude = altitude,
-    is_smoker = is_smoker,
-    smokes_cigarettes_per_day = smokes_cigarettes_per_day,
     pregnancyweeks = pregnancyweeks,
     pregnancymonths = pregnancymonths,
+    lactating_status = lactating_status,
+    is_smoker = is_smoker,
+    smokes_cigarettes_per_day = smokes_cigarettes_per_day,
+    altitude = altitude,
+    iodine = iodine,
+    haemoglobin = haemoglobin,
+    ferritin = ferritin,
+    CRP = CRP,
+    AGP = AGP,
     malaria = malaria
   )
   cols <- names(concept_list$values)
