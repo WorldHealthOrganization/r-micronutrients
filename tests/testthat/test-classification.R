@@ -52,12 +52,14 @@ test_that("row level classification works", {
       "indicator_ferritin_unadj_input_value",
       "indicator_ferritin_adj_result",
       "indicator_ferritin_adj_input_value",
+      "indicator_ferritin_adj_adjustment_method",
       "indicator_anaemia_result",
       "indicator_anaemia_input_value",
       "indicator_ida_unadj_result",
       "indicator_ida_adj_result"
     )
   )
+  expect_true(all(res$indicator_ferritin_adj_adjustment_method == "cutoff"))
 })
 
 test_that("optional values have their prototype values", {
