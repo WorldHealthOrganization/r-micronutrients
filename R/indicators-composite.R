@@ -84,6 +84,11 @@ indicator_export_value_name.composite_indicator <- function(indicator) {
 }
 
 
+#' @exportS3Method
+indicator_adjustment.composite_indicator <- function(indicator) {
+  no_adjustment
+}
+
 #' @export
 format.composite_indicator <- function(x, ...) {
   paste0(

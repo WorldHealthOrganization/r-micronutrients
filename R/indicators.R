@@ -183,6 +183,16 @@ indicator_abbreviated_name.indicator <- function(indicator) {
   indicator$abbreviated_name
 }
 
+
+indicator_adjustment <- function(indicator) {
+  UseMethod("indicator_adjustment")
+}
+
+#' @exportS3Method
+indicator_adjustment.indicator <- function(indicator) {
+  indicator$adjustment
+}
+
 categories <- list
 
 category <- function(name, ...) {
@@ -391,6 +401,10 @@ indicators_compute_all <- function(indicators, values, concepts) {
           input_value = indicator_adjust_value(indicator, values[[i]], concepts)
         )
       }
+    }
+    has_adjustment <- !is_no_adjustment(indicator_adjustment(indicator))
+    if (has_adjustment) {
+      res$adjustment_method <- adjustment_name(indicator_adjustment(indicator))
     }
     colnames(res) <- paste0(
       indicator_abbreviated_name(indicator),
