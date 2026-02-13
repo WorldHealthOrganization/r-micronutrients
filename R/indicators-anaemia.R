@@ -20,7 +20,6 @@ anaemia_adjustment <- function(
     length(altitude) == length(is_smoker),
     length(is_smoker) == length(smokes_cigarettes_per_day)
   )
-
   altitude <- as.numeric(altitude)
   altitude[is.na(altitude)] <- 0
   altitude_adjustments <- (0.0056384 * altitude) + (0.0000003 * altitude^2)
@@ -275,10 +274,5 @@ anaemia_indicator <- indicator(
   reorder_columns = list(
     short = NULL,
     long = NULL
-  ),
-  plot_settings = list(
-    dot_plot = list(
-      show_ci = TRUE
-    )
   )
 )

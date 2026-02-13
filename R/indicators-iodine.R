@@ -131,10 +131,5 @@ iodine_indicator <- indicator(
   prevalence_reports = list(
     long = FALSE,
     short = TRUE
-  ),
-  plot_settings = list(
-    dot_plot = list(
-      show_ci = FALSE
-    )
   )
 )

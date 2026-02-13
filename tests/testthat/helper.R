@@ -6,10 +6,10 @@ random_datset <- function(n) {
     age_years = pmax(0, rnorm(n, mean = 20, sd = 10)),
     sex = sample(c(1, 2), size = n, replace = TRUE, prob = c(0.1, 0.9)),
     pregnancy_status = sample(
-      c(1L, 2L, NA_integer_),
+      c(1L, 2L),
       size = n,
       replace = TRUE,
-      prob = c(0.1, 0.89, 0.01)
+      prob = c(0.1, 0.9)
     ),
     pregnancyweeks = sample(1:(9 * 4), size = n, replace = TRUE),
     pregnancymonths = sample(1:9, size = n, replace = TRUE),
@@ -25,10 +25,10 @@ random_datset <- function(n) {
     agp_measurement = pmax(0.1, rnorm(n, mean = 0.5, sd = 0.5)),
     haemoglobin_measurement = pmax(0.1, rnorm(n, mean = 100, sd = 50)),
     is_smoker = sample(
-      c(1L, 2L, NA_integer_),
+      c(1L, 2L),
       size = n,
       replace = TRUE,
-      prob = c(0.1, 0.89, 0.01)
+      prob = c(0.1, 0.90)
     ),
     smokes_cigarettes_per_day = rpois(n, 3),
     altitude = pmax(0, rnorm(n, mean = 500, sd = 1000)),

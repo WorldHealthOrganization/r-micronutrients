@@ -32,7 +32,8 @@ individual_classification(
 \item{age}{A vector of ages in years for the individuals in the dataset. It can also be a \code{lubridate::duration} object which is then converted to years. For example: if you have age in months, you can create a lubridate duration object like this \code{lubridate::duration(age_in_months, units = "months")}.}
 
 \item{pregnancy_status}{(Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
-When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant"}
+When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant".
+Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pregnancymonths' contain valid, non-missing values. Missing 'pregnancy_status' in these cases will be considered as 'not pregnant'.}
 
 \item{pregnancyweeks}{(Optional) A numeric vector indicating the number of weeks of pregnancy.}
 

@@ -15,7 +15,6 @@ indicator <- function(
   drop_columns = NULL,
   rename_columns = NULL,
   reorder_columns = NULL,
-  plot_settings = NULL,
   prevalence_reports = list(
     long = TRUE,
     short = TRUE
@@ -52,7 +51,6 @@ indicator <- function(
       drop_columns = drop_columns,
       rename_columns = rename_columns,
       reorder_columns = reorder_columns,
-      plot_settings = plot_settings,
       parent_env = envir
     ),
     class = "indicator"
@@ -103,12 +101,6 @@ indicator_agg_prevalence_categories.indicator <- function(indicator) {
 indicator_prevalence_names <- function(indicator) {
   stopifnot(is_indicator(indicator))
   indicator$prevalence_category_names
-}
-
-
-indicator_plot_settings <- function(indicator) {
-  stopifnot(is_indicator(indicator))
-  indicator$plot_settings
 }
 
 prevalence_report_long <- function(indicator) {

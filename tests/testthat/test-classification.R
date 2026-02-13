@@ -31,7 +31,8 @@ test_that("row level classification works", {
   expect_equal(
     colnames(res),
     c(
-      "input_age",
+      "input_age_years",
+      "input_age_months",
       "input_sex",
       "input_pregnancy_status",
       "input_pregnancyweeks",
@@ -82,7 +83,6 @@ test_that("optional values have their prototype values", {
   )))
   expect_true(all(
     c(
-      "input_age",
       "input_sex",
       "input_ferritin",
       "input_iodine",
@@ -185,5 +185,64 @@ test_that("you can use lubridate to define the age", {
     AGP = testdata$agp_measurement
   )
   expect_true(is.data.frame(res))
-  expect_true(is.duration(res$input_age))
+  expect_equal(res$input_age_years, as.numeric(age, "years"))
+  expect_equal(res$input_age_months, as.numeric(age, "months"))
+})
+
+test_that("it warns if `is_smoker` is NULL but `smokes_cigarattes_per_day` is not", {
+  testdata <- random_datset(100)
+  expect_warning(
+    individual_classification(
+      indicators = list(
+        indicator_anaemia()
+      ),
+      age = testdata$age_years,
+      sex = testdata$sex,
+      iodine = testdata$iodine,
+      haemoglobin = testdata$haemoglobin_measurement,
+      altitude = testdata$altitude,
+      smokes_cigarettes_per_day = testdata$smokes_cigarettes_per_day
+    ),
+    regexp = "is_smoker"
+  )
+})
+
+test_that("it warns if `pregnancy_status` is NULL but other preganancy related variables have values", {
+  testdata <- random_datset(100)
+  expect_warning(
+    expect_warning(
+      individual_classification(
+        indicators = list(
+          indicator_anaemia()
+        ),
+        age = testdata$age_years,
+        sex = testdata$sex,
+        iodine = testdata$iodine,
+        haemoglobin = testdata$haemoglobin_measurement,
+        altitude = testdata$altitude,
+        pregnancyweeks = testdata$pregnancyweeks,
+        pregnancymonths = testdata$pregnancymonths
+      ),
+      regexp = "pregnancyweeks"
+    ),
+    regexp = "pregnancymonths"
+  )
+})
+
+test_that("age is in years and months in the output", {
+  testdata <- random_datset(100)
+  res <- individual_classification(
+    indicators = list(
+      indicator_anaemia()
+    ),
+    age = testdata$age_years,
+    sex = testdata$sex,
+    ferritin = testdata$ferritin_measurement,
+    haemoglobin = testdata$haemoglobin_measurement,
+    iodine = testdata$iodine,
+    altitude = testdata$altitude
+  )
+  expect_contains(colnames(res), c("input_age_years", "input_age_months"))
+  expect_null(res[["input_age"]])
+  expect_true(all(res$input_age_months >= res$input_age_years))
 })

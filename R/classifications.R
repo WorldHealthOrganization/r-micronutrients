@@ -8,7 +8,8 @@
 #' .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.
 #' @param age A vector of ages in years for the individuals in the dataset. It can also be a \code{lubridate::duration} object which is then converted to years. For example: if you have age in months, you can create a lubridate duration object like this \code{lubridate::duration(age_in_months, units = "months")}.
 #' @param pregnancy_status (Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
-#'                         When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant"
+#'                         When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant".
+#'                         Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pregnancymonths' contain valid, non-missing values. Missing 'pregnancy_status' in these cases will be considered as 'not pregnant'.
 #' @param lactating_status (Optional) A vector indicating lactation status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2").
 #' @param pregnancyweeks (Optional) A numeric vector indicating the number of weeks of pregnancy.
 #' @param pregnancymonths (Optional) A numeric vector indicating the number of months of pregnancy.
@@ -136,7 +137,7 @@ classify_data_internal <- function(
     malaria = malaria
   )
   cols <- names(concept_list$values)
-
+  validate_concepts(concept_list)
   values <- lapply(indicators, function(x) {
     value_concept <- indicator_value_concept(x)
     if (is.null(value_concept)) {
@@ -153,8 +154,47 @@ classify_data_internal <- function(
   }
   colnames(df) <- paste0("indicator_", colnames(df))
   concept_df <- dplyr::bind_cols(concept_list$values[concept_list$non_nulls])
+  # age is part of the output in years and months
+  concept_df$age_years <- as.numeric(concept_df$age, "years")
+  concept_df$age_months <- as.numeric(concept_df$age, "months")
+  concept_df$age <- NULL
+  concept_df <- concept_df[, c(
+    c("age_years", "age_months"),
+    setdiff(colnames(concept_df), c("age_years", "age_months"))
+  )]
   colnames(concept_df) <- paste0("input_", colnames(concept_df))
   dplyr::bind_cols(concept_df, df)
+}
+
+# validate_concepts does some general prechecks independent of
+# the actual indicators being used.
+validate_concepts <- function(concepts) {
+  is_smoker <- concepts$values$is_smoker
+  smokes_cigarettes_per_day <- concepts$values$smokes_cigarettes_per_day
+  if (!is.null(is_smoker) && !is.null(smokes_cigarettes_per_day)) {
+    if (any(is.na(is_smoker) & !is.na(smokes_cigarettes_per_day))) {
+      warning(
+        "Missing `is_smoker`: a non NA value for `is_smoker` is required when `smokes_cigarettes_per_day` is not NA."
+      )
+    }
+  }
+  pregnancy_status <- concepts$values$pregnancy_status
+  pregnancyweeks <- concepts$values$pregnancyweeks
+  pregnancymonths <- concepts$values$pregnancymonths
+  if (!is.null(pregnancy_status) && !is.null(pregnancyweeks)) {
+    if (any(is.na(pregnancy_status) & !is.na(pregnancyweeks))) {
+      warning(
+        "Missing `pregnancy_status`: a non NA value for `pregnancy_status` is required when `pregnancyweeks` is not NA."
+      )
+    }
+  }
+  if (!is.null(pregnancy_status) && !is.null(pregnancymonths)) {
+    if (any(is.na(pregnancy_status) & !is.na(pregnancymonths))) {
+      warning(
+        "Missing `pregnancy_status`: a non NA value for `pregnancy_status` is required when `pregnancymonths` is not NA."
+      )
+    }
+  }
 }
 
 validate_indicators <- function(indicators) {
