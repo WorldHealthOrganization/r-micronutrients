@@ -20,8 +20,8 @@ It is not meant for serious use yet and still work in progress.
 The following functions compute results:
 
 - `individual_classification` to compute row level indicators
-- `micronutrients_stats` to compute less-detailed prevalence estimates
-  and other summary statistics
+- `mn_stats` to compute less-detailed prevalence estimates and other
+  summary statistics
 
 Indicators:
 
@@ -74,7 +74,7 @@ Prevalence functions accept the same arguments and compute a summary
 table.
 
 ``` r
-result <- micronutrients_stats(
+result <- mn_stats(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_ferritin_cutoff()),
@@ -102,7 +102,7 @@ result <- micronutrients_stats(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 76.47%
+#> micronutrients Coverage: 77.66%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -111,18 +111,19 @@ covr::package_coverage()
 #> R/concept-mothers-education.R: 0.00%
 #> R/concept-wealth-quintile.R: 0.00%
 #> R/indicators-iron-deficiency-anaemia.R: 0.00%
-#> R/indicators-anaemia.R: 3.33%
+#> R/indicators-anaemia.R: 6.45%
 #> R/measurements.R: 20.00%
 #> R/concept-sex.R: 22.22%
-#> R/utils.R: 29.17%
 #> R/indicators-iodine.R: 33.33%
-#> R/indicators-composite.R: 62.50%
+#> R/utils.R: 39.58%
+#> R/indicators-composite.R: 56.67%
 #> R/indicators-ferritin.R: 63.01%
-#> R/concepts.R: 87.23%
+#> R/concepts.R: 85.37%
+#> R/age.R: 85.71%
 #> R/concept-pregnancy-status.R: 87.50%
-#> R/indicators.R: 87.97%
+#> R/indicators.R: 88.89%
 #> R/age-groups.R: 89.61%
-#> R/prevalence.R: 96.78%
+#> R/prevalence.R: 96.79%
 #> R/adjustments-export.R: 100.00%
 #> R/classifications.R: 100.00%
 #> R/indicators-export.R: 100.00%

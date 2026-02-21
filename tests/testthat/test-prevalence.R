@@ -1,6 +1,6 @@
-test_that("micronutrients_stats", {
+test_that("mn_stats", {
   testdata <- random_datset(100)
-  res <- micronutrients_stats(
+  res <- mn_stats(
     indicators = list(
       indicator_iodine(),
       indicator_ferritin(adjustment_ferritin_cutoff()),

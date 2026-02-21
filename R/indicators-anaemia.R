@@ -276,3 +276,7 @@ anaemia_indicator <- indicator(
     long = NULL
   )
 )
+
+is_no_anaemia <- function(x) {
+  as.character(x) == "No anaemia"
+}
