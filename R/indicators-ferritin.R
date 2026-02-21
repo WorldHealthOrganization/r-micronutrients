@@ -47,19 +47,10 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
     global_condition = age_in_years(age) >= 0, # no restrictions
     categories = list(
       category(
-        name = "Adequate iron stores",
-        # children
-        inflammation(CRP, AGP) &
-          age_in_months(age) < 60 &
-          value >= 30,
-
+        name = "Adequate iron stores in apparently healthy individuals",
         !inflammation(CRP, AGP) &
           age_in_months(age) < 60 &
           value >= 12,
-
-        # !inflammation(CRP, AGP) &
-        #   age_in_years(age) >= 5 &
-        #   value >= 15,
 
         !inflammation(CRP, AGP) &
           age_in_years(age) >= 5 &
@@ -71,7 +62,14 @@ ferritin_indicator <- function(value_adjustment = no_adjustment) {
           age_in_years(age) >= 5 &
           is_male(sex) &
           value >= 15 &
-          value <= 200,
+          value <= 200
+      ),
+      category(
+        name = "Adequate iron stores in individuals with infection or inflammation",
+        # children
+        inflammation(CRP, AGP) &
+          age_in_months(age) < 60 &
+          value >= 30,
 
         inflammation(CRP, AGP) &
           age_in_years(age) >= 5 &
