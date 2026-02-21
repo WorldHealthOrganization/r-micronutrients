@@ -17,7 +17,7 @@ total_age_group_names <- list(
 
 age_between <- function(unit, lower, upper) {
   function(x) {
-    x <- as.numeric(x, unit)
+    x <- age_as_numeric(x, unit)
     !is.na(x) & x >= lower & x < upper
   }
 }
@@ -47,13 +47,13 @@ apply_total_age_group_stratifications <- function(data) {
 # the below functions are mainly used in the prevalence calculations
 
 age_group_years_15_90 <- function(x) {
-  x <- as.numeric(x, "years")
+  x <- age_as_numeric(x, "years")
   cut(x, c(15, 20, 30, 40, 50, 60, 70, 80, 90), right = FALSE)
 }
 
 age_group_years_plus <- function(limit) {
   function(x) {
-    x <- as.numeric(x, "years")
+    x <- age_as_numeric(x, "years")
     res <- rep.int(NA_character_, length(x))
     res[x >= limit] <- paste0(limit, "+ y")
     res
@@ -64,26 +64,26 @@ age_group_years_interval <- function(...) {
   interval <- c(...)
   stopifnot(length(interval) == 2)
   function(x) {
-    x <- as.numeric(x, "years")
+    x <- age_as_numeric(x, "years")
     cut(x, interval, right = FALSE) |>
       pad_cutpoints()
   }
 }
 
 age_group_months_0_60_g1 <- function(x) {
-  x <- as.numeric(x, "months")
+  x <- age_as_numeric(x, "months")
   cut(x, c(0, 1, 5, 60), right = FALSE) |>
     pad_cutpoints()
 }
 
 age_group_months_0_60_g2 <- function(x) {
-  x <- as.numeric(x, "months")
+  x <- age_as_numeric(x, "months")
   cut(x, c(6, 24, 60), right = FALSE) |>
     pad_cutpoints()
 }
 
 age_group_months_0_60_g3 <- function(x) {
-  x <- as.numeric(x, "months")
+  x <- age_as_numeric(x, "months")
   cut(x, c(6, 12, 24, 36, 48, 60), right = FALSE) |>
     pad_cutpoints()
 }
@@ -139,7 +139,6 @@ apply_age_group_stratifications <- function(data) {
 }
 
 age_year_label <- \(x) paste0("Age group (years): ", x)
-
 age_month_label <- \(x) paste0("Age group (months): ", x)
 # age_year_total_label <- \(x) paste0("Age group total (years): ", x)
 # age_month_total_label <- \(x) paste0("Age group total (months): ", x)

@@ -2,56 +2,6 @@ as_cast_fn <- function(f) {
   function(column, unit) f
 }
 
-parse_date <- function(x, format) {
-  if (lubridate::is.Date(x)) {
-    return(x)
-  }
-
-  if (lubridate::is.POSIXt(x)) {
-    return(lubridate::as_date(x))
-  }
-
-  if (is.character(x)) {
-    x <- trimws(x)
-    x <- substr(x, 1, 10) # not more than 10 characters
-
-    if (format == "automatic") {
-      return(lubridate::as_date(
-        lubridate::parse_date_time(x, c("ymd", "dmy"))
-      ))
-    } else if (format == "dd/mm/yyyy") {
-      return(lubridate::dmy(x))
-    } else if (format == "mm/dd/yyyy") {
-      return(lubridate::mdy(x))
-    }
-  }
-
-  rep.int(lubridate::as_date(NA_character_), length(x))
-}
-
-compute_age <- function(dob_value, dom_value, format, age_val) {
-  dob_value <- parse_date(dob_value, format)
-  dom_value <- parse_date(dom_value, format)
-  difference <- dom_value - dob_value
-  difference <- lubridate::as.duration(difference)
-  difference[difference < 0] <- lubridate::as.duration(NA_real_)
-
-  # dob/dom has priority over age mapping
-  # NOTE: in the current design we use DOB and DOM _or_ an age column, not both
-  # difference[is.na(difference)] <- age_val[is.na(difference)]
-
-  difference
-}
-
-seconds_to_years <- function(sec, digits = Inf) {
-  # convert seconds to years into google gives this
-  round(sec / 3.154e+7, digits = digits)
-}
-
-years_to_months <- function(yrs) {
-  yrs * 12
-}
-
 pad_cutpoints <- function(cuts) {
   levs <- levels(cuts)
 

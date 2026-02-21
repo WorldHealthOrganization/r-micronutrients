@@ -37,3 +37,23 @@ indicator_ida <- function() {
 indicator_iodine <- function() {
   iodine_indicator
 }
+
+#' indicator_map is a map from the abbreviated name to the indicator record
+#' it is a general, package level map that does not consider user input
+#' in can be used as lookup for missing indicators
+#' @include indicators.R
+#' @noRd
+indicator_map <- (function() {
+  indicators <- c(
+    list(indicator_anaemia()),
+    indicator_ferritin(adjustment_ferritin_cutoff())
+  )
+  names(indicators) <- vapply(
+    indicators,
+    function(x) {
+      indicator_abbreviated_name(x)
+    },
+    character(1L)
+  )
+  indicators
+})()

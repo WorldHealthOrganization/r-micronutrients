@@ -17,10 +17,20 @@ concepts <- concepts_list(
   concept(
     key = "age",
     label = "Age",
-    acceptor = concept_acceptor(is.numeric, "Age needs to be a numeric"),
-    standardizer = identity,
-    validator = lubridate::is.duration,
-    prototype = lubridate::duration(NA_real_)
+    acceptor = concept_acceptor(
+      function(x) {
+        is.numeric(x) || is_age(x)
+      },
+      "Age needs to be a numeric or an `mn_age` object"
+    ),
+    standardizer = function(x) {
+      if (is_age(x)) {
+        return(x)
+      }
+      age(x, unit = "years")
+    },
+    validator = is_age,
+    prototype = age(NA_real_)
   ),
   ## sex ----
   concept(
@@ -387,7 +397,6 @@ optional_concepts <- c(
 #' of all values. `non_nulls` contains a character vector that indicates
 #' which concepts have been explicitly defined because some concepts
 #' create default values in case they have not been defined explicitly.
-#'
 #' @noRd
 concepts_from_args <- function(...) {
   all_values <- list(...)
@@ -412,13 +421,6 @@ concepts_from_args <- function(...) {
     vals <- vals[[i]]
     if (!concept$acceptor$fun(vals)) {
       stop("Invalid value for ", key, ": ", concept$acceptor$error_msg)
-    }
-    if (key == "age") {
-      # age is special
-      if (!lubridate::is.duration(vals)) {
-        vals <- lubridate::duration(vals, "years")
-      }
-      return(concept$standardizer(vals))
     }
     concept$standardizer(vals)
   })

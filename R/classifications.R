@@ -6,7 +6,7 @@
 #' @param indicators a list of indicators that should be computed. Note, please do not add the same indicator twice. Also you can only use one adjustment at a time at the moment.
 #' @param sex A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
 #' .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.
-#' @param age A vector of ages in years for the individuals in the dataset. It can also be a \code{lubridate::duration} object which is then converted to years. For example: if you have age in months, you can create a lubridate duration object like this \code{lubridate::duration(age_in_months, units = "months")}.
+#' @param age A numeric vector of ages in years for the individuals in the dataset. If you have the in other units, you have to use the \code{age} object. For example: if you have age in months, you can create an `age` object like this \code{age(age_in_months, unit = "months")}.
 #' @param pregnancy_status (Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
 #'                         When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant".
 #'                         Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pregnancymonths' contain valid, non-missing values. Missing 'pregnancy_status' in these cases will be considered as 'not pregnant'.
@@ -20,7 +20,7 @@
 #' @param haemoglobin (Optional) A vector of haemoglobin measurements (in g/L).
 #' @param altitude (Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects. Elevation is a compulsory variable and it should always be reported in the dataset. Even when no elevation data is collected, a variable for 'elevation' should be created and set as "0" for all individuals without reported elevation. When elevation is not reported, that individual case will be excluded from the analysis and considered as 'missing'
 #' @param is_smoker (Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). When ‘smoking status’ is mapped and no value is reported, the tool will consider this value as "no smoking".
-#' @param smokes_cigarettes_per_day (Optional) A numeric vector representing the number of cigarettes smoked per day.
+#' @param smokes_cigarettes_per_day (Optional) A numeric vector representing the number of cigarettes smoked per day. Note that 'is_smoker' should not be missing when 'smokes_cigarettes_per_day' contain valid, non-missing values. Missing 'is_smoker' in these cases will be considered as 'not a smoker'.
 #' @param malaria (Optional) A vector indicating malaria status. Accepted values: for Yes (“Y”, “y”, or “1”) and No (“N”, “n”, or “2”).
 #'
 #' @return A data frame with classification results for each individual.
@@ -155,8 +155,8 @@ classify_data_internal <- function(
   colnames(df) <- paste0("indicator_", colnames(df))
   concept_df <- dplyr::bind_cols(concept_list$values[concept_list$non_nulls])
   # age is part of the output in years and months
-  concept_df$age_years <- as.numeric(concept_df$age, "years")
-  concept_df$age_months <- as.numeric(concept_df$age, "months")
+  concept_df$age_years <- age_as_numeric(concept_df$age, "years")
+  concept_df$age_months <- age_as_numeric(concept_df$age, "months")
   concept_df$age <- NULL
   concept_df <- concept_df[, c(
     c("age_years", "age_months"),

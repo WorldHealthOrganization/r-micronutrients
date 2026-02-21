@@ -323,7 +323,9 @@ build_prevalence_survey_data <- function(survey_df, indicators) {
   }
   # filter out all rows that have missing or negative age
   if ("age" %in% colnames(survey_df)) {
-    survey_df <- survey_df[!is.na(survey_df$age) & survey_df$age >= 0, ]
+    survey_df <- survey_df[
+      !is.na(survey_df$age) & age_in_days(survey_df$age) >= 0,
+    ]
   }
 
   # prevalence columns for cutoffs
@@ -952,8 +954,8 @@ prevalence_age_start_end <- function(analysis_df, strat_labels) {
     age_dat <- analysis_df[, c("age", strat_label)] |>
       na.exclude() |>
       dplyr::summarise(
-        age_start = seconds_to_years(min(age), 1),
-        age_end = seconds_to_years(max(age), 1),
+        age_start = min(age_in_years(age)),
+        age_end = max(age_in_years(age)),
         .by = dplyr::all_of(strat_label)
       ) |>
       dplyr::rename(stratification = !!strat_label) |>
@@ -972,8 +974,8 @@ prevalence_age_start_end <- function(analysis_df, strat_labels) {
   res_year <- do.call("rbind", res)
   res_month <- res_year |>
     dplyr::mutate(
-      age_start = years_to_months(.data$age_start),
-      age_end = years_to_months(.data$age_end)
+      age_start = age_in_months(age(.data$age_start, "years")),
+      age_end = age_in_months(age(.data$age_end, "years"))
     )
 
   dplyr::bind_rows(

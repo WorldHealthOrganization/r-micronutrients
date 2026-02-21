@@ -257,10 +257,7 @@ no_implausible_values <- adjustment(
 
 #' @export
 format.indicator <- function(x, ...) {
-  paste0(
-    "Indicator: ",
-    x$name
-  )
+  x$name
 }
 
 #' @export
@@ -426,11 +423,19 @@ indicators_compute_all <- function(indicators, values, concepts) {
     deps <- indicator$required_indicators
     if (!all(deps %in% indicator_names)) {
       missing_deps <- setdiff(deps, indicator_names)
+      missing_deps <- indicator_map[missing_deps]
       stop(
         "Composite indicator '",
         format(indicator),
         "' requires the following other indicators: ",
-        paste(missing_deps, collapse = ", "),
+        paste(
+          paste0(
+            "'",
+            vapply(missing_deps, format, character(1L)),
+            "'"
+          ),
+          collapse = ", "
+        ),
         call. = FALSE
       )
     }
@@ -474,13 +479,13 @@ levels.indicator <- function(x) {
 }
 
 age_in_months <- function(age) {
-  stopifnot(lubridate::is.duration(age))
-  as.numeric(age, "months")
+  stopifnot(is_age(age))
+  age_as_numeric(age, "months")
 }
 
 age_in_years <- function(age) {
-  stopifnot(lubridate::is.duration(age))
-  as.numeric(age, "years")
+  stopifnot(is_age(age))
+  age_as_numeric(age, "years")
 }
 
 flatten_indicators <- function(indicators) {
