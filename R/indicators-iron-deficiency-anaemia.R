@@ -1,3 +1,27 @@
+# ida_classification_tables maps ferritin classification to the respective IDA classification.
+# note that some relationships are implicit here.
+# 1: No anaemia => 'No iron deficiency'
+# 2: Anything not in this table with anaemia is classified as 'No iron deficiency'
+ida_classification_tables <- list(
+  cutoff = c(
+    "Iron deficiency in apparently healthy individuals" = "Iron deficiency anaemia in apparently healthy individuals",
+    "Iron deficiency in individuals with infection or inflammation" = "Iron deficiency anaemia in individuals with infection or inflammation"
+  ),
+  rm_agp_crp = c(
+    "Iron deficiency in apparently healthy individuals" = "Iron deficiency anaemia in apparently healthy individuals"
+  ),
+  default = c(
+    "Iron deficiency in apparently healthy individuals" = "Iron deficiency anaemia in apparently healthy individuals"
+  )
+)
+
+ida_levels <- c(
+  "No iron deficiency anaemia",
+  "Iron deficiency anaemia in apparently healthy individuals",
+  "Iron deficiency anaemia in individuals with infection or inflammation"
+)
+
+
 ida_compute <- function(type) {
   function(indicator, indicators, indicator_results) {
     anaemia <- Filter(
@@ -12,33 +36,51 @@ ida_compute <- function(type) {
       indicators
     )
     stopifnot(length(ferritin) == 1)
-    ferrtin <- ferritin[[1]]
+    ferritin <- ferritin[[1]]
 
     # compute the composite results
+    # wee first get the individual results
     anaemia_results <- indicator_results[["anaemia"]][["anaemia_result"]]
-    anaemia_categories <- indicator_prevalence_categories(anaemia)
-    is_anaemia <- anaemia_results %in% anaemia_categories
     ferritin_categories <- "Iron deficiency"
     ferritin_results <- indicator_results[[ferritin_name]][[paste0(
       ferritin_name,
       "_result"
     )]]
-    is_iron_deficiency <- grepl("Iron deficiency", ferritin_results)
     stopifnot(
       length(ferritin_results) == length(anaemia_results)
     )
-    is_na <- is.na(anaemia_results) | is.na(ferritin_results)
+
+    # by default, all anaemia results are 'No iron deficiency anaemia'
     ida_results <- rep.int(
       "No iron deficiency anaemia",
       length(ferritin_results)
     )
+
+    # Let's proceed with the classification
+    # If any result is NA, the ida classification is NA
+    is_na <- is.na(anaemia_results) | is.na(ferritin_results)
     ida_results[is_na] <- NA_character_
-    is_valid <- !is_na & is_iron_deficiency & is_anaemia
-    ida_results[is_valid] <- gsub(
-      "Iron deficiency",
-      "Iron deficiency anaemia",
-      ferritin[is_valid]
-    )
+
+    # We have to have anaemia to classify anything
+    anaemia_categories <- indicator_prevalence_categories(anaemia)
+    is_anaemia <- !is_no_anaemia(anaemia_results)
+
+    # now we need the right classification mapping based on the adjustment
+    # of ferritin
+    adj_name <- adjustment_name(ferritin$adjustment)
+    classifier <- if (
+      is.null(adj_name) || !adj_name %in% names(ida_classification_tables)
+    ) {
+      ida_classification_tables$default
+    } else {
+      ida_classification_tables[[adj_name]]
+    }
+    classification <- classifier[as.character(ferritin_results)]
+    has_class <- !is.na(classification)
+    ida_results[is_anaemia & !is_na & has_class] <- classification[
+      is_anaemia & !is_na & has_class
+    ]
+    ida_results <- factor(ida_results, levels = ida_levels)
 
     # modify the results
     ida_short_name <- indicator_abbreviated_name(indicator)

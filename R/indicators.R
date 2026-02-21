@@ -410,13 +410,12 @@ indicators_compute_all <- function(indicators, values, concepts) {
     )
     res
   })
-
   indicator_names <- vapply(
     base_indicators,
     indicator_abbreviated_name,
     character(1)
   )
-  iv <- Filter(\(x) nrow(x) != 2, set_names(indicator_values, indicator_names))
+  iv <- set_names(indicator_values, indicator_names)
   # now we compute the composite indicators
   # first we check dependencies
   for (indicator in composite_indicators) {

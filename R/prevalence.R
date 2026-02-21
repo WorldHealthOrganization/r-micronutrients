@@ -22,7 +22,7 @@
 #' The function provides a streamlined output compared to long-format prevalence functions, focusing on key summary metrics.
 #'
 #' @export
-micronutrients_stats <- function(
+mn_stats <- function(
   indicators,
   sex,
   age,

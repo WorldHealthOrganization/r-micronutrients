@@ -29,7 +29,7 @@ It is not meant for serious use yet and still work in progress.
 The following functions compute results:
 
 * `individual_classification` to compute row level indicators
-* `micronutrients_stats` to compute less-detailed prevalence estimates and other summary statistics
+* `mn_stats` to compute less-detailed prevalence estimates and other summary statistics
 
 Indicators:
 
@@ -80,7 +80,7 @@ result <- individual_classification(
 Prevalence functions accept the same arguments and compute a summary table.
 
 ```{r, eval=FALSE}
-result <- micronutrients_stats(
+result <- mn_stats(
   indicators = list(
     indicator_iodine(),
     indicator_ferritin(adjustment_ferritin_cutoff()),
