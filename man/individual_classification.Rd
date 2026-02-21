@@ -29,7 +29,7 @@ individual_classification(
 \item{sex}{A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
 .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.}
 
-\item{age}{A vector of ages in years for the individuals in the dataset. It can also be a \code{lubridate::duration} object which is then converted to years. For example: if you have age in months, you can create a lubridate duration object like this \code{lubridate::duration(age_in_months, units = "months")}.}
+\item{age}{A numeric vector of ages in years for the individuals in the dataset. If you have the in other units, you have to use the \code{age} object. For example: if you have age in months, you can create an \code{age} object like this \code{age(age_in_months, unit = "months")}.}
 
 \item{pregnancy_status}{(Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
 When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant".
@@ -55,7 +55,7 @@ Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pre
 
 \item{is_smoker}{(Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). When ‘smoking status’ is mapped and no value is reported, the tool will consider this value as "no smoking".}
 
-\item{smokes_cigarettes_per_day}{(Optional) A numeric vector representing the number of cigarettes smoked per day.}
+\item{smokes_cigarettes_per_day}{(Optional) A numeric vector representing the number of cigarettes smoked per day. Note that 'is_smoker' should not be missing when 'smokes_cigarettes_per_day' contain valid, non-missing values. Missing 'is_smoker' in these cases will be considered as 'not a smoker'.}
 
 \item{malaria}{(Optional) A vector indicating malaria status. Accepted values: for Yes (“Y”, “y”, or “1”) and No (“N”, “n”, or “2”).}
 }

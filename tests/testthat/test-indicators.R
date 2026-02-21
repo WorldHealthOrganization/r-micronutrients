@@ -21,7 +21,7 @@ test_that("composite indicator ida error if anaemia is not present", {
       pregnancyweeks = testdata$pregnancyweeks,
       pregnancymonths = testdata$pregnancymonths
     ),
-    "anaemia"
+    "Anaemia - Haemoglobin"
   )
   expect_error(
     individual_classification(
@@ -44,6 +44,6 @@ test_that("composite indicator ida error if anaemia is not present", {
       pregnancyweeks = testdata$pregnancyweeks,
       pregnancymonths = testdata$pregnancymonths
     ),
-    "ferritin"
+    "Iron Deficiency - Ferritin"
   )
 })

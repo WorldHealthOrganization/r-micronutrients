@@ -91,10 +91,7 @@ indicator_adjustment.composite_indicator <- function(indicator) {
 
 #' @export
 format.composite_indicator <- function(x, ...) {
-  paste0(
-    "Indicator: ",
-    x$name
-  )
+  x$name
 }
 
 #' @export

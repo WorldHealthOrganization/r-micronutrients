@@ -67,7 +67,7 @@ ida_prev_categories <- function(type) {
 }
 
 ida_indicator_unadjusted <- composite_indicator(
-  name = "Iron deficiency anaemia (unadjusted)",
+  name = "Iron deficiency anaemia",
   abbreviated_name = "ida_unadj",
   compute_function = ida_compute("unadj"),
   prevalence_categories = ida_prev_categories("unadj"),
@@ -75,7 +75,7 @@ ida_indicator_unadjusted <- composite_indicator(
 )
 
 ida_indicator_adjusted <- composite_indicator(
-  name = "Iron deficiency anaemia (adjusted)",
+  name = "Iron deficiency anaemia",
   abbreviated_name = "ida_adj",
   compute_function = ida_compute("adj"),
   prevalence_categories = ida_prev_categories("adj"),

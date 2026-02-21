@@ -171,9 +171,9 @@ test_that("all inputs need to be of equal length", {
   )
 })
 
-test_that("you can use lubridate to define the age", {
+test_that("you can use `age` to define the age", {
   testdata <- random_datset(100)
-  age <- lubridate::duration(1:100, "months")
+  age <- age(1:100, "months")
   res <- individual_classification(
     indicators = list(
       indicator_ferritin(adjustment_ferritin_cutoff())
@@ -187,8 +187,8 @@ test_that("you can use lubridate to define the age", {
     AGP = testdata$agp_measurement
   )
   expect_true(is.data.frame(res))
-  expect_equal(res$input_age_years, as.numeric(age, "years"))
-  expect_equal(res$input_age_months, as.numeric(age, "months"))
+  expect_equal(res$input_age_years, age_as_numeric(age, "years"))
+  expect_equal(res$input_age_months, age_as_numeric(age, "months"))
 })
 
 test_that("it warns if `is_smoker` is NULL but `smokes_cigarattes_per_day` is not", {
