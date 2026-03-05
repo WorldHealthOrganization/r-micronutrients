@@ -19,5 +19,8 @@ indicator_iodine()
 \item{ferritin_adjustment}{the adjustment method for ferritin.}
 }
 \description{
-Indicators
+Notes:
+\itemize{
+\item \code{indicator_iodine} does not produce individual level classifications.
+}
 }

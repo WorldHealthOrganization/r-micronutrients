@@ -3,6 +3,10 @@
 
 #' Indicators
 #'
+#' Notes:
+#' \itemize{
+#'  \item \code{indicator_iodine} does not produce individual level classifications.
+#' }
 #' @include indicators-anaemia.R
 #' @rdname indicators
 #' @export

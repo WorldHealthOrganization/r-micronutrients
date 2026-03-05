@@ -353,6 +353,9 @@ build_prevalence_survey_data <- function(survey_df, indicators) {
   for (indicator in indicators) {
     indicator_name <- indicator_abbreviated_name(indicator)
     prev_categories <- indicator_prevalence_categories(indicator)
+    if (length(prev_categories) == 0) {
+      next()
+    }
     agg_prev_categories <- indicator_agg_prevalence_categories(indicator)
     result <- survey_df[[paste0(indicator_name, "_result")]]
     prev_results <- as_tibble(lapply(prev_categories, \(fun) fun(result)))
