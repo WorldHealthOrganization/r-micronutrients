@@ -102,7 +102,7 @@ result <- mn_stats(
 
 ``` r
 covr::package_coverage()
-#> micronutrients Coverage: 77.66%
+#> micronutrients Coverage: 77.72%
 #> R/concept-area.R: 0.00%
 #> R/concept-fasting-status.R: 0.00%
 #> R/concept-helpers.R: 0.00%
@@ -117,13 +117,13 @@ covr::package_coverage()
 #> R/indicators-iodine.R: 33.33%
 #> R/utils.R: 39.58%
 #> R/indicators-composite.R: 56.67%
-#> R/indicators-ferritin.R: 63.01%
+#> R/indicators-ferritin.R: 63.45%
 #> R/concepts.R: 85.37%
 #> R/age.R: 85.71%
 #> R/concept-pregnancy-status.R: 87.50%
 #> R/indicators.R: 88.89%
 #> R/age-groups.R: 89.61%
-#> R/prevalence.R: 96.79%
+#> R/prevalence.R: 96.80%
 #> R/adjustments-export.R: 100.00%
 #> R/classifications.R: 100.00%
 #> R/indicators-export.R: 100.00%

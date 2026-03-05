@@ -6,10 +6,10 @@
 #' @param indicators a list of indicators that should be computed. Note, please do not add the same indicator twice. Also you can only use one adjustment at a time at the moment.
 #' @param sex A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
 #' .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.
-#' @param age A numeric vector of ages in years for the individuals in the dataset. If you have the in other units, you have to use the \code{age} object. For example: if you have age in months, you can create an `age` object like this \code{age(age_in_months, unit = "months")}.
+#' @param age A numeric vector of ages in years for the individuals in the dataset. If you have age in other units, you have to use the \code{age} object. For example: if you have age in months, you can create an `age` object like this \code{age(age_in_months, unit = "months")}.
 #' @param pregnancy_status (Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
 #'                         When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant".
-#'                         Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pregnancymonths' contain valid, non-missing values. Missing 'pregnancy_status' in these cases will be considered as 'not pregnant'.
+#'                         Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pregnancymonths' contain valid, non-missing values. Observations with missing values in 'pregnancy_status' will be considered as 'not pregnant'.
 #' @param lactating_status (Optional) A vector indicating lactation status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2").
 #' @param pregnancyweeks (Optional) A numeric vector indicating the number of weeks of pregnancy.
 #' @param pregnancymonths (Optional) A numeric vector indicating the number of months of pregnancy.
@@ -19,7 +19,7 @@
 #' @param iodine (Optional) A vector of iodine measurements (in \\u00b5gg/L).
 #' @param haemoglobin (Optional) A vector of haemoglobin measurements (in g/L).
 #' @param altitude (Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects. Elevation is a compulsory variable and it should always be reported in the dataset. Even when no elevation data is collected, a variable for 'elevation' should be created and set as "0" for all individuals without reported elevation. When elevation is not reported, that individual case will be excluded from the analysis and considered as 'missing'
-#' @param is_smoker (Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). When ‘smoking status’ is mapped and no value is reported, the tool will consider this value as "no smoking".
+#' @param is_smoker (Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). Note that 'is_smoker' should not be missing when 'smokes_cigarettes_per_day' contains valid and not missing values. Observations with missing values in 'is_smoker' will be considered as a 'non-smoker'.
 #' @param smokes_cigarettes_per_day (Optional) A numeric vector representing the number of cigarettes smoked per day. Note that 'is_smoker' should not be missing when 'smokes_cigarettes_per_day' contain valid, non-missing values. Missing 'is_smoker' in these cases will be considered as 'not a smoker'.
 #' @param malaria (Optional) A vector indicating malaria status. Accepted values: for Yes (“Y”, “y”, or “1”) and No (“N”, “n”, or “2”).
 #'
@@ -174,7 +174,7 @@ validate_concepts <- function(concepts) {
   if (!is.null(is_smoker) && !is.null(smokes_cigarettes_per_day)) {
     if (any(is.na(is_smoker) & !is.na(smokes_cigarettes_per_day))) {
       warning(
-        "Missing `is_smoker`: a non NA value for `is_smoker` is required when `smokes_cigarettes_per_day` is not NA."
+        "Missing `is_smoker`: a non NA value for `is_smoker` is required when `smokes_cigarettes_per_day` is not NA. Otherwise, these observations will be considered as 'not smoker'"
       )
     }
   }
@@ -184,14 +184,14 @@ validate_concepts <- function(concepts) {
   if (!is.null(pregnancy_status) && !is.null(pregnancyweeks)) {
     if (any(is.na(pregnancy_status) & !is.na(pregnancyweeks))) {
       warning(
-        "Missing `pregnancy_status`: a non NA value for `pregnancy_status` is required when `pregnancyweeks` is not NA."
+        "Missing `pregnancy_status`: a non NA value for `pregnancy_status` is required when `pregnancyweeks` is not NA. Otherwise, these observations will be considered as 'not pregnant'."
       )
     }
   }
   if (!is.null(pregnancy_status) && !is.null(pregnancymonths)) {
     if (any(is.na(pregnancy_status) & !is.na(pregnancymonths))) {
       warning(
-        "Missing `pregnancy_status`: a non NA value for `pregnancy_status` is required when `pregnancymonths` is not NA."
+        "Missing `pregnancy_status`: a non NA value for `pregnancy_status` is required when `pregnancymonths` is not NA. Otherwise, these observations will be considered as 'not pregnant'."
       )
     }
   }

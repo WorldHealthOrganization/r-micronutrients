@@ -29,11 +29,11 @@ individual_classification(
 \item{sex}{A vector indicating the sex of individuals. Accepted values: for Male (1/ "M"/ "m") and for Female (2/ "F"/ "f").
 .           If missing, prevalence will not be calculated for any biomarker because micronutrient status cut offs are sex-specific.}
 
-\item{age}{A numeric vector of ages in years for the individuals in the dataset. If you have the in other units, you have to use the \code{age} object. For example: if you have age in months, you can create an \code{age} object like this \code{age(age_in_months, unit = "months")}.}
+\item{age}{A numeric vector of ages in years for the individuals in the dataset. If you have age in other units, you have to use the \code{age} object. For example: if you have age in months, you can create an \code{age} object like this \code{age(age_in_months, unit = "months")}.}
 
 \item{pregnancy_status}{(Optional) A vector indicating pregnancy status. Accepted values: For Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3" or blank).
 When Unknown ("unk" or "3" or blank), it will be categorized as "not pregnant".
-Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pregnancymonths' contain valid, non-missing values. Missing 'pregnancy_status' in these cases will be considered as 'not pregnant'.}
+Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pregnancymonths' contain valid, non-missing values. Observations with missing values in 'pregnancy_status' will be considered as 'not pregnant'.}
 
 \item{pregnancyweeks}{(Optional) A numeric vector indicating the number of weeks of pregnancy.}
 
@@ -53,7 +53,7 @@ Note that 'pregnancy_status' should not be missing when 'pregnancyweeks' or 'pre
 
 \item{altitude}{(Optional) A numeric vector representing elevation above sea level (in meters), used to adjust for altitude-related effects. Elevation is a compulsory variable and it should always be reported in the dataset. Even when no elevation data is collected, a variable for 'elevation' should be created and set as "0" for all individuals without reported elevation. When elevation is not reported, that individual case will be excluded from the analysis and considered as 'missing'}
 
-\item{is_smoker}{(Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). When ‘smoking status’ is mapped and no value is reported, the tool will consider this value as "no smoking".}
+\item{is_smoker}{(Optional) A vector indicating smoking status. Accepted values: for Yes ("Y", "y", or "1"), No ("N", "n", or "2"), Unknown ("unk" or "3"). Note that 'is_smoker' should not be missing when 'smokes_cigarettes_per_day' contains valid and not missing values. Observations with missing values in 'is_smoker' will be considered as a 'non-smoker'.}
 
 \item{smokes_cigarettes_per_day}{(Optional) A numeric vector representing the number of cigarettes smoked per day. Note that 'is_smoker' should not be missing when 'smokes_cigarettes_per_day' contain valid, non-missing values. Missing 'is_smoker' in these cases will be considered as 'not a smoker'.}
 
