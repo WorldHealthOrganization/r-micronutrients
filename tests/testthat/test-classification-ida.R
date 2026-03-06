@@ -154,3 +154,23 @@ test_that("if no anaemia then no iron deficiency", {
       )
   )
 })
+
+test_that("order of ida does not matter", {
+  testdata <- random_datset(100)
+  expect_silent(
+    res <- individual_classification(
+      indicators = list(
+        indicator_ida(),
+        indicator_ferritin(adjustment_ferritin_cutoff()),
+        indicator_anaemia()
+      ),
+      age = testdata$age_years,
+      sex = testdata$sex,
+      ferritin = testdata$ferritin_measurement,
+      CRP = testdata$crp_measurement,
+      AGP = testdata$agp_measurement,
+      haemoglobin = testdata$haemoglobin_measurement,
+      altitude = testdata$altitude
+    )
+  )
+})
