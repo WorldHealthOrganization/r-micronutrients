@@ -370,13 +370,14 @@ indicators_compute_all <- function(indicators, values, concepts) {
   # ATM we have two types of indicators. Normal indicators and composite indicators.
   # Composite indicators depend on non-composite indicators and are computed at the
   # end.
-  base_indicators <- Filter(is_indicator, indicators)
+  is_base_indicator <- vapply(indicators, is_indicator, logical(1L))
+  base_indicators <- indicators[is_base_indicator]
+  base_values <- values[is_base_indicator]
   composite_indicators <- Filter(is_composite_indicator, indicators)
   without_null <- \(v) Filter(\(x) !is.null(x), v)
   indicator_values <- lapply(seq_along(base_indicators), function(i) {
     indicator <- base_indicators[[i]]
-
-    res <- if (is.null(values[[i]])) {
+    res <- if (is.null(base_values[[i]])) {
       stop(
         "Indicator: '",
         format(indicator),
@@ -386,7 +387,7 @@ indicators_compute_all <- function(indicators, values, concepts) {
         call. = FALSE
       )
     } else {
-      result <- indicator_compute(indicator, values[[i]], concepts)
+      result <- indicator_compute(indicator, base_values[[i]], concepts)
       if (is.null(result)) {
         tibble::tibble(
           result = NA_real_,
@@ -395,7 +396,7 @@ indicators_compute_all <- function(indicators, values, concepts) {
       } else {
         tibble::tibble(
           result = result,
-          input_value = indicator_adjust_value(indicator, values[[i]], concepts)
+          input_value = indicator_adjust_value(indicator, base_values[[i]], concepts)
         )
       }
     }
