@@ -396,7 +396,11 @@ indicators_compute_all <- function(indicators, values, concepts) {
       } else {
         tibble::tibble(
           result = result,
-          input_value = indicator_adjust_value(indicator, base_values[[i]], concepts)
+          input_value = indicator_adjust_value(
+            indicator,
+            base_values[[i]],
+            concepts
+          )
         )
       }
     }

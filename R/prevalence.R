@@ -404,6 +404,9 @@ combine_and_format_estimates <- function(
   estimates <- list(...)
   result <- Reduce(
     function(acc, el) {
+      if (is.null(el) || nrow(el) == 0) {
+        return(acc)
+      }
       dplyr::inner_join(
         acc,
         el,

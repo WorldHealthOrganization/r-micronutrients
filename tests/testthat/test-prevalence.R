@@ -1,5 +1,5 @@
 test_that("mn_stats", {
-  testdata <- random_datset(100)
+  testdata <- random_datset(10)
   res <- mn_stats(
     indicators = list(
       indicator_iodine(),
@@ -110,6 +110,22 @@ test_that("mn_stats", {
       "ida_adj_se",
       "ida_adj_ll",
       "ida_adj_ul"
+    )
+  )
+})
+
+test_that("estimates with NULL values work", {
+  testdata <- random_datset(5)
+  expect_silent(
+    res <- mn_stats(
+      indicators = list(
+        indicator_iodine()
+      ),
+      age = testdata$age_years,
+      sex = testdata$sex,
+      iodine = testdata$iodine,
+      cluster = 1:nrow(testdata),
+      strata = rep.int(1, nrow(testdata))
     )
   )
 })
