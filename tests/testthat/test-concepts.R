@@ -26,3 +26,11 @@ test_that("concepts_from_args: some concepts have default values if not supplied
     )
   }
 })
+
+test_that("area is properly encoded", {
+  x <- as_area(c("1", "2", "urban", "rural", NA_character_))
+  expect_equal(
+    x,
+    factor(c("Urban", "Rural", "Urban", "Rural", NA_character_), levels = area_levels)
+  )
+})
