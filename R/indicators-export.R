@@ -5,7 +5,7 @@
 #'
 #' Notes:
 #' \itemize{
-#'  \item \code{indicator_iodine} does not produce individual level classifications.
+#'  \item \code{indicator_iodine} does not produce individual level classifications. All results are 'NA'.
 #' }
 #' @include indicators-anaemia.R
 #' @rdname indicators

@@ -22,7 +22,8 @@ test_that("mn_stats", {
     pregnancyweeks = testdata$pregnancyweeks,
     pregnancymonths = testdata$pregnancymonths,
     cluster = 1:nrow(testdata),
-    strata = rep.int(1, nrow(testdata))
+    strata = rep.int(1, nrow(testdata)),
+    area = testdata$area
   )
   expect_true(is.data.frame(res))
   expect_true(nrow(res) > 0)
@@ -111,6 +112,9 @@ test_that("mn_stats", {
       "ida_adj_ll",
       "ida_adj_ul"
     )
+  )
+  expect_true(
+    all(c("Area: Urban", "Area: Rural") %in% res$Group)
   )
 })
 
