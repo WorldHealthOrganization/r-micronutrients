@@ -85,7 +85,10 @@ concepts <- concepts_list(
   concept(
     key = "pregnancymonths",
     label = "Pregnancy Months",
-    acceptor = concept_acceptor(is.numeric, "Preganancy Months should be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Preganancy Months should be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = NA_real_
@@ -94,7 +97,10 @@ concepts <- concepts_list(
   concept(
     key = "pregnancyweeks",
     label = "Pregnancy Weeks",
-    acceptor = concept_acceptor(is.numeric, "Preganancy Weeks should be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Preganancy Weeks should be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = NA_real_
@@ -171,7 +177,10 @@ concepts <- concepts_list(
   concept(
     key = "smokes_cigarettes_per_day",
     label = "Number of cigarettes per day",
-    acceptor = concept_acceptor(is.numeric, "Number of cigarettes per day should be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Number of cigarettes per day should be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = NA_real_
@@ -180,7 +189,10 @@ concepts <- concepts_list(
   concept(
     key = "altitude",
     label = "Elevation",
-    acceptor = concept_acceptor(is.numeric, "Elevation should be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Elevation should be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = NA_real_
@@ -207,7 +219,10 @@ concepts <- concepts_list(
   concept(
     key = "region",
     label = "Region",
-    acceptor = concept_acceptor(\(x) is.character(x) | is.numeric(x), "Region should be a numeric or a character value."),
+    acceptor = concept_acceptor(
+      \(x) is.character(x) | is.numeric(x),
+      "Region should be a numeric or a character value."
+    ),
     standardizer = as.character,
     validator = is.character,
     prototype = NA_character_
@@ -216,7 +231,10 @@ concepts <- concepts_list(
   concept(
     key = "wealth_quintile",
     label = "Wealth Quintile",
-    acceptor = concept_acceptor(wealth_quintiles_acceptor, "Wealth Quintiles must only be 1,2,3,4,5 or Q1,Q2,Q3,Q4,Q5 or NA."),
+    acceptor = concept_acceptor(
+      wealth_quintiles_acceptor,
+      "Wealth Quintiles must only be 1,2,3,4,5 or Q1,Q2,Q3,Q4,Q5 or NA."
+    ),
     standardizer = as_wealth_quintiles,
     validator = \(x) is.factor(x) & all(levels(x) == wealth_quintiles_levels),
     prototype = NA_character_
@@ -244,7 +262,10 @@ concepts <- concepts_list(
   concept(
     key = "sample_weight",
     label = "Sample Weight",
-    acceptor = concept_acceptor(is.numeric, "Sample Weight must be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Sample Weight must be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = NA_real_
@@ -253,7 +274,10 @@ concepts <- concepts_list(
   concept(
     key = "iodine",
     label = "Urinary Iodine Concentration (\u00b5g/L)",
-    acceptor = concept_acceptor(is.numeric, "Urinary Iodine Concentration must be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Urinary Iodine Concentration must be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = measurement_g_l(NA_real_),
@@ -263,7 +287,10 @@ concepts <- concepts_list(
   concept(
     key = "haemoglobin",
     label = "Haemoglobin (g/L)",
-    acceptor = concept_acceptor(is.numeric, "Haemoglobin must be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Haemoglobin must be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = measurement_g_l(NA_real_),
@@ -273,7 +300,10 @@ concepts <- concepts_list(
   concept(
     key = "ferritin",
     label = "Ferritin (\u00b5g/L)",
-    acceptor = concept_acceptor(is.numeric, "Ferritin must be a numeric value."),
+    acceptor = concept_acceptor(
+      is.numeric,
+      "Ferritin must be a numeric value."
+    ),
     standardizer = identity,
     validator = is.numeric,
     prototype = measurement_mcg_l(NA_real_),
@@ -303,7 +333,10 @@ concepts <- concepts_list(
   concept(
     key = "other_grouping_variable",
     label = "Other grouping",
-    acceptor = concept_acceptor(\(x) is.character(x) | is.numeric(x), "Other group must be either a character or numeric value."),
+    acceptor = concept_acceptor(
+      \(x) is.character(x) | is.numeric(x),
+      "Other group must be either a character or numeric value."
+    ),
     standardizer = as.character,
     validator = is.character,
     prototype = NA_character_

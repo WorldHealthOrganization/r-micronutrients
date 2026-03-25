@@ -31,6 +31,9 @@ test_that("area is properly encoded", {
   x <- as_area(c("1", "2", "urban", "rural", NA_character_))
   expect_equal(
     x,
-    factor(c("Urban", "Rural", "Urban", "Rural", NA_character_), levels = area_levels)
+    factor(
+      c("Urban", "Rural", "Urban", "Rural", NA_character_),
+      levels = area_levels
+    )
   )
 })
