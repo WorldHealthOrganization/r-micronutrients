@@ -50,3 +50,20 @@ test_that("adequate iron stores differentiate between health and inflammation", 
     )
   )
 })
+
+test_that("regression correction handles invalid values", {
+  res <- individual_classification(
+    indicators = list(
+      indicator_ferritin(adjustment_ferritin_regression_correction())
+    ),
+    age = c(1, 2, 3),
+    sex = c("m", "m", "m"),
+    ferritin = c(13, 12, 11),
+    CRP = c(1, 1, 1),
+    AGP = c(1, 1, NA_real_)
+  )
+  expect_equal(
+    is.na(res$indicator_ferritin_adj_result),
+    c(FALSE, FALSE, TRUE)
+  )
+})

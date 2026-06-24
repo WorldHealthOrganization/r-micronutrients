@@ -391,9 +391,10 @@ ferritin_adjustment_regression_correction <- adjustment(
 
     data$logcrpdecile <- quantile(data$iLogCRP, probs = 0.1, na.rm = TRUE)[[1]]
     data$logagpdecile <- quantile(data$iLogAGP, probs = 0.1, na.rm = TRUE)[[1]]
-    data <- data[
-      !is.na(data$iLogFerr) & !is.na(data$iLogCRP) & !is.na(data$iLogAGP),
-    ]
+    valid_data <- !is.na(data$iLogFerr) & !is.na(data$iLogCRP) & !is.na(data$iLogAGP)
+    original_length <- length(value)
+    data <- data[valid_data, ]
+    value <- value[valid_data]
     if (nrow(data) == 0) {
       # in this case the LM fit will error because we have 0 rows left with
       # non-na cases.
@@ -429,26 +430,16 @@ ferritin_adjustment_regression_correction <- adjustment(
       )
     )
     data$iFerr2F5 <- exp(data$iLogFerrAdj)
-
-    # suppressMessages({
-    #   result <- BRINDA::BRINDA(
-    #     data,
-    #     ferritin_varname = value,
-    #     crp_varname = CRP,
-    #     agp_varname = AGP,
-    #     population_group = WRA
-    #   )
-    # })
-    result <- data
+    result <- rep.int(NA_real_, length(original_length))
     if (
-      is.data.frame(result) &&
-        "iFerr2F5" %in% colnames(result) &&
-        nrow(result) == length(value)
+      is.data.frame(data) &&
+        "iFerr2F5" %in% colnames(data)
     ) {
-      as.numeric(result[["iFerr2F5"]])
-    } else {
-      rep.int(NA_real_, length(value))
+      stopifnot(nrow(data) == sum(valid_data, na.rm = TRUE))
+      result[valid_data] <- data[["iFerr2F5"]]
+      as.numeric(data[["iFerr2F5"]])
     }
+    result
   },
   sub_class = "ferritin_adjustment_regression_correction"
 )
