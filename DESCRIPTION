@@ -1,12 +1,24 @@
 Package: micronutrients
-Title: What the Package Does (One Line, Title Case)
+Title: Computation of Micronutrients Status Indicator Estimates
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: file LICENSE
+    person("Giovanna", "Gatica-Domínguez", , "nfsdata@who.int", role = c("aut", "cre")),
+	person("Monica", "Flores Urrutia", , "floresm@who.int", rôle = c("aut")),
+    person("Dirk", "Schumacher", , "mail@dirk-schumacher.net", role = c("aut")),
+    person("Elaine", "Borghi", , "borghie@who.int", c("ctb")),
+    person("Richard", "Kumapley", , "kumapleyr@who.int", c("ctb")),
+    person("Zev", "Ross", , "zev@zevross.com", c("ctb")),
+    person("Nate", "Teetor", , "nate@haufin.ch", c("ctb")),
+    person("Valeria", "Galetti", , "valeria@groundworkhealth.org", c("ctb")),
+    person("James", "Wirth", , "james@groundworkhealth.org", c("ctb")),
+    person(given = "World Health Organization", role = "cph"))
+Description: Performs comprehensive analysis of micronutrient status survey data across diverse populations for anaemia, iron deficiency anaemia, ferritin, and urinary iodine concentrations. Analytical methods follow current World Health Organization (WHO) guidelines for assessing micronutrient status at individual and population levels. Original R code was written to apply the BRINDA adjustment method (Luo H, Geng S, Suchdev PS, et al. (2023) <doi:10.1016/j.tjnut.2023.02.016
+>) and the Thurnham adjustment method (Thurnham DI, McCabe LD, Haldar S, et al. (2015) <doi:10.3945/jn.114.194712>).
+License: GPL-3
 Encoding: UTF-8
+URL: https://github.com/WorldHealthOrganization/r-micronutrients
+BugReports: https://github.com/WorldHealthOrganization/r-micronutrients/issues
+ByteCompile: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
